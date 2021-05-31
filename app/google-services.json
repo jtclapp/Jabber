@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "735064947919",
+    "project_id": "jabber-chat-c74a2",
+    "storage_bucket": "jabber-chat-c74a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735064947919:android:ca64f291aca918a6a50bba",
+        "android_client_info": {
+          "package_name": "com.modify.jabber"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735064947919-vhfivd54fh1eh99iru0qv7v7hpp27s0n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVrSZRllOPIrG6WJtt6O0-0ZPmDjmvZe0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735064947919-vhfivd54fh1eh99iru0qv7v7hpp27s0n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
