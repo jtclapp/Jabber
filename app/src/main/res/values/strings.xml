@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Jabber</string>
+
+    <style name="MenuStyle" parent="Theme.AppCompat.Light">
+        <item name="android:background">@android:color/white</item>
+    </style>
 </resources>
