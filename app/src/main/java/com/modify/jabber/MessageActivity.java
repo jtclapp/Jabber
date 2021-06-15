@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.media.session.MediaSession;
 import android.os.Bundle;
 
 
@@ -28,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.modify.jabber.Adapter.MessageAdapter;
+import com.modify.jabber.Notifications.Data;
+import com.modify.jabber.Notifications.Token;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 
@@ -72,7 +72,6 @@ public class MessageActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // and this
                 startActivity(new Intent(MessageActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
@@ -219,7 +218,7 @@ public class MessageActivity extends AppCompatActivity {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-//                    MediaSession.Token token = snapshot.getValue(MediaSession.Token.class);
+//                    Token token = snapshot.getValue(Token.class);
 //                    Data data = new Data(fuser.getUid(), R.mipmap.ic_launcher, username+": "+message, "New Message",
 //                            userid);
 //
@@ -266,8 +265,8 @@ public class MessageActivity extends AppCompatActivity {
                         mchat.add(chat);
                     }
 
-//                    messageAdapter = new MessageAdapter(MessageActivity.this, mchat, imageurl);
-//                    recyclerView.setAdapter(messageAdapter);
+                    messageAdapter = new MessageAdapter(MessageActivity.this, mchat, imageurl);
+                    recyclerView.setAdapter(messageAdapter);
                 }
             }
 

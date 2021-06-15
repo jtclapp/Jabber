@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -19,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.modify.jabber.Adapter.UserAdapter;
+import com.modify.jabber.Notifications.Token;
 import com.modify.jabber.R;
 import com.modify.jabber.model.Chatlist;
 import com.modify.jabber.model.User;
@@ -71,17 +73,17 @@ public class ChatFragment extends Fragment {
             }
         });
 
-//        updateToken(FirebaseInstanceId.getInstance().getToken());
+        //updateToken(FirebaseInstanceId.getInstance().getToken());
 
 
         return view;
     }
 
-//    private void updateToken(String token){
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
-//        MediaSession.Token token1 = new MediaSession.Token();
-//        reference.child(fuser.getUid()).setValue(token1);
-//    }
+    private void updateToken(String token){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1 = new Token();
+        reference.child(fuser.getUid()).setValue(token1);
+    }
 
     private void chatList() {
         mUsers = new ArrayList<>();

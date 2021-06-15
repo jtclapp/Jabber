@@ -59,10 +59,16 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
-                if (user.getImageURL().equals("default")){
+                if(user.getImageURL() == null)
+                {
                     profile_image.setImageResource(R.mipmap.ic_launcher);
-                } else {
+                }
+                else {
+                    if (user.getImageURL().equals("default")) {
+                        profile_image.setImageResource(R.mipmap.ic_launcher);
+                    } else {
 
+                    }
                 }
             }
 
@@ -109,10 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
