@@ -5,11 +5,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -23,8 +23,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.modify.jabber.Fragments.ChatsFragment;
+import com.modify.jabber.Fragments.ChatFragment;
+import com.modify.jabber.Fragments.ProfileFragment;
 import com.modify.jabber.Fragments.UserFragment;
+import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 
 import java.util.ArrayList;
@@ -44,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
         profile_image = findViewById(R.id.profile_image);
@@ -89,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (unread == 0){
-                    viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
+                    viewPagerAdapter.addFragment(new ChatFragment(), "Chats");
                 } else {
-                    viewPagerAdapter.addFragment(new ChatsFragment(), "("+unread+") Chats");
+                    viewPagerAdapter.addFragment(new ChatFragment(), "("+unread+") Chats");
                 }
 
                 viewPagerAdapter.addFragment(new UserFragment(), "Users");

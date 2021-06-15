@@ -1,5 +1,6 @@
 package com.modify.jabber.Fragments;
 
+import android.media.session.MediaSession;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +18,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.modify.jabber.Adapter.UserAdapter;
 import com.modify.jabber.R;
+import com.modify.jabber.model.Chatlist;
 import com.modify.jabber.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ChatsFragment extends Fragment {
+public class ChatFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
@@ -36,10 +39,10 @@ public class ChatsFragment extends Fragment {
 
     private List<Chatlist> usersList;
 
-    @Override
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chats, container, false);
+        View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -54,7 +57,7 @@ public class ChatsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 usersList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chatlist chatlist = snapshot.getValue(Chatlist.class);
                     usersList.add(chatlist);
                 }
@@ -68,17 +71,17 @@ public class ChatsFragment extends Fragment {
             }
         });
 
-        updateToken(FirebaseInstanceId.getInstance().getToken());
+//        updateToken(FirebaseInstanceId.getInstance().getToken());
 
 
         return view;
     }
 
-    private void updateToken(String token) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
-        Token token1 = new Token(token);
-        reference.child(fuser.getUid()).setValue(token1);
-    }
+//    private void updateToken(String token){
+//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+//        MediaSession.Token token1 = new MediaSession.Token();
+//        reference.child(fuser.getUid()).setValue(token1);
+//    }
 
     private void chatList() {
         mUsers = new ArrayList<>();
@@ -87,10 +90,10 @@ public class ChatsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mUsers.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User user = snapshot.getValue(User.class);
-                    for (Chatlist chatlist : usersList) {
-                        if (user.getId().equals(chatlist.getId())) {
+                    for (Chatlist chatlist : usersList){
+                        if (user.getId().equals(chatlist.getId())){
                             mUsers.add(user);
                         }
                     }
@@ -105,4 +108,5 @@ public class ChatsFragment extends Fragment {
             }
         });
     }
+
 }

@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,13 +21,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.modify.jabber.Adapter.UserAdapter;
 import com.modify.jabber.R;
 import com.modify.jabber.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class UsersFragment extends Fragment {
+public class UserFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
@@ -40,15 +42,13 @@ public class UsersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_users, container, false);
+        View view = inflater.inflate(R.layout.fragment_user, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mUsers = new ArrayList<>();
-
-        readUsers();
 
         search_users = view.findViewById(R.id.search_users);
         search_users.addTextChangedListener(new TextWatcher() {
@@ -117,10 +117,10 @@ public class UsersFragment extends Fragment {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         User user = snapshot.getValue(User.class);
 
-                        if (!user.getId().equals(firebaseUser.getUid())) {
+                        if(!user.getId().equals(firebaseUser.getUid()))
+                        {
                             mUsers.add(user);
                         }
-
                     }
 
                     userAdapter = new UserAdapter(getContext(), mUsers, false);
