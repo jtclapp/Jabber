@@ -24,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.modify.jabber.Adapter.UserAdapter;
 import com.modify.jabber.R;
 import com.modify.jabber.model.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
