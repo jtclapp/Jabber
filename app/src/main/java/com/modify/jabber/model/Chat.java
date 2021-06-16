@@ -41,11 +41,11 @@ public class Chat {
         this.message = message;
     }
 
-    public boolean isIsseen() {
+    public boolean isIsSeen() {
         return isseen;
     }
 
-    public void setIsseen(boolean isseen) {
+    public void setIsSeen(boolean isseen) {
         this.isseen = isseen;
     }
 }

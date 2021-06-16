@@ -51,6 +51,7 @@ public class UserFragment extends Fragment {
 
         mUsers = new ArrayList<>();
 
+        readUsers();
         search_users = view.findViewById(R.id.search_users);
         search_users.addTextChangedListener(new TextWatcher() {
             @Override
@@ -118,10 +119,7 @@ public class UserFragment extends Fragment {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         User user = snapshot.getValue(User.class);
 
-                        if(!user.getId().equals(firebaseUser.getUid()))
-                        {
                             mUsers.add(user);
-                        }
                     }
 
                     userAdapter = new UserAdapter(getContext(), mUsers, false);
