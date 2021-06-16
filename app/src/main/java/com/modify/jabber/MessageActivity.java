@@ -26,7 +26,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.modify.jabber.Adapter.MessageAdapter;
+import com.modify.jabber.Fragments.APIService;
+import com.modify.jabber.Notifications.Client;
 import com.modify.jabber.Notifications.Data;
+import com.modify.jabber.Notifications.MyResponse;
+import com.modify.jabber.Notifications.Sender;
 import com.modify.jabber.Notifications.Token;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
@@ -34,6 +38,10 @@ import com.modify.jabber.model.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -57,7 +65,7 @@ public class MessageActivity extends AppCompatActivity {
 
     String userid;
 
-//    APIService apiService;
+    APIService apiService;
 
     boolean notify = false;
 
@@ -76,7 +84,7 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-//        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -199,7 +207,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 if (notify) {
-        //            sendNotifiaction(receiver, user.getUsername(), msg);
+                    sendNotifiaction(receiver, user.getUsername(), msg);
                 }
                 notify = false;
             }
@@ -211,44 +219,44 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-//    private void sendNotifiaction(String receiver, final String username, final String message){
-//        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-//        Query query = tokens.orderByKey().equalTo(receiver);
-//        query.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-//                    Token token = snapshot.getValue(Token.class);
-//                    Data data = new Data(fuser.getUid(), R.mipmap.ic_launcher, username+": "+message, "New Message",
-//                            userid);
-//
-//                    Sender sender = new Sender(data, token.getToken());
-//
-//                    apiService.sendNotification(sender)
-//                            .enqueue(new Callback<MyResponse>() {
-//                                @Override
-//                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-//                                    if (response.code() == 200){
-//                                        if (response.body().success != 1){
-//                                            Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onFailure(Call<MyResponse> call, Throwable t) {
-//
-//                                }
-//                            });
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
+    private void sendNotifiaction(String receiver, final String username, final String message){
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = tokens.orderByKey().equalTo(receiver);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Token token = snapshot.getValue(Token.class);
+                    Data data = new Data(fuser.getUid(), R.mipmap.ic_launcher, username+": "+message, "New Message",
+                            userid);
+
+                    Sender sender = new Sender(data, token.getToken());
+
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<MyResponse>() {
+                                @Override
+                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                    if (response.code() == 200){
+                                        if (response.body().success != 1){
+                                            Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<MyResponse> call, Throwable t) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     private void readMesagges(final String myid, final String userid, final String imageurl){
         mchat = new ArrayList<>();
