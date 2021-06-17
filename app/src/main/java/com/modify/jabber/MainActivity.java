@@ -1,5 +1,9 @@
 package com.modify.jabber;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +33,8 @@ import com.modify.jabber.Fragments.UserFragment;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     if (user.getImageURL().equals("default")) {
                         profile_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
-
+                        new DownLoadImageTask(profile_image).execute(user.getImageURL());
                     }
                 }
             }
@@ -190,5 +196,40 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         status("offline");
+    }
+    private class DownLoadImageTask extends AsyncTask<String,Void, Bitmap> {
+        ImageView imageView;
+
+        public DownLoadImageTask(ImageView imageView){
+            this.imageView = imageView;
+        }
+
+        /*
+            doInBackground(Params... params)
+                Override this method to perform a computation on a background thread.
+         */
+        protected Bitmap doInBackground(String...urls){
+            String urlOfImage = urls[0];
+            Bitmap logo = null;
+            try{
+                InputStream is = new URL(urlOfImage).openStream();
+                /*
+                    decodeStream(InputStream is)
+                        Decode an input stream into a bitmap.
+                 */
+                logo = BitmapFactory.decodeStream(is);
+            }catch(Exception e){ // Catch the download exception
+                e.printStackTrace();
+            }
+            return logo;
+        }
+
+        /*
+            onPostExecute(Result result)
+                Runs on the UI thread after doInBackground(Params...).
+         */
+        protected void onPostExecute(Bitmap result){
+            imageView.setImageBitmap(result);
+        }
     }
 }

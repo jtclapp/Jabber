@@ -37,7 +37,6 @@ public class UserFragment extends Fragment {
     private List<User> mUsers;
 
     EditText search_users;
-    FirebaseUser firebaseUser;
 
 
     @Override
@@ -51,9 +50,9 @@ public class UserFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mUsers = new ArrayList<>();
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         readUsers();
+
         search_users = view.findViewById(R.id.search_users);
         search_users.addTextChangedListener(new TextWatcher() {
             @Override
@@ -76,6 +75,8 @@ public class UserFragment extends Fragment {
     }
 
     private void searchUsers(String s) {
+
+        final FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
         Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("search")
                 .startAt(s)
                 .endAt(s+"\uf8ff");
@@ -86,12 +87,14 @@ public class UserFragment extends Fragment {
                 mUsers.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User user = snapshot.getValue(User.class);
+
                     assert user != null;
-                    assert firebaseUser != null;
-                    if (!user.getId().equals(firebaseUser.getUid())){
+                    assert fuser != null;
+                    if (!user.getId().equals(fuser.getUid())){
                         mUsers.add(user);
                     }
                 }
+
                 userAdapter = new UserAdapter(getContext(), mUsers, false);
                 recyclerView.setAdapter(userAdapter);
             }
@@ -116,11 +119,11 @@ public class UserFragment extends Fragment {
                     mUsers.clear();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         User user = snapshot.getValue(User.class);
-                            if(user.getId().equals(firebaseUser.getUid()))
-                            {
-                                continue;
-                            }
+
+                        if (!user.getId().equals(firebaseUser.getUid())) {
                             mUsers.add(user);
+                        }
+
                     }
 
                     userAdapter = new UserAdapter(getContext(), mUsers, false);

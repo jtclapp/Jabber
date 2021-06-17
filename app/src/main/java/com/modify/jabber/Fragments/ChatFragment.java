@@ -40,7 +40,7 @@ public class ChatFragment extends Fragment {
 
     private List<Chatlist> usersList;
 
-
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
@@ -80,7 +80,7 @@ public class ChatFragment extends Fragment {
 
     private void updateToken(String token){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
-        Token token1 = new Token();
+        Token token1 = new Token(token);
         reference.child(fuser.getUid()).setValue(token1);
     }
 
