@@ -77,6 +77,8 @@ public class SignupActivity extends AppCompatActivity {
                     hashMap.put("id", userid);
                     hashMap.put("username",username);
                     hashMap.put("imageURL","default");
+                    hashMap.put("status", "offline");
+                    hashMap.put("search",username.toLowerCase());
 
                     reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -91,7 +93,7 @@ public class SignupActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    Toast.makeText(SignupActivity.this,"The email you entered is not correct.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(SignupActivity.this,"The email you entered is already in use.",Toast.LENGTH_LONG).show();
                 }
             }
         });
