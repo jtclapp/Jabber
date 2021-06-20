@@ -106,7 +106,6 @@ public class UserFragment extends Fragment {
         });
 
     }
-
     private void readUsers() {
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -119,7 +118,10 @@ public class UserFragment extends Fragment {
                     mUsers.clear();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         User user = snapshot.getValue(User.class);
-
+                        if(user.getId() == null)
+                        {
+                            continue;
+                        }
                         if (!user.getId().equals(firebaseUser.getUid())) {
                             mUsers.add(user);
                         }
@@ -137,4 +139,5 @@ public class UserFragment extends Fragment {
             }
         });
     }
+
 }

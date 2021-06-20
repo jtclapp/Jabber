@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Toolbar
-            android:id="@+id/toolbar"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/black"
@@ -35,7 +35,7 @@
                 android:textStyle="bold"
                 android:layout_marginStart="25dp" />
 
-        </Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
