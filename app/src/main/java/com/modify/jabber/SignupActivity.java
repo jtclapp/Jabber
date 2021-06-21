@@ -51,6 +51,7 @@ public class SignupActivity extends AppCompatActivity {
                 } else if (txt_password.length() < 8){
                     Toast.makeText(SignupActivity.this, "Password must be at least 8 characters long.",Toast.LENGTH_LONG).show();
                 } else {
+
                     register(txt_username,txt_email,txt_password);
                 }
             }

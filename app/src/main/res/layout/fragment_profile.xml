@@ -43,8 +43,20 @@
                 android:textSize="18sp"
                 android:layout_marginBottom="20dp"/>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_Profile"
+                android:layout_width="376dp"
+                android:layout_height="425dp"
+                android:layout_below="@id/username"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Post"
+                android:layout_below="@id/recycler_view_Profile"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"/>
         </RelativeLayout>
-
     </androidx.cardview.widget.CardView>
-
 </RelativeLayout>
