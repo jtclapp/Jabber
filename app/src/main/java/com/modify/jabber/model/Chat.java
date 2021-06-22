@@ -5,9 +5,10 @@ public class Chat {
     private String sender;
     private String receiver;
     private String message;
+    private String type;
     private boolean isseen;
 
-    public Chat(String sender, String receiver, String message, boolean isseen) {
+    public Chat(String sender, String receiver, String message, String type, boolean isseen) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
@@ -48,4 +49,13 @@ public class Chat {
     public void setIsSeen(boolean isseen) {
         this.isseen = isseen;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
 }

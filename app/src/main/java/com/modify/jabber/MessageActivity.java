@@ -4,8 +4,10 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,6 +52,9 @@ import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -124,6 +130,7 @@ public class MessageActivity extends AppCompatActivity {
         btn_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                notify = true;
                 openImage();
             }
         });
@@ -183,6 +190,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("sender", sender);
         hashMap.put("receiver", receiver);
         hashMap.put("message", message);
+        hashMap.put("type","text");
         hashMap.put("isseen", false);
 
         reference.child("Chats").push().setValue(hashMap);
@@ -328,7 +336,7 @@ public class MessageActivity extends AppCompatActivity {
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    private void uploadImage(){
+    private void uploadImage() throws IOException {
         final ProgressDialog pd = new ProgressDialog(MessageActivity.this);
         pd.setMessage("Uploading");
         pd.show();
@@ -338,40 +346,54 @@ public class MessageActivity extends AppCompatActivity {
             final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
                     +"."+getFileExtension(imageUri));
 
-            uploadTask = fileReference.putFile(imageUri);
-            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            String fileNamePath = "ChatImages/" + "post_" + System.currentTimeMillis();
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),imageUri);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
+            byte[] data = outputStream.toByteArray();
+            StorageReference reference = FirebaseStorage.getInstance().getReference().child(fileNamePath);
+            reference.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()){
-                        throw Objects.requireNonNull(task.getException());
-                    }
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                    while (!uriTask.isSuccessful());
+                    String downloadUri = uriTask.getResult().toString();
 
-                    return  fileReference.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()){
-                        Uri downloadUri = task.getResult();
-                        String mUri = downloadUri.toString();
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("imageURL", ""+mUri);
+                    if(uriTask.isSuccessful())
+                    {
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("sender", fuser.getUid());
+                        hashMap.put("receiver", userid);
+                        hashMap.put("message",downloadUri);
+                        hashMap.put("type", "image");
+                        hashMap.put("isseen", false);
+                        databaseReference.child("Chats").push().setValue(hashMap);
 
-                        pd.dismiss();
-                    } else {
-                        Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
-                        pd.dismiss();
+                        DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users");
+                        database.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                User user = snapshot.getValue(User.class);
+
+                                if(notify)
+                                {
+                                    sendNotification(userid,user.getUsername(),"Sent you a photo...");
+                                }
+                                notify = false;
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                            }
+                        });
                     }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(MessageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     pd.dismiss();
                 }
             });
         } else {
             Toast.makeText(MessageActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
+            pd.dismiss();
         }
     }
 
@@ -386,7 +408,11 @@ public class MessageActivity extends AppCompatActivity {
             if (uploadTask != null && uploadTask.isInProgress()){
                 Toast.makeText(MessageActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
             } else {
-                uploadImage();
+                try {
+                    uploadImage();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

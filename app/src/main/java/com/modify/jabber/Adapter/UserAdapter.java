@@ -25,6 +25,7 @@ import com.modify.jabber.MessageActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -64,7 +65,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             if (user.getImageURL().equals("default")){
                 holder.profile_image.setImageResource(R.mipmap.ic_launcher);
             } else {
-                new UserAdapter.DownLoadImageTask(holder.profile_image).execute(user.getImageURL());
+                Picasso.with(mContext).load(user.getImageURL()).into(holder.profile_image);
             }
         }
 
@@ -134,8 +135,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     Chat chat = snapshot.getValue(Chat.class);
                     if (firebaseUser != null && chat != null) {
                         if (chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid) ||
-                                chat.getReceiver().equals(userid) && chat.getSender().equals(firebaseUser.getUid())) {
-                            theLastMessage = chat.getMessage();
+                                chat.getReceiver().equals(userid) && chat.getSender().equals(firebaseUser.getUid()))
+                        {
+                            if(chat.getType().equals("Image"))
+                            {
+                                theLastMessage = "Sent a photo...";
+                            }
+                            else {
+                                theLastMessage = chat.getMessage();
+                            }
                         }
                     }
                 }
@@ -158,40 +166,5 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
             }
         });
-    }
-    private class DownLoadImageTask extends AsyncTask<String,Void, Bitmap> {
-        ImageView imageView;
-
-        public DownLoadImageTask(ImageView imageView){
-            this.imageView = imageView;
-        }
-
-        /*
-            doInBackground(Params... params)
-                Override this method to perform a computation on a background thread.
-         */
-        protected Bitmap doInBackground(String...urls){
-            String urlOfImage = urls[0];
-            Bitmap logo = null;
-            try{
-                InputStream is = new URL(urlOfImage).openStream();
-                /*
-                    decodeStream(InputStream is)
-                        Decode an input stream into a bitmap.
-                 */
-                logo = BitmapFactory.decodeStream(is);
-            }catch(Exception e){ // Catch the download exception
-                e.printStackTrace();
-            }
-            return logo;
-        }
-
-        /*
-            onPostExecute(Result result)
-                Runs on the UI thread after doInBackground(Params...).
-         */
-        protected void onPostExecute(Bitmap result){
-            imageView.setImageBitmap(result);
-        }
     }
 }

@@ -15,20 +15,31 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/profile_image"
-        android:layout_marginLeft="5dp"
+        android:layout_toEndOf="@id/profile_image"
+        android:layout_marginStart="5dp"
         android:text="hello"
         android:id="@+id/show_message"
         android:textSize="18sp"
+        android:textColor="#ffff"
         android:padding="8dp"
         android:background="@drawable/background_left"/>
+
+    <ImageView
+        android:id="@+id/messageImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:padding="10dp"
+        android:src="@drawable/ic_image_black"
+        android:scaleType="fitCenter"
+        android:background="@drawable/background_left" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txt_seen"
         android:visibility="gone"
-        android:layout_below="@id/show_message"/>
+        android:layout_below="@id/messageImage"/>
 
 
 </RelativeLayout>

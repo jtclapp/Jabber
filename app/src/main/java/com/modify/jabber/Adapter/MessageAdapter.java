@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.modify.jabber.MessageActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.model.Chat;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -42,28 +45,39 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         @NonNull
         @Override
         public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view;
             if (viewType == MSG_TYPE_RIGHT) {
-                View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_right, parent, false);
-                return new MessageAdapter.ViewHolder(view);
+                view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_right, parent, false);
             } else {
-                View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_left, parent, false);
-                return new MessageAdapter.ViewHolder(view);
+                view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_left, parent, false);
             }
+            return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
 
             Chat chat = mChat.get(position);
+            String type = chat.getType();
 
-            holder.show_message.setText(chat.getMessage());
+            if(type.equals("text")) {
+                holder.show_message.setVisibility(View.VISIBLE);
+                holder.image_text.setVisibility(View.GONE);
+                holder.show_message.setText(chat.getMessage());
+            }
+            if(type.equals("image"))
+            {
+                holder.show_message.setVisibility(View.GONE);
+                holder.image_text.setVisibility(View.VISIBLE);
+                Picasso.with(mContext).load(chat.getMessage()).into(holder.image_text);
+            }
 
             if (imageurl.equals("default")){
                 holder.profile_image.setImageResource(R.mipmap.ic_launcher);
             }
             else
             {
-                new MessageAdapter.DownLoadImageTask(holder.profile_image).execute(imageurl);
+                Picasso.with(mContext).load(imageurl).into(holder.profile_image);
             }
 
             if (position == mChat.size()-1){
@@ -86,7 +100,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public  class ViewHolder extends RecyclerView.ViewHolder{
 
             public TextView show_message;
-            public ImageView profile_image;
+            public ImageView profile_image, image_text;
             public TextView txt_seen;
 
             public ViewHolder(View itemView) {
@@ -95,6 +109,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 show_message = itemView.findViewById(R.id.show_message);
                 profile_image = itemView.findViewById(R.id.profile_image);
                 txt_seen = itemView.findViewById(R.id.txt_seen);
+                image_text = itemView.findViewById(R.id.messageImage);
             }
         }
 
@@ -107,39 +122,4 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 return MSG_TYPE_LEFT;
             }
         }
-    private class DownLoadImageTask extends AsyncTask<String,Void, Bitmap> {
-        ImageView imageView;
-
-        public DownLoadImageTask(ImageView imageView){
-            this.imageView = imageView;
-        }
-
-        /*
-            doInBackground(Params... params)
-                Override this method to perform a computation on a background thread.
-         */
-        protected Bitmap doInBackground(String...urls){
-            String urlOfImage = urls[0];
-            Bitmap logo = null;
-            try{
-                InputStream is = new URL(urlOfImage).openStream();
-                /*
-                    decodeStream(InputStream is)
-                        Decode an input stream into a bitmap.
-                 */
-                logo = BitmapFactory.decodeStream(is);
-            }catch(Exception e){ // Catch the download exception
-                e.printStackTrace();
-            }
-            return logo;
-        }
-
-        /*
-            onPostExecute(Result result)
-                Runs on the UI thread after doInBackground(Params...).
-         */
-        protected void onPostExecute(Bitmap result){
-            imageView.setImageBitmap(result);
-        }
-    }
 }
