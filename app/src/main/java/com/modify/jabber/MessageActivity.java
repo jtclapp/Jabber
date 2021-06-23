@@ -251,16 +251,13 @@ public class MessageActivity extends AppCompatActivity {
                     Data data = new Data(fuser.getUid(), R.mipmap.ic_launcher, username+": "+message, "New Message",
                             userid);
 
-                    assert token != null;
                     Sender sender = new Sender(data, token.getToken());
 
                     apiService.sendNotification(sender)
                             .enqueue(new Callback<MyResponse>() {
                                 @Override
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                    if (response.code() == 200)
-                                    {
-                                        assert response.body() != null;
+                                    if (response.code() == 200){
                                         if (response.body().success != 1){
                                             Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                                         }
@@ -269,7 +266,7 @@ public class MessageActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onFailure(Call<MyResponse> call, Throwable t) {
-
+                                    Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -369,26 +366,26 @@ public class MessageActivity extends AppCompatActivity {
                         hashMap.put("type", "image");
                         hashMap.put("isseen", false);
                         databaseReference.child("Chats").push().setValue(hashMap);
-
-                        DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users");
-                        database.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                User user = snapshot.getValue(User.class);
-
-                                if(notify)
-                                {
-                                    sendNotification(userid,user.getUsername(),"Sent you a photo...");
-                                }
-                                notify = false;
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                            }
-                        });
                     }
                     pd.dismiss();
+
+                    final String msg = "Sent a photo...";
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            if (notify) {
+                                sendNotification(userid, user.getUsername(), msg);
+                            }
+                            notify = false;
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             });
         } else {
@@ -440,6 +437,7 @@ public class MessageActivity extends AppCompatActivity {
         super.onResume();
         status("online");
         currentUser(userid);
+        seenMessage(userid);
     }
 
     @Override

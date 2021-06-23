@@ -133,15 +133,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
+                    String type = chat.getType();
                     if (firebaseUser != null && chat != null) {
                         if (chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid) ||
                                 chat.getReceiver().equals(userid) && chat.getSender().equals(firebaseUser.getUid()))
                         {
-                            if(chat.getType().equals("Image"))
+                            if(type.equals("image"))
                             {
                                 theLastMessage = "Sent a photo...";
                             }
-                            else {
+                            if(type.equals("text"))
+                            {
                                 theLastMessage = chat.getMessage();
                             }
                         }
