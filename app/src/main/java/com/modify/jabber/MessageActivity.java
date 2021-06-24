@@ -437,7 +437,6 @@ public class MessageActivity extends AppCompatActivity {
         super.onResume();
         status("online");
         currentUser(userid);
-        seenMessage(userid);
     }
 
     @Override
