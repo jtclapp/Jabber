@@ -1,9 +1,6 @@
 package com.modify.jabber.Adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.modify.jabber.MessageActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.model.Chat;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -71,7 +63,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             {
                 holder.show_message.setVisibility(View.GONE);
                 holder.image_text.setVisibility(View.VISIBLE);
-                Picasso.with(mContext).load(chat.getMessage()).into(holder.image_text);
+                Picasso.with(mContext).load(chat.getMessage()).rotate(270).into(holder.image_text);
             }
 
             if (imageurl.equals("default")){
@@ -79,7 +71,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             }
             else
             {
-                Picasso.with(mContext).load(imageurl).into(holder.profile_image);
+                Picasso.with(mContext).load(imageurl).fit().centerInside().rotate(270).into(holder.profile_image);
             }
 
             if (position == mChat.size()-1){

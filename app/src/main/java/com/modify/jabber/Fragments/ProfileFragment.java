@@ -1,9 +1,12 @@
-package com.modify.jabber.Fragments;
+ package com.modify.jabber.Fragments;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -11,12 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,14 +40,18 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.modify.jabber.Adapter.ProfileAdapter;
 import com.modify.jabber.MessageActivity;
 import com.modify.jabber.R;
+import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -52,11 +62,13 @@ public class ProfileFragment extends Fragment {
 
     CircleImageView image_profile;
     TextView username;
-
     DatabaseReference reference;
     FirebaseUser fuser;
-
     StorageReference storageReference;
+    ProfileAdapter profileAdapter;
+    RecyclerView recyclerView;
+    List<ProfileMedia> mprofile;
+    Button create;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
@@ -70,7 +82,10 @@ public class ProfileFragment extends Fragment {
 
         image_profile = view.findViewById(R.id.profile_image);
         username = view.findViewById(R.id.username);
-
+        recyclerView = view.findViewById(R.id.recycler_view_Profile);
+        create = view.findViewById(R.id.CreatePost);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
@@ -89,8 +104,7 @@ public class ProfileFragment extends Fragment {
                     if (user.getImageURL().equals("default")) {
                         image_profile.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                        Picasso.with(getContext()).load(user.getImageURL()).resize(300,300);
-                        Picasso.with(getContext()).load(user.getImageURL()).into(image_profile);
+                        Picasso.with(getContext()).load(user.getImageURL()).fit().centerInside().rotate(270).into(image_profile);
                     }
                 }
             }
@@ -100,14 +114,19 @@ public class ProfileFragment extends Fragment {
 
             }
         });
-
+        create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createPost();
+            }
+        });
         image_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openImage();
             }
         });
-
+        readPosts();
         return view;
     }
 
@@ -182,5 +201,31 @@ public class ProfileFragment extends Fragment {
                 uploadImage();
             }
         }
+    }
+    private void readPosts()
+    {
+        mprofile = new ArrayList<>();
+        reference = FirebaseDatabase.getInstance().getReference("Posts");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mprofile.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        ProfileMedia media = dataSnapshot.getValue(ProfileMedia.class);
+                        mprofile.add(media);
+                }
+                profileAdapter = new ProfileAdapter(getContext(),mprofile);
+                recyclerView.setAdapter(profileAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private void createPost()
+    {
+
     }
 }

@@ -146,7 +146,7 @@ public class MessageActivity extends AppCompatActivity {
                 if (user.getImageURL().equals("default")){
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 } else {
-                    Picasso.with(MessageActivity.this).load(user.getImageURL()).into(profile_image);
+                    Picasso.with(MessageActivity.this).load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
                 }
 
                 readMessages(fuser.getUid(), userid, user.getImageURL());

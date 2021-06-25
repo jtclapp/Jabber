@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     if (user.getImageURL().equals("default")) {
                         profile_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                        Picasso.with(MainActivity.this).load(user.getImageURL()).into(profile_image);
+                        Picasso.with(MainActivity.this).load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
                     }
                 }
             }

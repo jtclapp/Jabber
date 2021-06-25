@@ -2,9 +2,6 @@ package com.modify.jabber.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +23,7 @@ import com.modify.jabber.R;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 import com.squareup.picasso.Picasso;
-
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
@@ -67,7 +60,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             if (user.getImageURL().equals("default")){
                 holder.profile_image.setImageResource(R.mipmap.ic_launcher);
             } else {
-                Picasso.with(mContext).load(user.getImageURL()).into(holder.profile_image);
+                Picasso.with(mContext).load(user.getImageURL()).fit().centerInside().rotate(270).into(holder.profile_image);
             }
         }
 
