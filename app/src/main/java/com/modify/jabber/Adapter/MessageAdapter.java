@@ -25,7 +25,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
-public class   MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
         public static  final int MSG_TYPE_LEFT = 0;
         public static  final int MSG_TYPE_RIGHT = 1;
@@ -100,7 +102,8 @@ public class   MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHo
         public  class ViewHolder extends RecyclerView.ViewHolder{
 
             public TextView show_message;
-            public ImageView profile_image, image_text;
+            public ImageView image_text;
+            public CircleImageView profile_image;
             public TextView txt_seen;
 
             public ViewHolder(View itemView) {

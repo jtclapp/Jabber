@@ -43,12 +43,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.app.Activity.RESULT_OK;
 
 
 public class ProfileFragment extends Fragment {
 
-    ImageView image_profile;
+    CircleImageView image_profile;
     TextView username;
 
     DatabaseReference reference;

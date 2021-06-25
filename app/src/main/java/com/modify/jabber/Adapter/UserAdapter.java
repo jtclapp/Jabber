@@ -31,6 +31,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     private Context mContext;
@@ -106,7 +108,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public  class ViewHolder extends RecyclerView.ViewHolder{
 
         public TextView username;
-        public ImageView profile_image;
+        public CircleImageView profile_image;
         private ImageView img_on;
         private ImageView img_off;
         private TextView last_msg;

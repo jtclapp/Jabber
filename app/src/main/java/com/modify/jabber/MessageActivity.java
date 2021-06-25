@@ -60,13 +60,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MessageActivity extends AppCompatActivity {
 
-    ImageView profile_image;
+    CircleImageView profile_image;
     TextView username;
     FirebaseUser fuser;
     DatabaseReference reference;

@@ -39,9 +39,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainActivity extends AppCompatActivity {
 
-    ImageView profile_image;
+    CircleImageView profile_image;
     TextView username;
 
     FirebaseUser firebaseUser;
