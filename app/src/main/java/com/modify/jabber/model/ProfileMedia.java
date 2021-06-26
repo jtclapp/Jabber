@@ -5,6 +5,10 @@ public class ProfileMedia
     private String sender;
     private String message;
     private String type;
+
+    public ProfileMedia() {
+    }
+
     public String getSender() {
         return sender;
     }

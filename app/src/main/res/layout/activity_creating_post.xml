@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreatingPostActivity">
+
+
+    <EditText
+        android:id="@+id/uploaded_post"
+        android:layout_width="222dp"
+        android:layout_height="270dp"
+        android:layout_centerHorizontal="true"
+        android:inputType="textMultiLine"
+        android:textColor="#E6DADA"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/uploaded_caption"
+        android:layout_width="222dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/uploaded_post"
+        android:layout_centerHorizontal="true"
+        android:inputType="textMultiLine"
+        android:visibility="gone"
+        android:textColor="#E6DADA"
+        android:textSize="18sp" />
+    <ImageButton
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/ic_image_action"
+        android:id="@+id/btn_get_image"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/uploaded_caption"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_get_image"
+        android:layout_centerHorizontal="true"
+        android:text="Create" />
+
+</RelativeLayout>

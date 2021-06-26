@@ -41,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.modify.jabber.Adapter.ProfileAdapter;
+import com.modify.jabber.CreatingPostActivity;
 import com.modify.jabber.MessageActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.model.ProfileMedia;
@@ -117,7 +118,7 @@ public class ProfileFragment extends Fragment {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createPost();
+                startActivity(new Intent(getContext(), CreatingPostActivity.class));
             }
         });
         image_profile.setOnClickListener(new View.OnClickListener() {
@@ -192,7 +193,8 @@ public class ProfileFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null){
+                && data != null && data.getData() != null)
+        {
             imageUri = data.getData();
 
             if (uploadTask != null && uploadTask.isInProgress()){

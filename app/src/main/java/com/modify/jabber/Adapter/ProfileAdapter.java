@@ -1,6 +1,7 @@
 package com.modify.jabber.Adapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -31,8 +32,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     @NonNull
     @Override
     public ProfileAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        return null;
+        View view = LayoutInflater.from(mContext).inflate(R.layout.post_item, parent, false);
+        return new ProfileAdapter.ViewHolder(view);
     }
 
     @Override
@@ -67,8 +68,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-//            show_message = itemView.findViewById(R.id.show_message);
-//            image_text = itemView.findViewById(R.id.messageImage);
+            show_message = itemView.findViewById(R.id.typed_post);
+            image_text = itemView.findViewById(R.id.postImage);
         }
     }
 }
