@@ -23,7 +23,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.modify.jabber.MainActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.StartActivity;
@@ -59,6 +62,49 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ProfileAdapter.ViewHolder holder, int position) {
 
+        ProfileMedia profileMedia = profileMediaList.get(position);
+        String type = profileMedia.getType();
+        holder.menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setMessage("Do you want to edit or delete this post?");
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        final AlertDialog.Builder builder1 = new AlertDialog.Builder(mContext);
+                        builder1.setMessage("Are you sure you want to delete?");
+                        builder1.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Delete the post from Realtime database and Firebase storage
+                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+
+                                if(type.equals("text"))
+                                {
+
+                                }
+                                if(type.equals("image"))
+                                {
+
+                                }
+                            }
+                        });
+                        builder1.setNegativeButton("No",null);
+                        builder1.show();
+                    }
+                });
+                builder.setNegativeButton("Edit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Send the user to the edit page...
+                    }
+                });
+                builder.show();
+            }
+        });
+
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -82,9 +128,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
             }
         });
-
-        ProfileMedia profileMedia = profileMediaList.get(position);
-        String type = profileMedia.getType();
         if(type.equals("text"))
         {
             holder.show_message.setVisibility(View.VISIBLE);
@@ -114,7 +157,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView show_message, show_date;
-        public ImageView image_text;
+        public ImageView image_text, menu;
         public CircleImageView username_image;
         public TextView username;
 
@@ -125,6 +168,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             show_date = itemView.findViewById(R.id.post_date);
             username = itemView.findViewById(R.id.YourUsername);
             username_image = itemView.findViewById(R.id.Your_profile_image);
+            menu = itemView.findViewById(R.id.postMenu);
         }
     }
 }

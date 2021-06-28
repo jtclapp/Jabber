@@ -16,9 +16,21 @@
         android:id="@+id/YourUsername"
         android:layout_toRightOf="@id/Your_profile_image"
         android:layout_toEndOf="@id/Your_profile_image"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="8dp"
+        android:paddingTop="5dp"
         android:textColor="@color/black"
         android:textSize="18sp"/>
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="186dp"
+        android:paddingTop="10dp"
+        android:layout_toEndOf="@id/YourUsername"
+        android:adjustViewBounds="true"
+        android:id="@+id/postMenu"
+        android:src="@drawable/postmenu" />
 
     <ImageView
         android:id="@+id/postImage"

@@ -12,6 +12,7 @@
  import android.view.ViewGroup;
  import android.webkit.MimeTypeMap;
  import android.widget.Button;
+ import android.widget.ImageButton;
  import android.widget.TextView;
  import android.widget.Toast;
 
@@ -35,6 +36,7 @@
  import com.google.firebase.storage.UploadTask;
  import com.modify.jabber.Adapter.ProfileAdapter;
  import com.modify.jabber.CreatingPostActivity;
+ import com.modify.jabber.MessageActivity;
  import com.modify.jabber.R;
  import com.modify.jabber.model.ProfileMedia;
  import com.modify.jabber.model.User;
@@ -61,7 +63,7 @@ public class ProfileFragment extends Fragment {
     ProfileAdapter profileAdapter;
     RecyclerView recyclerView;
     List<ProfileMedia> mprofile;
-    Button create;
+    ImageButton create,message;
     LinearLayoutManager linearLayoutManager;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
@@ -210,7 +212,10 @@ public class ProfileFragment extends Fragment {
                 mprofile.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         ProfileMedia media = dataSnapshot.getValue(ProfileMedia.class);
-                        mprofile.add(media);
+                        if(fuser.getUid().equals(media.getSender()))
+                        {
+                            mprofile.add(media);
+                        }
                 }
                 profileAdapter = new ProfileAdapter(getContext(),mprofile);
                 recyclerView.setAdapter(profileAdapter);
