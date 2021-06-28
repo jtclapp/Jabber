@@ -70,6 +70,7 @@ public class ProfileFragment extends Fragment {
     RecyclerView recyclerView;
     List<ProfileMedia> mprofile;
     Button create;
+    LinearLayoutManager linearLayoutManager;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
@@ -86,7 +87,10 @@ public class ProfileFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view_Profile);
         create = view.findViewById(R.id.CreatePost);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();

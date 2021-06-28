@@ -7,23 +7,22 @@
     tools:context=".CreatingPostActivity">
 
 
-    <EditText
-        android:id="@+id/uploaded_post"
-        android:layout_width="222dp"
-        android:layout_height="270dp"
+    <ImageView
+        android:id="@+id/PostedImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:padding="10dp"
         android:layout_centerHorizontal="true"
-        android:inputType="textMultiLine"
-        android:textColor="#E6DADA"
-        android:textSize="18sp" />
+        android:scaleType="fitCenter"/>
 
     <EditText
         android:id="@+id/uploaded_caption"
         android:layout_width="222dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/uploaded_post"
+        android:layout_below="@id/PostedImage"
         android:layout_centerHorizontal="true"
         android:inputType="textMultiLine"
-        android:visibility="gone"
         android:textColor="#E6DADA"
         android:textSize="18sp" />
     <ImageButton
@@ -40,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/btn_get_image"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
         android:text="Create" />
 
 </RelativeLayout>

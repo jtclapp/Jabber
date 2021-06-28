@@ -45,15 +45,23 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         {
             holder.show_message.setVisibility(View.VISIBLE);
             holder.image_text.setVisibility(View.GONE);
-            holder.show_message.setText(profileMedia.getMessage());
+            holder.show_message.setText(profileMedia.getCaption());
         }
 
         if(type.equals("image"))
         {
-            holder.show_message.setVisibility(View.GONE);
+            if(profileMedia.getCaption() == null)
+            {
+                holder.show_message.setVisibility(View.GONE);
+            }
+            else {
+                holder.show_message.setVisibility(View.VISIBLE);
+            }
             holder.image_text.setVisibility(View.VISIBLE);
             Picasso.with(mContext).load(profileMedia.getMessage()).rotate(270).into(holder.image_text);
+            holder.show_message.setText(profileMedia.getCaption());
         }
+        holder.show_date.setText(profileMedia.getDate());
     }
 
     @Override
@@ -62,14 +70,14 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView show_message;
+        public TextView show_message, show_date;
         public ImageView image_text;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             show_message = itemView.findViewById(R.id.typed_post);
             image_text = itemView.findViewById(R.id.postImage);
+            show_date = itemView.findViewById(R.id.post_date);
         }
     }
 }
