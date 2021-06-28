@@ -6,13 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.modify.jabber.R;
-import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.ProfileMedia;
 import com.squareup.picasso.Picasso;
 
@@ -62,13 +63,23 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             holder.show_message.setText(profileMedia.getCaption());
         }
         holder.show_date.setText(profileMedia.getDate());
+
+        holder.image_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext,"......." + position,Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return profileMediaList.size();
     }
-
+    public ProfileMedia getItem(int position)
+    {
+        return profileMediaList.get(position);
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView show_message, show_date;
         public ImageView image_text;

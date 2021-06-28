@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.modify.jabber.R;
 import com.modify.jabber.model.Chat;
 import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;

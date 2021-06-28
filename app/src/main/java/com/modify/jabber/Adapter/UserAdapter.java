@@ -23,7 +23,9 @@ import com.modify.jabber.R;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 import com.squareup.picasso.Picasso;
+
 import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {

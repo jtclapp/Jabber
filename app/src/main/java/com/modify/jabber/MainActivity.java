@@ -1,13 +1,9 @@
 package com.modify.jabber;
+
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,8 +30,6 @@ import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 import com.squareup.picasso.Picasso;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
