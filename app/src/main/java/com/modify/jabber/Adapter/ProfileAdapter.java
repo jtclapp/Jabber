@@ -118,7 +118,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                     if (user.getImageURL().equals("default")) {
                         holder.username_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                        Picasso.with(mContext).load(user.getImageURL()).fit().centerInside().rotate(270).into(holder.username_image);
+                        Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(holder.username_image);
                     }
                 }
             }
@@ -145,7 +145,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                 holder.show_message.setVisibility(View.VISIBLE);
             }
             holder.image_text.setVisibility(View.VISIBLE);
-            Picasso.with(mContext).load(profileMedia.getMessage()).rotate(270).into(holder.image_text);
+            Picasso.get().load(profileMedia.getMessage()).rotate(270).into(holder.image_text);
             holder.show_message.setText(profileMedia.getCaption());
         }
         holder.show_date.setText(profileMedia.getDate());

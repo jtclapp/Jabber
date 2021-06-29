@@ -20,7 +20,7 @@
         android:layout_toEndOf="@id/profile_image"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="18sp"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -59,7 +59,7 @@
         android:layout_marginTop="5dp"
         android:paddingTop="5dp"
         android:id="@+id/last_msg"
-        android:textColor="@color/cardview_dark_background"
+        android:textColor="#bdc3c7"
         android:layout_marginLeft="20dp"
         android:maxLines="1"/>
 

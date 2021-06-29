@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                     if (user.getImageURL().equals("default")) {
                         profile_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                        Picasso.with(MainActivity.this).load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
+                        Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
                     }
                 }
             }
@@ -134,6 +134,9 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 // change this code because your app will crash
                 startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                return true;
+            case R.id.settings:
+                startActivity(new Intent(MainActivity.this,SettingActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 return true;
         }
 

@@ -62,7 +62,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             if (user.getImageURL().equals("default")){
                 holder.profile_image.setImageResource(R.mipmap.ic_launcher);
             } else {
-                Picasso.with(mContext).load(user.getImageURL()).fit().centerInside().rotate(270).into(holder.profile_image);
+                Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(holder.profile_image);
             }
         }
 

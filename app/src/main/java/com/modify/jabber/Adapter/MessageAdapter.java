@@ -64,7 +64,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             {
                 holder.show_message.setVisibility(View.GONE);
                 holder.image_text.setVisibility(View.VISIBLE);
-                Picasso.with(mContext).load(chat.getMessage()).rotate(270).into(holder.image_text);
+                Picasso.get().load(chat.getMessage()).rotate(270).into(holder.image_text);
             }
 
             if (imageurl.equals("default")){
@@ -72,7 +72,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             }
             else
             {
-                Picasso.with(mContext).load(imageurl).fit().centerInside().rotate(270).into(holder.profile_image);
+                Picasso.get().load(imageurl).fit().centerInside().rotate(270).into(holder.profile_image);
             }
 
             if (position == mChat.size()-1){

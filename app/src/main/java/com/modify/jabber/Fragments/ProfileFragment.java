@@ -103,7 +103,7 @@ public class ProfileFragment extends Fragment {
                     if (user.getImageURL().equals("default")) {
                         image_profile.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                        Picasso.with(getContext()).load(user.getImageURL()).fit().centerInside().rotate(270).into(image_profile);
+                        Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(image_profile);
                     }
                 }
             }

@@ -142,7 +142,7 @@ public class CreatingPostActivity extends AppCompatActivity {
                     }
                     pd.dismiss();
                     uploadedPhoto.setVisibility(View.VISIBLE);
-                    Picasso.with(CreatingPostActivity.this).load(imageUri).rotate(270).into(uploadedPhoto);
+                    Picasso.get().load(imageUri).rotate(270).into(uploadedPhoto);
 
                 }
             });
