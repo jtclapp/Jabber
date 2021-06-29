@@ -75,7 +75,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 Picasso.get().load(imageurl).fit().centerInside().rotate(270).into(holder.profile_image);
             }
 
-            if (position == mChat.size()-1){
+            if (position == (mChat.size() - 1)){
                 if (chat.isIsSeen()){
                     holder.txt_seen.setText("Seen");
                 } else {
