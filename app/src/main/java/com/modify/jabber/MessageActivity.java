@@ -1,6 +1,7 @@
 package com.modify.jabber;
 
 import android.app.ProgressDialog;
+import android.content.ClipDescription;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -73,7 +74,7 @@ public class MessageActivity extends AppCompatActivity {
     DatabaseReference reference;
     StorageReference storageReference;
     ImageButton btn_send,btn_image;
-    EditText text_send;
+    MyEditText text_send;
     MessageAdapter messageAdapter;
     List<Chat> mchat;
     RecyclerView recyclerView;
@@ -103,6 +104,8 @@ public class MessageActivity extends AppCompatActivity {
         username = findViewById(R.id.username);
         btn_send = findViewById(R.id.btn_send);
         btn_image = findViewById(R.id.btn_send_image);
+
+        text_send = new MyEditText(MessageActivity.this);
         text_send = findViewById(R.id.text_send);
 
         Toolbar toolbar = findViewById(R.id.toolbar2);
