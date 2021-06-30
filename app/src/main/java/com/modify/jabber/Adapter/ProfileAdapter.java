@@ -121,6 +121,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         });
         if(type.equals("text"))
         {
+            holder.spacing.setVisibility(View.VISIBLE);
             holder.show_message.setVisibility(View.VISIBLE);
             holder.image_text.setVisibility(View.GONE);
             holder.show_message.setText(profileMedia.getCaption());
@@ -134,6 +135,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             }
             else {
                 holder.show_message.setVisibility(View.VISIBLE);
+                holder.spacing.setVisibility(View.GONE);
             }
             holder.image_text.setVisibility(View.VISIBLE);
             //Picasso.get().load(profileMedia.getMessage()).rotate(270).into(holder.image_text);
