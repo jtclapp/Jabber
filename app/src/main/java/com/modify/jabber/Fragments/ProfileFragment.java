@@ -3,15 +3,12 @@
  import android.app.ProgressDialog;
  import android.content.ContentResolver;
  import android.content.Intent;
- import android.graphics.Bitmap;
  import android.net.Uri;
  import android.os.Bundle;
- import android.provider.MediaStore;
  import android.view.LayoutInflater;
  import android.view.View;
  import android.view.ViewGroup;
  import android.webkit.MimeTypeMap;
- import android.widget.Button;
  import android.widget.ImageButton;
  import android.widget.TextView;
  import android.widget.Toast;
@@ -21,7 +18,10 @@
  import androidx.recyclerview.widget.LinearLayoutManager;
  import androidx.recyclerview.widget.RecyclerView;
 
- import com.google.android.gms.tasks.OnSuccessListener;
+ import com.bumptech.glide.Glide;
+ import com.google.android.gms.tasks.Continuation;
+ import com.google.android.gms.tasks.OnCompleteListener;
+ import com.google.android.gms.tasks.OnFailureListener;
  import com.google.android.gms.tasks.Task;
  import com.google.firebase.auth.FirebaseAuth;
  import com.google.firebase.auth.FirebaseUser;
@@ -36,14 +36,10 @@
  import com.google.firebase.storage.UploadTask;
  import com.modify.jabber.Adapter.ProfileAdapter;
  import com.modify.jabber.CreatingPostActivity;
- import com.modify.jabber.MessageActivity;
  import com.modify.jabber.R;
  import com.modify.jabber.model.ProfileMedia;
  import com.modify.jabber.model.User;
- import com.squareup.picasso.Picasso;
 
- import java.io.ByteArrayOutputStream;
- import java.io.IOException;
  import java.util.ArrayList;
  import java.util.HashMap;
  import java.util.List;
@@ -103,7 +99,8 @@ public class ProfileFragment extends Fragment {
                     if (user.getImageURL().equals("default")) {
                         image_profile.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                        Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(image_profile);
+                        //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(image_profile);
+                        Glide.with(getContext()).load(user.getImageURL()).centerCrop().into(image_profile);
                     }
                 }
             }
@@ -151,38 +148,42 @@ public class ProfileFragment extends Fragment {
             final  StorageReference fileReference = storageReference.child(System.currentTimeMillis()
                     +"."+getFileExtension(imageUri));
 
-            String fileNamePath = "ProfileImages/" + "post_" + System.currentTimeMillis();
-            Bitmap bitmap = null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),imageUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
-            byte[] data = outputStream.toByteArray();
-            StorageReference reference = FirebaseStorage.getInstance().getReference().child(fileNamePath);
-            reference.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            uploadTask = fileReference.putFile(imageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                    while (!uriTask.isSuccessful());
-                    String downloadUri = uriTask.getResult().toString();
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()){
+                        throw  task.getException();
+                    }
 
-                    if(uriTask.isSuccessful())
-                    {
+                    return  fileReference.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()){
+                        Uri downloadUri = task.getResult();
+                        String mUri = downloadUri.toString();
+
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
                         HashMap<String, Object> map = new HashMap<>();
-                        map.put("imageURL", downloadUri);
+                        map.put("imageURL", "" + mUri);
                         reference.updateChildren(map);
-
+                        pd.dismiss();
+                    } else {
+                        Toast.makeText(getContext(), "Failed!", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
                     }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     pd.dismiss();
                 }
             });
         } else {
             Toast.makeText(getContext(), "No image selected", Toast.LENGTH_SHORT).show();
-            pd.dismiss();
         }
     }
 

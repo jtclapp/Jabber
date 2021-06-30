@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,7 +23,6 @@ import com.modify.jabber.MessageActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -62,7 +62,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             if (user.getImageURL().equals("default")){
                 holder.profile_image.setImageResource(R.mipmap.ic_launcher);
             } else {
-                Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(holder.profile_image);
+                //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(holder.profile_image);
+                Glide.with(mContext).load(user.getImageURL()).centerCrop().into(holder.profile_image);
             }
         }
 

@@ -3,36 +3,26 @@ package com.modify.jabber.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.modify.jabber.MainActivity;
 import com.modify.jabber.R;
-import com.modify.jabber.StartActivity;
 import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -118,7 +108,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                     if (user.getImageURL().equals("default")) {
                         holder.username_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                        Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(holder.username_image);
+                        //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(holder.username_image);
+                        Glide.with(mContext).load(user.getImageURL()).centerCrop().into(holder.username_image);
                     }
                 }
             }
@@ -145,7 +136,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                 holder.show_message.setVisibility(View.VISIBLE);
             }
             holder.image_text.setVisibility(View.VISIBLE);
-            Picasso.get().load(profileMedia.getMessage()).rotate(270).into(holder.image_text);
+            //Picasso.get().load(profileMedia.getMessage()).rotate(270).into(holder.image_text);
+            Glide.with(mContext).load(profileMedia.getMessage()).centerCrop().into(holder.image_text);
             holder.show_message.setText(profileMedia.getCaption());
         }
         holder.show_date.setText(profileMedia.getDate());
@@ -156,13 +148,14 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         return profileMediaList.size();
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView show_message, show_date;
+        public TextView show_message, show_date,spacing;
         public ImageView image_text, menu;
         public CircleImageView username_image;
         public TextView username;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            spacing = itemView.findViewById(R.id.spacing2);
             show_message = itemView.findViewById(R.id.typed_post);
             image_text = itemView.findViewById(R.id.postImage);
             show_date = itemView.findViewById(R.id.post_date);

@@ -10,11 +10,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.modify.jabber.R;
 import com.modify.jabber.model.Chat;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -64,7 +64,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             {
                 holder.show_message.setVisibility(View.GONE);
                 holder.image_text.setVisibility(View.VISIBLE);
-                Picasso.get().load(chat.getMessage()).rotate(270).into(holder.image_text);
+                //Picasso.get().load(chat.getMessage()).into(holder.image_text);
+                Glide.with(mContext).load(chat.getMessage()).centerCrop().into(holder.image_text);
             }
 
             if (imageurl.equals("default")){
@@ -72,7 +73,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             }
             else
             {
-                Picasso.get().load(imageurl).fit().centerInside().rotate(270).into(holder.profile_image);
+                //Picasso.get().load(imageurl).fit().centerInside().into(holder.profile_image);
+                Glide.with(mContext).load(chat.getMessage()).centerCrop().into(holder.image_text);
             }
 
             if (position == (mChat.size() - 1)){

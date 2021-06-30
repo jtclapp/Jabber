@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +27,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class CreatingPostActivity extends AppCompatActivity {
         hashMap = new HashMap<>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         intent = getIntent();
-        create = findViewById(R.id.button);
+        create = findViewById(R.id.CreatePostButton);
         photo = findViewById(R.id.btn_get_image);
         uploadedPhoto = findViewById(R.id.PostedImage);
         typedCaption = findViewById(R.id.uploaded_caption);
@@ -84,9 +84,16 @@ public class CreatingPostActivity extends AppCompatActivity {
                 {
                     hashMap.put("caption",caption);
                 }
-                hashMap.put("date",date);
-                databaseReference.child("Posts").push().setValue(hashMap);
-                startActivity(new Intent(CreatingPostActivity.this, MainActivity.class));
+                if(caption.equals("") && downloadUri == null)
+                {
+                    Toast.makeText(CreatingPostActivity.this,"You need to upload a photo or write something to post.",Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    hashMap.put("date",date);
+                    databaseReference.child("Posts").push().setValue(hashMap);
+                    startActivity(new Intent(CreatingPostActivity.this, MainActivity.class));
+                }
             }
         });
 
@@ -142,7 +149,8 @@ public class CreatingPostActivity extends AppCompatActivity {
                     }
                     pd.dismiss();
                     uploadedPhoto.setVisibility(View.VISIBLE);
-                    Picasso.get().load(imageUri).rotate(270).into(uploadedPhoto);
+                    //Picasso.get().load(imageUri).rotate(270).into(uploadedPhoto);
+                    Glide.with(CreatingPostActivity.this).load(imageUri).centerCrop().into(uploadedPhoto);
 
                 }
             });

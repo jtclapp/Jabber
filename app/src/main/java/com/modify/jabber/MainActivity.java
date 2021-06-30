@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +29,6 @@ import com.modify.jabber.Fragments.ProfileFragment;
 import com.modify.jabber.Fragments.UserFragment;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
                     if (user.getImageURL().equals("default")) {
                         profile_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                        Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
+                        //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
+                        Glide.with(MainActivity.this).load(user.getImageURL()).centerCrop().into(profile_image);
                     }
                 }
             }

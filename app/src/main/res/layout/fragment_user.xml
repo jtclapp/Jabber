@@ -10,6 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:hint="Search..."
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
         android:id="@+id/search_users"/>
 
     <androidx.recyclerview.widget.RecyclerView

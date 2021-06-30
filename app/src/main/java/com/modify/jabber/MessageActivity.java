@@ -1,14 +1,11 @@
 package com.modify.jabber;
 
 import android.app.ProgressDialog;
-import android.content.ClipDescription;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +27,10 @@ import androidx.core.view.inputmethod.InputContentInfoCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -53,9 +53,7 @@ import com.modify.jabber.Notifications.Sender;
 import com.modify.jabber.Notifications.Token;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
-import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,7 +72,7 @@ public class MessageActivity extends AppCompatActivity {
     DatabaseReference reference;
     StorageReference storageReference;
     ImageButton btn_send,btn_image;
-    MyEditText text_send;
+    EditText text_send;
     MessageAdapter messageAdapter;
     List<Chat> mchat;
     RecyclerView recyclerView;
@@ -104,9 +102,40 @@ public class MessageActivity extends AppCompatActivity {
         username = findViewById(R.id.username);
         btn_send = findViewById(R.id.btn_send);
         btn_image = findViewById(R.id.btn_send_image);
-
-        text_send = new MyEditText(MessageActivity.this);
         text_send = findViewById(R.id.text_send);
+//        text_send = new androidx.appcompat.widget.AppCompatEditText(MessageActivity.this) {
+//            @Override
+//            public InputConnection onCreateInputConnection(EditorInfo editorInfo) {
+//                final InputConnection ic = super.onCreateInputConnection(editorInfo);
+//                EditorInfoCompat.setContentMimeTypes(editorInfo,
+//                        new String [] {"image/png","image/gif"});
+//
+//                final InputConnectionCompat.OnCommitContentListener callback =
+//                        new InputConnectionCompat.OnCommitContentListener() {
+//                            @Override
+//                            public boolean onCommitContent(InputContentInfoCompat inputContentInfo,
+//                                                           int flags, Bundle opts) {
+//                                // read and display inputContentInfo asynchronously
+//                                if (BuildCompat.isAtLeastNMR1() && (flags &
+//                                        InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0) {
+//                                    try {
+//                                        inputContentInfo.requestPermission();
+//                                    }
+//                                    catch (Exception e) {
+//                                        Toast.makeText(MessageActivity.this,"This is false",Toast.LENGTH_SHORT).show();
+//                                        return false; // return false if failed
+//                                    }
+//                                }
+//
+//                                // read and display inputContentInfo asynchronously.
+//                                // call inputContentInfo.releasePermission() as needed.
+//
+//                                return true;  // return true if succeeded
+//                            }
+//                        };
+//                return InputConnectionCompat.createWrapper(ic, editorInfo, callback);
+//            }
+//        };
 
         Toolbar toolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
@@ -149,7 +178,8 @@ public class MessageActivity extends AppCompatActivity {
                 if (user.getImageURL().equals("default")){
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 } else {
-                    Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
+                    //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
+                    Glide.with(MessageActivity.this).load(user.getImageURL()).centerCrop().into(profile_image);
                 }
 
                 readMessages(fuser.getUid(), userid, user.getImageURL());
@@ -160,7 +190,6 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
-
         seenMessage(userid);
     }
 
@@ -336,65 +365,73 @@ public class MessageActivity extends AppCompatActivity {
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    private void uploadImage() throws IOException {
-        final ProgressDialog pd = new ProgressDialog(MessageActivity.this);
-        pd.setMessage("Uploading");
-        pd.show();
+    private void uploadImage() throws IOException
+    {
+                    final ProgressDialog pd = new ProgressDialog(MessageActivity.this);
+                    pd.setMessage("Uploading");
+                    pd.show();
 
-        if (imageUri != null)
-        {
-            final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
-                    +"."+getFileExtension(imageUri));
+                    if (imageUri != null){
+                        final  StorageReference fileReference = storageReference.child(System.currentTimeMillis()
+                                +"."+getFileExtension(imageUri));
 
-            String fileNamePath = "ChatImages/" + "post_" + System.currentTimeMillis();
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),imageUri);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
-            byte[] data = outputStream.toByteArray();
-            StorageReference reference = FirebaseStorage.getInstance().getReference().child(fileNamePath);
-            reference.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                    while (!uriTask.isSuccessful());
-                    String downloadUri = uriTask.getResult().toString();
+                        uploadTask = fileReference.putFile(imageUri);
+                        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()){
+                                    throw  task.getException();
+                                }
 
-                    if(uriTask.isSuccessful())
-                    {
-                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                        HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put("sender", fuser.getUid());
-                        hashMap.put("receiver", userid);
-                        hashMap.put("message",downloadUri);
-                        hashMap.put("type", "image");
-                        hashMap.put("isseen", false);
-                        databaseReference.child("Chats").push().setValue(hashMap);
-                    }
-                    pd.dismiss();
-
-                    final String msg = "Sent a photo...";
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
-                    reference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
-                            if (notify) {
-                                sendNotification(userid, user.getUsername(), msg);
+                                return  fileReference.getDownloadUrl();
                             }
-                            notify = false;
-                        }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()){
+                                    Uri downloadUri = task.getResult();
+                                    String mUri = downloadUri.toString();
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                                    HashMap<String, Object> hashMap = new HashMap<>();
+                                    hashMap.put("sender", fuser.getUid());
+                                    hashMap.put("receiver", userid);
+                                    hashMap.put("message","" + mUri);
+                                    hashMap.put("type", "image");
+                                    hashMap.put("isseen", false);
+                                    databaseReference.child("Chats").push().setValue(hashMap);
+                                    pd.dismiss();
+                                    final String msg = "Sent a photo...";
+                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+                                    reference.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            User user = dataSnapshot.getValue(User.class);
+                                            if (notify) {
+                                                sendNotification(userid, user.getUsername(), msg);
+                                            }
+                                            notify = false;
+                                        }
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
-                }
-            });
-        } else {
-            Toast.makeText(MessageActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
-            pd.dismiss();
-        }
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                    pd.dismiss();
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MessageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                pd.dismiss();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(MessageActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
+                    }
     }
 
     @Override

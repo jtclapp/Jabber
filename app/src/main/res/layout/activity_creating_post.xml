@@ -4,42 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreatingPostActivity">
+    tools:context=".CreatingPostActivity"
+    android:background="@drawable/gradient_background">
 
-
+    <TextView
+        android:id="@+id/postSpacing"
+        android:layout_width="match_parent"
+        android:layout_height="146dp" />
     <ImageView
         android:id="@+id/PostedImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:padding="10dp"
+        android:layout_below="@+id/postSpacing"
         android:layout_centerHorizontal="true"
         android:scaleType="fitCenter"/>
 
     <EditText
         android:id="@+id/uploaded_caption"
-        android:layout_width="222dp"
-        android:layout_height="wrap_content"
+        android:layout_width="238dp"
+        android:layout_height="69dp"
         android:layout_below="@id/PostedImage"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="29dp"
+        android:gravity="start"
+        android:hint=" What's on your mind?"
         android:inputType="textMultiLine"
         android:textColor="#E6DADA"
-        android:textSize="18sp" />
+        android:background="@drawable/edit_text_boarder"
+        android:textColorHint="@color/white" />
+    <TextView
+        android:id="@+id/postSpacing2"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_below="@id/uploaded_caption"/>
     <ImageButton
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:background="@drawable/ic_image_action"
         android:id="@+id/btn_get_image"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/uploaded_caption"/>
-
+        android:paddingRight="10dp"
+        android:layout_toLeftOf="@+id/CreatePostButton"
+        android:layout_below="@id/postSpacing2"/>
     <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_get_image"
+        android:id="@+id/CreatePostButton"
+        android:text="Create"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_below="@id/postSpacing2"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/white"
-        android:text="Create" />
+        android:background="@drawable/buttonshape"/>
 
 </RelativeLayout>
