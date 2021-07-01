@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CreatingPostActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <TextView
         android:id="@+id/postSpacing"
         android:layout_width="match_parent"
-        android:layout_height="146dp" />
+        android:layout_height="110dp" />
     <ImageView
         android:id="@+id/PostedImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="225dp"
+        android:layout_height="225dp"
         android:adjustViewBounds="true"
         android:padding="10dp"
         android:layout_below="@+id/postSpacing"
         android:layout_centerHorizontal="true"
-        android:scaleType="fitCenter"/>
+        android:src="@drawable/ic_image_black" />
 
     <EditText
         android:id="@+id/uploaded_caption"
@@ -42,19 +46,21 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:background="@drawable/ic_image_action"
+        android:backgroundTint="@color/black"
         android:id="@+id/btn_get_image"
-        android:paddingRight="10dp"
-        android:layout_toLeftOf="@+id/CreatePostButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:layout_below="@id/postSpacing2"/>
-    <Button
+    <ImageButton
         android:id="@+id/CreatePostButton"
         android:text="Create"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        android:layout_width="100dp"
+        android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_below="@id/postSpacing2"
+        android:layout_below="@id/btn_get_image"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/buttonshape"/>
+        android:background="@drawable/create_post_button"/>
+    </RelativeLayout>
 
-</RelativeLayout>
+</ScrollView>

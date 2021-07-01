@@ -11,6 +11,7 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -44,7 +45,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class CreatingPostActivity extends AppCompatActivity {
-    Button create;
+    ImageButton create;
     EditText typedCaption;
     ImageView photo,uploadedPhoto;
     private static final int IMAGE_REQUEST = 1;
@@ -69,7 +70,6 @@ public class CreatingPostActivity extends AppCompatActivity {
         typedCaption = findViewById(R.id.uploaded_caption);
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("FeedImages");
-        uploadedPhoto.setVisibility(View.INVISIBLE);
 
         create.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +92,7 @@ public class CreatingPostActivity extends AppCompatActivity {
                 }
                 if(caption.equals("") && mUri == null)
                 {
-                    Toast.makeText(CreatingPostActivity.this,"You need to upload a photo or write something to post.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreatingPostActivity.this,"Please upload a picture or write what's on your mind.",Toast.LENGTH_SHORT).show();
                 }
                 else
                 {

@@ -70,8 +70,8 @@ public class CreatingProfileActivity extends AppCompatActivity {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mUri == null || bio.getText().equals("")) {
-                    if (bio.getText().equals("")) {
+                if(mUri == null || bio.getText().toString().equals("")) {
+                    if (bio.getText().toString().equals("")) {
                         Toast.makeText(CreatingProfileActivity.this, "Please fill out your bio.", Toast.LENGTH_SHORT).show();
                     }
                     if (mUri == null) {
