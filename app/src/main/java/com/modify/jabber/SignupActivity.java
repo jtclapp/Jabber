@@ -74,13 +74,14 @@ public class SignupActivity extends AppCompatActivity {
                     hashMap.put("imageURL","default");
                     hashMap.put("status", "offline");
                     hashMap.put("search",username.toLowerCase());
+                    hashMap.put("bio","default bio");
 
                     reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful())
                             {
-                                Intent intent = new Intent(SignupActivity.this,MainActivity.class);
+                                Intent intent = new Intent(SignupActivity.this,CreatingProfileActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finish();

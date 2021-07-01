@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreatingPostActivity"
-    android:background="@drawable/gradient_background">
+    tools:context=".CreatingPostActivity">
 
     <TextView
         android:id="@+id/postSpacing"
@@ -24,16 +23,16 @@
     <EditText
         android:id="@+id/uploaded_caption"
         android:layout_width="238dp"
-        android:layout_height="69dp"
+        android:layout_height="150dp"
         android:layout_below="@id/PostedImage"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="29dp"
         android:gravity="start"
         android:hint=" What's on your mind?"
         android:inputType="textMultiLine"
-        android:textColor="#E6DADA"
+        android:textColor="@color/black"
         android:background="@drawable/edit_text_boarder"
-        android:textColorHint="@color/white" />
+        android:textColorHint="@color/gray" />
     <TextView
         android:id="@+id/postSpacing2"
         android:layout_width="match_parent"

@@ -52,7 +52,7 @@
 public class ProfileFragment extends Fragment {
 
     CircleImageView image_profile;
-    TextView username;
+    TextView username,bio;
     DatabaseReference reference;
     FirebaseUser fuser;
     StorageReference storageReference;
@@ -73,6 +73,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         image_profile = view.findViewById(R.id.profile_image);
+        bio = view.findViewById(R.id.ProfileBio);
         username = view.findViewById(R.id.username);
         recyclerView = view.findViewById(R.id.recycler_view_Profile);
         create = view.findViewById(R.id.CreatePost);
@@ -81,7 +82,7 @@ public class ProfileFragment extends Fragment {
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        storageReference = FirebaseStorage.getInstance().getReference("uploads");
+        storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
@@ -98,9 +99,11 @@ public class ProfileFragment extends Fragment {
                 else {
                     if (user.getImageURL().equals("default")) {
                         image_profile.setImageResource(R.mipmap.ic_launcher);
+                        bio.setText(user.getBio());
                     } else {
                         //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(image_profile);
                         Glide.with(getContext()).load(user.getImageURL()).centerCrop().into(image_profile);
+                        bio.setText(user.getBio());
                     }
                 }
             }
@@ -227,9 +230,5 @@ public class ProfileFragment extends Fragment {
 
             }
         });
-    }
-    private void createPost()
-    {
-
     }
 }

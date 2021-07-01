@@ -15,10 +15,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Jabber">
-        <activity android:name=".SettingActivity"
+        <activity android:name=".CreatingProfileActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".CreatingPostActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".SettingActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreatingPostActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ResetPasswordActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -40,7 +44,7 @@
         <activity
             android:name=".SignupActivity"
             android:parentActivityName=".StartActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />

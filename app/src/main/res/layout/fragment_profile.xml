@@ -36,24 +36,34 @@
                 android:id="@+id/username"
                 android:textSize="18sp"
                 android:layout_marginBottom="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/username"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/gray"
+                android:id="@+id/ProfileBio"
+                android:textSize="14sp"
+                android:layout_marginBottom="20dp"/>
             <ImageButton
                 android:id="@+id/CreatePost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/username"
+                android:layout_below="@id/ProfileBio"
                 android:paddingLeft="135dp"
                 android:background="@null"
-                android:paddingBottom="20dp"
+                android:paddingBottom="15dp"
                 android:paddingRight="30dp"
                 android:src="@drawable/createpost"/>
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/CreatePost"
-                android:layout_below="@id/username"
+                android:layout_below="@id/ProfileBio"
                 android:paddingLeft="25dp"
                 android:background="@null"
-                android:paddingBottom="20dp"
+                android:paddingBottom="15dp"
                 android:src="@drawable/message_button"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_Profile"

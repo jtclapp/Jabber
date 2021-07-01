@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreatingProfileActivity"
+    android:background="#f8fbf8">
+
+    <TextView
+        android:id="@+id/creatingSpacing"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/CreateProfileImage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/creatingSpacing"
+        android:src="@mipmap/ic_launcher"/>
+
+    <ImageButton
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/ic_image_action"
+        android:id="@+id/InsertProfileButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/CreateProfileImage"/>
+
+    <EditText
+        android:id="@+id/Bio"
+        android:layout_width="238dp"
+        android:layout_height="150dp"
+        android:layout_below="@id/InsertProfileButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="29dp"
+        android:textSize="16sp"
+        android:gravity="start"
+        android:hint=" Enter Bio "
+        android:inputType="textMultiLine"
+        android:textColor="@color/black"
+        android:background="@drawable/edit_text_boarder"
+        android:textColorHint="@color/gray" />
+
+    <Button
+        android:id="@+id/FinishSignUp"
+        android:text="Finish"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:layout_width="100dp"
+        android:layout_marginTop="20dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/Bio"
+        android:background="@drawable/buttonshape"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>
