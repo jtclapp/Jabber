@@ -41,11 +41,11 @@
     <TextView
         android:id="@+id/postSpacing"
         android:layout_width="match_parent"
-        android:layout_height="100dp" />
+        android:layout_height="60dp" />
     <ImageView
         android:id="@+id/PostedImage"
-        android:layout_width="225dp"
-        android:layout_height="225dp"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:adjustViewBounds="true"
         android:padding="10dp"
         android:layout_centerHorizontal="true"
@@ -54,7 +54,7 @@
 
     <EditText
         android:id="@+id/uploaded_caption"
-        android:layout_width="238dp"
+        android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_below="@id/PostedImage"
         android:layout_marginTop="29dp"
@@ -71,12 +71,12 @@
         android:layout_height="15dp"
         android:layout_below="@id/uploaded_caption"/>
     <ImageButton
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:background="@drawable/ic_image_action"
         android:backgroundTint="@color/black"
         android:id="@+id/btn_get_image"
-        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="160dp"
         android:layout_marginBottom="10dp"
         android:layout_below="@id/postSpacing2"/>
     <ImageButton
@@ -85,8 +85,9 @@
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:layout_centerHorizontal="true"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_below="@id/btn_get_image"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_below="@id/postSpacing2"
+        android:layout_toRightOf="@+id/btn_get_image"
         android:background="@drawable/create_post_button"/>
 </RelativeLayout>

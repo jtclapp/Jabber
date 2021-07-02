@@ -157,6 +157,22 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
+        username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent start = new Intent(MessageActivity.this, ViewUserProfile.class);
+                    intent.putExtra("UserID", userid);
+                    startActivity(start);
+            }
+        });
+        profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent start = new Intent(MessageActivity.this, ViewUserProfile.class);
+                    intent.putExtra("UserID", userid);
+                    startActivity(start);
+            }
+        });
         seenMessage(userid);
     }
 

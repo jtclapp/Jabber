@@ -76,7 +76,7 @@ public class ViewUserProfile extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
 
         intent = getIntent();
-        userid = intent.getStringExtra("userid");
+        userid = intent.getStringExtra("UserID");
         reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
