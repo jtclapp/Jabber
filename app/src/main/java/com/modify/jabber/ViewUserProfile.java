@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -35,9 +37,9 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewUserProfile extends AppCompatActivity {
-    CircleImageView image_profile;
-    TextView username,bio;
-    DatabaseReference reference;
+    CircleImageView image_profile,toolbar_image_profile;
+    TextView username,bio,toolbar_username;
+    DatabaseReference reference,toolbar_reference;
     FirebaseUser fuser;
     StorageReference storageReference;
     ProfileAdapter profileAdapter;
@@ -53,9 +55,15 @@ public class ViewUserProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_user_profile);
 
-
+        Toolbar toolbar = findViewById(R.id.toolbar4);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         image_profile = findViewById(R.id.ViewProfile_image);
+        toolbar_image_profile = findViewById(R.id.toolbar4_profile_image);
+        toolbar_username = findViewById(R.id.toolbar4_username);
         bio = findViewById(R.id.ViewProfileBio);
         username = findViewById(R.id.View_username);
         message = findViewById(R.id.ViewChatButton);
@@ -69,7 +77,6 @@ public class ViewUserProfile extends AppCompatActivity {
 
         intent = getIntent();
         userid = intent.getStringExtra("userid");
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -79,17 +86,41 @@ public class ViewUserProfile extends AppCompatActivity {
                 username.setText(user.getUsername());
                     if (user.getImageURL().equals("default")) {
                         image_profile.setImageResource(R.mipmap.ic_launcher);
-                        bio.setText(user.getBio());
                     } else {
                         Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(image_profile);
-                        bio.setText(user.getBio());
                     }
+                    bio.setText(user.getBio());
+                    readPosts();
                 }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+        toolbar_reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+        toolbar_reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                assert user.getUsername() != null;
+                toolbar_username.setText(user.getUsername());
+                if(user.getImageURL().equals("default"))
+                {
+                    toolbar_image_profile.setImageResource(R.mipmap.ic_launcher);
+                }
+                else
+                {
+                    Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(toolbar_image_profile);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +129,6 @@ public class ViewUserProfile extends AppCompatActivity {
                 startActivity(start);
             }
         });
-        readPosts();
     }
     private void readPosts()
     {
@@ -125,5 +155,31 @@ public class ViewUserProfile extends AppCompatActivity {
 
             }
         });
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+
+            case  R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(ViewUserProfile.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                return true;
+            case R.id.settings:
+                startActivity(new Intent(ViewUserProfile.this,SettingActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                return true;
+        }
+
+        return false;
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

@@ -137,7 +137,6 @@ public class MessageActivity extends AppCompatActivity {
         });
         storageReference = FirebaseStorage.getInstance().getReference(userid);
         reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -435,6 +434,9 @@ public class MessageActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 // change this code because your app will crash
                 startActivity(new Intent(MessageActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                return true;
+            case R.id.settings:
+                startActivity(new Intent(MessageActivity.this,SettingActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 return true;
         }
 

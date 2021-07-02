@@ -7,16 +7,20 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
@@ -46,16 +50,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class CreatingPostActivity extends AppCompatActivity {
     ImageButton create;
     EditText typedCaption;
     ImageView photo,uploadedPhoto;
+    CircleImageView toolbar_image_profile;
+    TextView toolbar_username;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     FirebaseUser fuser;
     StorageReference storageReference;
     String mUri,date;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference, toolbarReference;
     HashMap<String, Object> hashMap;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
 
@@ -64,15 +72,45 @@ public class CreatingPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creating_post);
 
+        Toolbar toolbar = findViewById(R.id.toolbar3);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         hashMap = new HashMap<>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         create = findViewById(R.id.CreatePostButton);
+        toolbar_image_profile = findViewById(R.id.toolbar3_profile_image);
+        toolbar_username = findViewById(R.id.toolbar3_username);
         photo = findViewById(R.id.btn_get_image);
         uploadedPhoto = findViewById(R.id.PostedImage);
         typedCaption = findViewById(R.id.uploaded_caption);
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("FeedImages");
 
+        toolbarReference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+        toolbarReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                assert user.getUsername() != null;
+                toolbar_username.setText(user.getUsername());
+                if(user.getImageURL().equals("default"))
+                {
+                    toolbar_image_profile.setImageResource(R.mipmap.ic_launcher);
+                }
+                else
+                {
+                    Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(toolbar_image_profile);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -199,5 +237,31 @@ public class CreatingPostActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+
+            case  R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(CreatingPostActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                return true;
+            case R.id.settings:
+                startActivity(new Intent(CreatingPostActivity.this,SettingActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                return true;
+        }
+
+        return false;
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
