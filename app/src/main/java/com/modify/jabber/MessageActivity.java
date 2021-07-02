@@ -103,39 +103,7 @@ public class MessageActivity extends AppCompatActivity {
         btn_send = findViewById(R.id.btn_send);
         btn_image = findViewById(R.id.btn_send_image);
         text_send = findViewById(R.id.text_send);
-//        text_send = new androidx.appcompat.widget.AppCompatEditText(MessageActivity.this) {
-//            @Override
-//            public InputConnection onCreateInputConnection(EditorInfo editorInfo) {
-//                final InputConnection ic = super.onCreateInputConnection(editorInfo);
-//                EditorInfoCompat.setContentMimeTypes(editorInfo,
-//                        new String [] {"image/png","image/gif"});
-//
-//                final InputConnectionCompat.OnCommitContentListener callback =
-//                        new InputConnectionCompat.OnCommitContentListener() {
-//                            @Override
-//                            public boolean onCommitContent(InputContentInfoCompat inputContentInfo,
-//                                                           int flags, Bundle opts) {
-//                                // read and display inputContentInfo asynchronously
-//                                if (BuildCompat.isAtLeastNMR1() && (flags &
-//                                        InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0) {
-//                                    try {
-//                                        inputContentInfo.requestPermission();
-//                                    }
-//                                    catch (Exception e) {
-//                                        Toast.makeText(MessageActivity.this,"This is false",Toast.LENGTH_SHORT).show();
-//                                        return false; // return false if failed
-//                                    }
-//                                }
-//
-//                                // read and display inputContentInfo asynchronously.
-//                                // call inputContentInfo.releasePermission() as needed.
-//
-//                                return true;  // return true if succeeded
-//                            }
-//                        };
-//                return InputConnectionCompat.createWrapper(ic, editorInfo, callback);
-//            }
-//        };
+
 
         Toolbar toolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
@@ -326,7 +294,7 @@ public class MessageActivity extends AppCompatActivity {
                         mchat.add(chat);
                     }
 
-                    messageAdapter = new MessageAdapter(MessageActivity.this, mchat, imageurl);
+                    messageAdapter = new MessageAdapter(getApplicationContext(), mchat, imageurl);
                     recyclerView.setAdapter(messageAdapter);
                 }
             }

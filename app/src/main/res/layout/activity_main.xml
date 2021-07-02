@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/gradient_background"
+    android:background="#f8fbf8"
     tools:context=".MainActivity">
 
         <androidx.appcompat.widget.Toolbar
@@ -26,8 +26,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/username"
                 android:textSize="18sp"
-                android:layout_marginLeft="25dp"
-                android:textColor="#fff"
+                android:textColor="#ffff"
                 android:textStyle="bold"
                 android:layout_marginStart="25dp" />
 

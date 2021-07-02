@@ -19,8 +19,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.modify.jabber.Fragments.UserFragment;
 import com.modify.jabber.MessageActivity;
 import com.modify.jabber.R;
+import com.modify.jabber.ViewUserProfile;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 
@@ -89,9 +91,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, MessageActivity.class);
-                intent.putExtra("userid", user.getId());
-                mContext.startActivity(intent);
+                if(ischat)
+                {
+                    Intent start = new Intent(mContext, MessageActivity.class);
+                    start.putExtra("userid", user.getId());
+                    mContext.startActivity(start);
+                } else {
+                    Intent intent = new Intent(mContext, ViewUserProfile.class);
+                    intent.putExtra("userid", user.getId());
+                    mContext.startActivity(intent);
+                }
             }
         });
     }
@@ -131,8 +140,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
+                    assert chat.getType() != null;
                     String type = chat.getType();
-                    if (firebaseUser != null && chat != null) {
+                    if (firebaseUser != null) {
                         if (chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid) ||
                                 chat.getReceiver().equals(userid) && chat.getSender().equals(firebaseUser.getUid()))
                         {

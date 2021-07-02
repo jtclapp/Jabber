@@ -4,7 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:padding="8dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#f8fbf8">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="40dp"

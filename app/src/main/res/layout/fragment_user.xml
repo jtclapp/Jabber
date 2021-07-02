@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f8fbf8"
     tools:context="com.modify.jabber.Fragments.UserFragment">
 
     <EditText
@@ -10,8 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:hint="Search..."
-        android:textColorHint="@color/white"
-        android:textColor="@color/white"
+        android:inputType="text"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/black"
         android:id="@+id/search_users"/>
 
     <androidx.recyclerview.widget.RecyclerView

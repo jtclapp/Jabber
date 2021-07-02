@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                         profile_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
                         //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
-                        Glide.with(MainActivity.this).load(user.getImageURL()).centerCrop().into(profile_image);
+                        Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
                     }
                 }
             }

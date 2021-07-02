@@ -99,6 +99,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+                assert user.getUsername() != null;
                 holder.username.setText(user.getUsername());
                 if(user.getImageURL() == null)
                 {
@@ -108,7 +109,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                     if (user.getImageURL().equals("default")) {
                         holder.username_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                        //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(holder.username_image);
                         Glide.with(mContext).load(user.getImageURL()).centerCrop().into(holder.username_image);
                     }
                 }

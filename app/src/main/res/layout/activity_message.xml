@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e6e6e6"
+    android:background="#f8fbf8"
     tools:context=".MessageActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -30,7 +30,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/username"
                 android:textSize="18sp"
-                android:layout_marginLeft="25dp"
                 android:textColor="#fff"
                 android:textStyle="bold"
                 android:layout_marginStart="25dp" />
@@ -59,13 +58,13 @@
             android:layout_height="35dp"
             android:background="@drawable/ic_image_action"
             android:id="@+id/btn_send_image"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true" />
+            android:layout_alignParentStart="true" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
+            android:inputType="text"
             android:id="@+id/text_send"
             android:background="@android:color/transparent"
             android:hint="Send a message..."
@@ -77,8 +76,7 @@
             android:layout_height="35dp"
             android:background="@drawable/ic_action_name"
             android:id="@+id/btn_send"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 
