@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -35,6 +36,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.modify.jabber.Fragments.ProfileFragment;
 import com.modify.jabber.model.User;
 
 import java.io.ByteArrayOutputStream;
@@ -98,7 +100,10 @@ public class CreatingPostActivity extends AppCompatActivity {
                 {
                     hashMap.put("date",date);
                     databaseReference.child("Posts").push().setValue(hashMap);
-                    startActivity(new Intent(CreatingPostActivity.this, MainActivity.class));
+                    ProfileFragment fragment = new ProfileFragment();
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.add(R.id.ProfileFragment,fragment);
+                    fragmentTransaction.commit();
                 }
             }
         });

@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f8fbf8"
-    tools:context=".CreatingPostActivity">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    tools:context=".CreatingPostActivity"
+    android:id="@+id/CreatingPostActivity">
 
     <TextView
         android:id="@+id/postSpacing"
         android:layout_width="match_parent"
-        android:layout_height="110dp" />
+        android:layout_height="100dp" />
     <ImageView
         android:id="@+id/PostedImage"
         android:layout_width="225dp"
         android:layout_height="225dp"
         android:adjustViewBounds="true"
         android:padding="10dp"
-        android:layout_below="@+id/postSpacing"
         android:layout_centerHorizontal="true"
+        android:layout_below="@+id/postSpacing"
         android:src="@drawable/ic_image_black" />
 
     <EditText
@@ -30,11 +27,11 @@
         android:layout_width="238dp"
         android:layout_height="150dp"
         android:layout_below="@id/PostedImage"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="29dp"
         android:gravity="start"
         android:hint=" What's on your mind?"
         android:inputType="textMultiLine"
+        android:layout_centerHorizontal="true"
         android:textColor="@color/black"
         android:background="@drawable/edit_text_boarder"
         android:textColorHint="@color/gray" />
@@ -57,11 +54,9 @@
         android:text="Create"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
+        android:layout_centerHorizontal="true"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_below="@id/btn_get_image"
-        android:layout_centerHorizontal="true"
         android:background="@drawable/create_post_button"/>
-    </RelativeLayout>
-
-</ScrollView>
+</RelativeLayout>

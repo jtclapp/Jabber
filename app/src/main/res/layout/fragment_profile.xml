@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp"
     android:background="#f8fbf8"
-    tools:context=".Fragments.ProfileFragment">
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    tools:context=".Fragments.ProfileFragment"
+    android:id="@+id/ProfileFragment">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -20,7 +17,7 @@
                 android:layout_height="100dp"
                 android:id="@+id/profile_image"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="15dp"
                 android:src="@mipmap/ic_launcher"/>
 
             <TextView
@@ -40,27 +37,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/username"
-                android:layout_marginLeft="142dp"
+                android:layout_centerHorizontal="true"
                 android:background="@null"
                 android:layout_marginBottom="15dp"
-                android:layout_marginRight="30dp"
                 android:src="@drawable/createpost"/>
-            <ImageButton
-                android:id="@+id/chatButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/CreatePost"
-                android:layout_below="@id/username"
-                android:layout_marginLeft="25dp"
-                android:background="@null"
-                android:layout_marginBottom="15dp"
-                android:src="@drawable/message_button"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/chatButton"
+                android:layout_below="@+id/CreatePost"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
                 android:textColor="@color/gray"
                 android:id="@+id/ProfileBio"
                 android:textSize="14sp"
@@ -72,5 +57,4 @@
                 android:layout_below="@id/ProfileBio"
                 android:layout_centerHorizontal="true"/>
         </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-</ScrollView>
+</LinearLayout>

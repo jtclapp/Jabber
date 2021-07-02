@@ -73,8 +73,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             }
             else
             {
-                //Picasso.get().load(imageurl).fit().centerInside().into(holder.profile_image);
-                Glide.with(mContext).load(chat.getMessage()).centerCrop().into(holder.image_text);
+                Glide.with(mContext).load(imageurl).centerCrop().into(holder.profile_image);
             }
 
             if (position == (mChat.size() - 1)){

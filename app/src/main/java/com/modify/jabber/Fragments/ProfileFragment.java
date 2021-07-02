@@ -15,6 +15,8 @@
 
  import androidx.annotation.NonNull;
  import androidx.fragment.app.Fragment;
+ import androidx.fragment.app.FragmentManager;
+ import androidx.fragment.app.FragmentTransaction;
  import androidx.recyclerview.widget.LinearLayoutManager;
  import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +38,7 @@
  import com.google.firebase.storage.UploadTask;
  import com.modify.jabber.Adapter.ProfileAdapter;
  import com.modify.jabber.CreatingPostActivity;
+ import com.modify.jabber.MessageActivity;
  import com.modify.jabber.R;
  import com.modify.jabber.model.ProfileMedia;
  import com.modify.jabber.model.User;
@@ -59,7 +62,7 @@ public class ProfileFragment extends Fragment {
     ProfileAdapter profileAdapter;
     RecyclerView recyclerView;
     List<ProfileMedia> mprofile;
-    ImageButton create,message;
+    ImageButton create;
     LinearLayoutManager linearLayoutManager;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
@@ -75,7 +78,6 @@ public class ProfileFragment extends Fragment {
         image_profile = view.findViewById(R.id.profile_image);
         bio = view.findViewById(R.id.ProfileBio);
         username = view.findViewById(R.id.username);
-        message = view.findViewById(R.id.chatButton);
         recyclerView = view.findViewById(R.id.recycler_view_Profile);
         create = view.findViewById(R.id.CreatePost);
         recyclerView.setHasFixedSize(true);
