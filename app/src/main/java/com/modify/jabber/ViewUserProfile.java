@@ -47,7 +47,6 @@ public class ViewUserProfile extends AppCompatActivity {
     List<ProfileMedia> mprofile;
     ImageButton message;
     LinearLayoutManager linearLayoutManager;
-    Intent intent;
     String userid;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
     @Override
@@ -75,8 +74,8 @@ public class ViewUserProfile extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
 
-        intent = getIntent();
-        userid = intent.getStringExtra("UserID");
+        Intent intent = getIntent();
+        userid = intent.getExtras().getString("UserID");
         reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
