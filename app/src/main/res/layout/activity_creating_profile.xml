@@ -9,8 +9,12 @@
 
     <TextView
         android:id="@+id/creatingSpacing"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:text="Create your Profile"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/gray"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="100dp"
@@ -22,8 +26,8 @@
         android:src="@mipmap/ic_launcher"/>
 
     <ImageButton
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@drawable/ic_image_action"
         android:id="@+id/InsertProfileButton"
         android:layout_centerHorizontal="true"
@@ -32,7 +36,7 @@
 
     <EditText
         android:id="@+id/Bio"
-        android:layout_width="238dp"
+        android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_below="@id/InsertProfileButton"
         android:layout_centerHorizontal="true"
