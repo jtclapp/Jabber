@@ -140,7 +140,7 @@ public class CreatingPostActivity extends AppCompatActivity {
                     databaseReference.child("Posts").push().setValue(hashMap);
                     ProfileFragment fragment = new ProfileFragment();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.add(R.id.CreatingPostActivity,fragment);
+                    fragmentTransaction.replace(R.id.CreatingPostActivity,fragment);
                     fragmentTransaction.commit();
                 }
             }
