@@ -109,7 +109,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                     if (user.getImageURL().equals("default")) {
                         holder.username_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                        Glide.with(mContext).load(user.getImageURL()).centerCrop().into(holder.username_image);
+                            Glide.with(mContext.getApplicationContext()).load(user.getImageURL()).centerCrop().into(holder.username_image);
                     }
                 }
             }

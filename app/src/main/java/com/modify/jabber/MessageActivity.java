@@ -146,7 +146,7 @@ public class MessageActivity extends AppCompatActivity {
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 } else {
                     //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
-                    Glide.with(MessageActivity.this).load(user.getImageURL()).centerCrop().into(profile_image);
+                    Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
                 }
 
                 readMessages(fuser.getUid(), userid, user.getImageURL());

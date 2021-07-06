@@ -105,7 +105,9 @@ public class ProfileFragment extends Fragment {
                         bio.setText(user.getBio());
                     } else {
                         //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(image_profile);
-                        Glide.with(getContext()).load(user.getImageURL()).centerCrop().into(image_profile);
+                        if(getActivity() != null) {
+                            Glide.with(getActivity()).load(user.getImageURL()).centerCrop().into(image_profile);
+                        }
                         bio.setText(user.getBio());
                     }
                 }
