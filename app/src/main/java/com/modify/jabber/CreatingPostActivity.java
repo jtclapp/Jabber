@@ -138,10 +138,7 @@ public class CreatingPostActivity extends AppCompatActivity {
                 {
                     hashMap.put("date",date);
                     databaseReference.child("Posts").push().setValue(hashMap);
-                    ProfileFragment fragment = new ProfileFragment();
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.CreatingPostActivity,fragment);
-                    fragmentTransaction.commit();
+                    startActivity(new Intent(CreatingPostActivity.this,MainActivity.class));
                 }
             }
         });

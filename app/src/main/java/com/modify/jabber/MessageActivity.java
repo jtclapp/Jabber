@@ -157,6 +157,14 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
+        username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ViewUserProfile.class);
+                intent.putExtra("UserID", userid);
+                startActivity(intent);
+            }
+        });
         seenMessage(userid);
     }
 

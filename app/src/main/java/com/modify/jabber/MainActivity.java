@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
 
     CircleImageView profile_image;
     TextView username;
-
     FirebaseUser firebaseUser;
     DatabaseReference reference;
+    int createdPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
+        createdPost = 0;
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
