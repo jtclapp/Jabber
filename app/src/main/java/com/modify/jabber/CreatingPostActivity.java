@@ -63,6 +63,7 @@ public class CreatingPostActivity extends AppCompatActivity {
     FirebaseUser fuser;
     StorageReference storageReference;
     String mUri,date;
+    String editImage,editCaption;
     DatabaseReference databaseReference, toolbarReference;
     HashMap<String, Object> hashMap;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
@@ -78,6 +79,9 @@ public class CreatingPostActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        Intent intent = getIntent();
+        editImage = intent.getStringExtra("EditImage");
+        editCaption = intent.getStringExtra("EditCaption");
         hashMap = new HashMap<>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         create = findViewById(R.id.CreatePostButton);
@@ -116,6 +120,13 @@ public class CreatingPostActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String caption = typedCaption.getText().toString();
                 date = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
+                if(editCaption != null || editImage != null)
+                {
+//                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+//                    HashMap<String, Object> map = new HashMap<>();
+//                    map.put("imageURL", "" + mUri);
+//                    reference.updateChildren(map);
+                }
                 if(mUri == null)
                 {
                     hashMap.put("sender", fuser.getUid());
@@ -138,7 +149,8 @@ public class CreatingPostActivity extends AppCompatActivity {
                 {
                     hashMap.put("date",date);
                     databaseReference.child("Posts").push().setValue(hashMap);
-                    startActivity(new Intent(CreatingPostActivity.this,MainActivity.class));
+                    Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
+                    startActivity(start);
                 }
             }
         });
@@ -149,6 +161,15 @@ public class CreatingPostActivity extends AppCompatActivity {
                 openImage();
             }
         });
+        // this will run if updating a already posted post.
+        if(editImage != null)
+        {
+            Glide.with(getApplicationContext()).load(editImage).centerCrop().into(uploadedPhoto);
+        }
+        if(editCaption != null)
+        {
+            typedCaption.setText(editCaption);
+        }
     }
     private void openImage() {
         Intent intent = new Intent();
@@ -194,7 +215,7 @@ public class CreatingPostActivity extends AppCompatActivity {
                         hashMap.put("message","" + mUri);
                         hashMap.put("type", "image");
 
-                        Glide.with(CreatingPostActivity.this).load(imageUri).centerCrop().into(uploadedPhoto);
+                        Glide.with(getApplicationContext()).load(imageUri).centerCrop().into(uploadedPhoto);
                         uploadedPhoto.setVisibility(View.VISIBLE);
                         pd.dismiss();
                         Toast.makeText(CreatingPostActivity.this,"Image uploaded Successfully!",Toast.LENGTH_SHORT).show();

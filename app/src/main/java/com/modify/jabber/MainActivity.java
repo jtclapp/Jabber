@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
-        createdPost = 0;
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override

@@ -3,6 +3,7 @@ package com.modify.jabber.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.modify.jabber.CreatingPostActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
@@ -89,6 +91,10 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Send the user to the edit page...
+                        Intent start = new Intent(mContext, CreatingPostActivity.class);
+                        start.putExtra("EditImage",profileMedia.getMessage());
+                        start.putExtra("EditCaption",profileMedia.getCaption());
+                        mContext.startActivity(start);
                     }
                 });
                 builder.show();

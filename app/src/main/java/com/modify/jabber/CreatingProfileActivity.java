@@ -129,7 +129,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
                         hashMap.put("imageURL", "" + mUri);
 
 
-                        Glide.with(CreatingProfileActivity.this).load(imageUri).centerCrop().into(circleImageView);
+                        Glide.with(getApplicationContext()).load(imageUri).centerCrop().into(circleImageView);
                         pd.dismiss();
                         Toast.makeText(CreatingProfileActivity.this,"Image uploaded Successfully!",Toast.LENGTH_SHORT).show();
 
