@@ -135,7 +135,7 @@ public class MessageActivity extends AppCompatActivity {
                 openImage();
             }
         });
-        storageReference = FirebaseStorage.getInstance().getReference(userid);
+        storageReference = FirebaseStorage.getInstance().getReference("ChatImages-" + userid);
         reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override

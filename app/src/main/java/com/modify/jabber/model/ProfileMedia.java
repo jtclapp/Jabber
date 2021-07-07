@@ -2,6 +2,7 @@ package com.modify.jabber.model;
 
 public class ProfileMedia
 {
+    private String id;
     private String sender;
     private String message;
     private String type;
@@ -11,14 +12,21 @@ public class ProfileMedia
     public ProfileMedia() {
     }
 
-    public ProfileMedia(String sender, String message, String type, String caption, String date) {
+    public ProfileMedia(String id, String sender, String message, String type, String caption, String date) {
+        this.id = id;
         this.sender = sender;
         this.message = message;
         this.type = type;
         this.caption = caption;
         this.date = date;
     }
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
     public String getSender() {
         return sender;
     }

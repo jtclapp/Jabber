@@ -63,7 +63,7 @@ public class CreatingPostActivity extends AppCompatActivity {
     FirebaseUser fuser;
     StorageReference storageReference;
     String mUri,date;
-    String editImage,editCaption;
+    String editImage,editCaption,editID;
     DatabaseReference databaseReference, toolbarReference;
     HashMap<String, Object> hashMap;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
@@ -82,6 +82,7 @@ public class CreatingPostActivity extends AppCompatActivity {
         Intent intent = getIntent();
         editImage = intent.getStringExtra("EditImage");
         editCaption = intent.getStringExtra("EditCaption");
+        editID = intent.getStringExtra("EditID");
         hashMap = new HashMap<>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         create = findViewById(R.id.CreatePostButton);
@@ -120,15 +121,17 @@ public class CreatingPostActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String caption = typedCaption.getText().toString();
                 date = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
-                if(editCaption != null || editImage != null)
+                if(editID != null)
                 {
-//                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
-//                    HashMap<String, Object> map = new HashMap<>();
-//                    map.put("imageURL", "" + mUri);
-//                    reference.updateChildren(map);
+                    hashMap.put("caption",caption);
+                    databaseReference = FirebaseDatabase.getInstance().getReference("Posts").child(editID);
+                    databaseReference.updateChildren(hashMap);
+                    Intent editStart = new Intent(CreatingPostActivity.this, MainActivity.class);
+                    startActivity(editStart);
                 }
                 if(mUri == null)
                 {
+                    hashMap.put("id", "" + System.currentTimeMillis());
                     hashMap.put("sender", fuser.getUid());
                     hashMap.put("message","");
                     hashMap.put("type", "text");

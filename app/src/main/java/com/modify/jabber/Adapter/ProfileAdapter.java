@@ -92,6 +92,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                     public void onClick(DialogInterface dialog, int which) {
                         // Send the user to the edit page...
                         Intent start = new Intent(mContext, CreatingPostActivity.class);
+                        start.putExtra("EditID",profileMedia.getId());
                         start.putExtra("EditImage",profileMedia.getMessage());
                         start.putExtra("EditCaption",profileMedia.getCaption());
                         mContext.startActivity(start);
