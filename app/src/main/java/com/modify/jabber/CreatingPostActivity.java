@@ -40,7 +40,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.modify.jabber.Adapter.ProfileAdapter;
 import com.modify.jabber.Fragments.ProfileFragment;
+import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
 
 import java.io.ByteArrayOutputStream;
@@ -62,7 +64,7 @@ public class CreatingPostActivity extends AppCompatActivity {
     private Uri imageUri;
     FirebaseUser fuser;
     StorageReference storageReference;
-    String mUri,date;
+    String mUri,date,postid;
     String editImage,editCaption,editID;
     DatabaseReference databaseReference, toolbarReference;
     HashMap<String, Object> hashMap;
@@ -84,7 +86,7 @@ public class CreatingPostActivity extends AppCompatActivity {
         editCaption = intent.getStringExtra("EditCaption");
         editID = intent.getStringExtra("EditID");
         hashMap = new HashMap<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
         create = findViewById(R.id.CreatePostButton);
         toolbar_image_profile = findViewById(R.id.toolbar3_profile_image);
         toolbar_username = findViewById(R.id.toolbar3_username);
@@ -123,37 +125,50 @@ public class CreatingPostActivity extends AppCompatActivity {
                 date = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
                 if(editID != null)
                 {
-                    hashMap.put("caption",caption);
-                    databaseReference = FirebaseDatabase.getInstance().getReference("Posts").child(editID);
-                    databaseReference.updateChildren(hashMap);
+                    HashMap<String, Object> hash = new HashMap<>();
+                    if(mUri != null)
+                    {
+                        hash.put("message","" + mUri);
+                        hash.put("type", "image");
+                    }
+                    if(editImage == null && mUri == null)
+                    {
+                        hash.put("type","text");
+                    }
+                    if(caption.equals(""))
+                    {
+                        hash.put("caption", "");
+                    }
+                    else
+                    {
+                        hash.put("caption",caption);
+                    }
+                    databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
+                    databaseReference.child(editID).updateChildren(hash);
                     Intent editStart = new Intent(CreatingPostActivity.this, MainActivity.class);
                     startActivity(editStart);
                 }
-                if(mUri == null)
-                {
-                    hashMap.put("id", "" + System.currentTimeMillis());
-                    hashMap.put("sender", fuser.getUid());
-                    hashMap.put("message","");
-                    hashMap.put("type", "text");
-                }
-                if(caption.equals(""))
-                {
-                    hashMap.put("caption", "");
-                }
-                else
-                {
-                    hashMap.put("caption",caption);
-                }
-                if(caption.equals("") && mUri == null)
-                {
-                    Toast.makeText(CreatingPostActivity.this,"Please upload a picture or write what's on your mind.",Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    hashMap.put("date",date);
-                    databaseReference.child("Posts").push().setValue(hashMap);
-                    Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
-                    startActivity(start);
+                if(editID == null) {
+                    if (mUri == null) {
+                        postid = databaseReference.push().getKey();
+                        hashMap.put("id", postid);
+                        hashMap.put("sender", fuser.getUid());
+                        hashMap.put("message", "");
+                        hashMap.put("type", "text");
+                    }
+                    if (caption.equals("")) {
+                        hashMap.put("caption", "");
+                    } else {
+                        hashMap.put("caption", caption);
+                    }
+                    if (caption.equals("") && mUri == null) {
+                        Toast.makeText(CreatingPostActivity.this, "Please upload a picture or write what's on your mind.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        hashMap.put("date", date);
+                        databaseReference.child(postid).setValue(hashMap);
+                        Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
+                        startActivity(start);
+                    }
                 }
             }
         });
@@ -213,7 +228,8 @@ public class CreatingPostActivity extends AppCompatActivity {
                     if (task.isSuccessful()){
                         Uri downloadUri = task.getResult();
                         mUri = downloadUri.toString();
-
+                        postid = databaseReference.push().getKey();
+                        hashMap.put("id", postid);
                         hashMap.put("sender", fuser.getUid());
                         hashMap.put("message","" + mUri);
                         hashMap.put("type", "image");
