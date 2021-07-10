@@ -292,12 +292,11 @@ public class CreatingPostActivity extends AppCompatActivity {
         return true;
     }
     private void status(String status){
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("status", status);
 
-        databaseReference.updateChildren(hashMap);
+        toolbarReference.updateChildren(hashMap);
     }
 
     @Override

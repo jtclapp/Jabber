@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     TextView username;
     FirebaseUser firebaseUser;
     DatabaseReference reference;
-    int createdPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +57,14 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
+        if(reference == null)
+        {
+            startActivity(new Intent(getApplicationContext(),StartActivity.class));
+        }
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                if(user == null)
-                {
-                    startActivity(new Intent(getApplicationContext(),StartActivity.class));
-                }
                 username.setText(user.getUsername());
                 if(user.getImageURL() == null)
                 {

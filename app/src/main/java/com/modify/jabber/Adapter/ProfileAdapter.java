@@ -44,7 +44,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         this.mContext = mContext;
         this.profileMediaList = profileMediaList;
         this.firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        this.reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
     }
 
     @NonNull
@@ -59,6 +58,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
         ProfileMedia profileMedia = profileMediaList.get(position);
         String type = profileMedia.getType();
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(profileMedia.getSender());
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

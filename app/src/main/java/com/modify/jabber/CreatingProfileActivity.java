@@ -63,7 +63,6 @@ public class CreatingProfileActivity extends AppCompatActivity {
         circleImageView = findViewById(R.id.CreateProfileImage);
 
         hashMap = new HashMap<>();
-        Intent intent = getIntent();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
@@ -97,16 +96,15 @@ public class CreatingProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 userDelete = dataSnapshot.getValue(User.class);
-                if(user.getImageURL() == null)
-                {
-                    circleImageView.setImageResource(R.mipmap.ic_launcher);
-                }
-                else {
-                        Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(circleImageView);
+                    if (user.getImageURL().equals("default")) {
+                        circleImageView.setImageResource(R.mipmap.ic_launcher);
+                    } else {
+                        if(getApplicationContext() != null) {
+                            Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(circleImageView);
+                        }
                         bio.setText(user.getBio());
                     }
-            }
-
+                }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
