@@ -65,7 +65,7 @@ public class CreatingPostActivity extends AppCompatActivity {
     FirebaseUser fuser;
     StorageReference storageReference;
     String mUri,date,postid;
-    String editImage,editCaption,editID;
+    ProfileMedia editPost;
     DatabaseReference databaseReference, toolbarReference;
     HashMap<String, Object> hashMap;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
@@ -82,9 +82,7 @@ public class CreatingPostActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Intent intent = getIntent();
-        editImage = intent.getStringExtra("EditImage");
-        editCaption = intent.getStringExtra("EditCaption");
-        editID = intent.getStringExtra("EditID");
+        editPost = (ProfileMedia) intent.getSerializableExtra("EditPost");
         hashMap = new HashMap<>();
         databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
         create = findViewById(R.id.CreatePostButton);
@@ -123,32 +121,25 @@ public class CreatingPostActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String caption = typedCaption.getText().toString();
                 date = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
-                if(editID != null)
-                {
+                if (editPost != null) {
                     HashMap<String, Object> hash = new HashMap<>();
-                    if(mUri != null)
-                    {
-                        hash.put("message","" + mUri);
+                    if (mUri != null) {
+                        hash.put("message", "" + mUri);
                         hash.put("type", "image");
                     }
-                    if(editImage == null && mUri == null)
-                    {
-                        hash.put("type","text");
+                    if (editPost.getMessage() == null && mUri == null) {
+                        hash.put("type", "text");
                     }
-                    if(caption.equals(""))
-                    {
+                    if (caption.equals("")) {
                         hash.put("caption", "");
-                    }
-                    else
-                    {
-                        hash.put("caption",caption);
+                    } else {
+                        hash.put("caption", caption);
                     }
                     databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
-                    databaseReference.child(editID).updateChildren(hash);
+                    databaseReference.child(editPost.getId()).updateChildren(hash);
                     Intent editStart = new Intent(CreatingPostActivity.this, MainActivity.class);
                     startActivity(editStart);
-                }
-                if(editID == null) {
+                } else {
                     if (mUri == null) {
                         postid = databaseReference.push().getKey();
                         hashMap.put("id", postid);
@@ -180,13 +171,12 @@ public class CreatingPostActivity extends AppCompatActivity {
             }
         });
         // this will run if updating a already posted post.
-        if(editImage != null)
+        if(editPost != null)
         {
-            Glide.with(getApplicationContext()).load(editImage).centerCrop().into(uploadedPhoto);
-        }
-        if(editCaption != null)
-        {
-            typedCaption.setText(editCaption);
+            if(editPost.getMessage() != null) {
+                Glide.with(getApplicationContext()).load(editPost.getMessage()).centerCrop().into(uploadedPhoto);
+            }
+            typedCaption.setText(editPost.getCaption());
         }
     }
     private void openImage() {

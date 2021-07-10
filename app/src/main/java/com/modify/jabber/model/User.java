@@ -1,6 +1,9 @@
 package com.modify.jabber.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable
+{
     private String id;
     private String username;
     private String imageURL;

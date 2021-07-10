@@ -38,6 +38,7 @@
  import com.google.firebase.storage.UploadTask;
  import com.modify.jabber.Adapter.ProfileAdapter;
  import com.modify.jabber.CreatingPostActivity;
+ import com.modify.jabber.CreatingProfileActivity;
  import com.modify.jabber.MessageActivity;
  import com.modify.jabber.R;
  import com.modify.jabber.model.ProfileMedia;
@@ -58,11 +59,13 @@ public class ProfileFragment extends Fragment {
     TextView username,bio;
     DatabaseReference reference;
     FirebaseUser fuser;
+    User editUser;
     StorageReference storageReference;
     ProfileAdapter profileAdapter;
     RecyclerView recyclerView;
     List<ProfileMedia> mprofile;
     ImageButton create;
+    TextView editProfile;
     LinearLayoutManager linearLayoutManager;
 
 
@@ -73,6 +76,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         image_profile = view.findViewById(R.id.profile_image);
+        editProfile = view.findViewById(R.id.edit_profile);
         bio = view.findViewById(R.id.ProfileBio);
         username = view.findViewById(R.id.username);
         recyclerView = view.findViewById(R.id.recycler_view_Profile);
@@ -91,6 +95,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+                editUser = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
                 if(user.getImageURL() == null)
                 {
@@ -119,6 +124,15 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getContext(), CreatingPostActivity.class));
+            }
+        });
+        editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),CreatingProfileActivity.class);
+                intent.putExtra("editUser",editUser);
+
+                startActivity(new Intent(getContext(), CreatingProfileActivity.class));
             }
         });
         readPosts();

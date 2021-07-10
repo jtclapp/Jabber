@@ -1,6 +1,8 @@
 package com.modify.jabber.model;
 
-public class ProfileMedia
+import java.io.Serializable;
+
+public class ProfileMedia implements Serializable
 {
     private String id;
     private String sender;

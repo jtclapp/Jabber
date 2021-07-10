@@ -21,6 +21,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.modify.jabber.CreatingPostActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.model.ProfileMedia;
@@ -36,6 +38,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     private List<ProfileMedia> profileMediaList;
     private FirebaseUser firebaseUser;
     private DatabaseReference reference;
+    private StorageReference storageReference;
 
     public ProfileAdapter(Context mContext, List<ProfileMedia> profileMediaList) {
         this.mContext = mContext;
@@ -70,17 +73,13 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // Delete the post from Realtime database and Firebase storage
-                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
-
-                                if(type.equals("text"))
-                                {
-
-                                }
+                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
                                 if(type.equals("image"))
                                 {
-
+                                    storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getMessage());
+                                    storageReference.delete();
                                 }
+                                ref.child(profileMedia.getId()).removeValue();
                             }
                         });
                         builder1.setNegativeButton("No",null);
@@ -92,9 +91,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                     public void onClick(DialogInterface dialog, int which) {
                         // Send the user to the edit page...
                         Intent start = new Intent(mContext, CreatingPostActivity.class);
-                        start.putExtra("EditID",profileMedia.getId());
-                        start.putExtra("EditImage",profileMedia.getMessage());
-                        start.putExtra("EditCaption",profileMedia.getCaption());
+                        start.putExtra("EditPost",profileMedia);
                         mContext.startActivity(start);
                     }
                 });
