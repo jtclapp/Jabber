@@ -59,7 +59,6 @@ public class ProfileFragment extends Fragment {
     TextView username,bio;
     DatabaseReference reference;
     FirebaseUser fuser;
-    User editUser;
     StorageReference storageReference;
     ProfileAdapter profileAdapter;
     RecyclerView recyclerView;
@@ -95,7 +94,6 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                editUser = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
                 if(user.getImageURL() == null)
                 {
@@ -106,7 +104,6 @@ public class ProfileFragment extends Fragment {
                         image_profile.setImageResource(R.mipmap.ic_launcher);
                         bio.setText(user.getBio());
                     } else {
-                        //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(image_profile);
                         if(getActivity() != null) {
                             Glide.with(getActivity()).load(user.getImageURL()).centerCrop().into(image_profile);
                         }
@@ -129,9 +126,6 @@ public class ProfileFragment extends Fragment {
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(),CreatingProfileActivity.class);
-                intent.putExtra("editUser",editUser);
-
                 startActivity(new Intent(getContext(), CreatingProfileActivity.class));
             }
         });

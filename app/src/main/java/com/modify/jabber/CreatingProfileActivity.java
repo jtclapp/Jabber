@@ -22,12 +22,17 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.modify.jabber.model.ProfileMedia;
+import com.modify.jabber.model.User;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,6 +49,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     FirebaseUser fuser;
+    User userDelete;
     StorageReference storageReference;
     String mUri;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
@@ -57,6 +63,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
         circleImageView = findViewById(R.id.CreateProfileImage);
 
         hashMap = new HashMap<>();
+        Intent intent = getIntent();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
@@ -70,7 +77,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mUri == null || bio.getText().toString().equals("")) {
+                if((mUri == null && userDelete.getImageURL().equals("default"))|| bio.getText().toString().equals("")) {
                     if (bio.getText().toString().equals("")) {
                         Toast.makeText(CreatingProfileActivity.this, "Please fill out your bio.", Toast.LENGTH_SHORT).show();
                     }
@@ -85,7 +92,26 @@ public class CreatingProfileActivity extends AppCompatActivity {
                 }
             }
         });
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                userDelete = dataSnapshot.getValue(User.class);
+                if(user.getImageURL() == null)
+                {
+                    circleImageView.setImageResource(R.mipmap.ic_launcher);
+                }
+                else {
+                        Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(circleImageView);
+                        bio.setText(user.getBio());
+                    }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
     private void openImage() {
         Intent intent = new Intent();
@@ -127,12 +153,9 @@ public class CreatingProfileActivity extends AppCompatActivity {
                         Uri downloadUri = task.getResult();
                         mUri = downloadUri.toString();
                         hashMap.put("imageURL", "" + mUri);
-
-
                         Glide.with(getApplicationContext()).load(imageUri).centerCrop().into(circleImageView);
                         pd.dismiss();
                         Toast.makeText(CreatingProfileActivity.this,"Image uploaded Successfully!",Toast.LENGTH_SHORT).show();
-
                     } else {
                         Toast.makeText(CreatingProfileActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                         pd.dismiss();
@@ -168,5 +191,25 @@ public class CreatingProfileActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+    private void status(String status){
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+
+        databaseReference.updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("offline");
     }
 }

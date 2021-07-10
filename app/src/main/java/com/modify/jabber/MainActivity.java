@@ -62,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+                if(user == null)
+                {
+                    startActivity(new Intent(getApplicationContext(),StartActivity.class));
+                }
                 username.setText(user.getUsername());
                 if(user.getImageURL() == null)
                 {
