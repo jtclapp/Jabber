@@ -47,7 +47,18 @@
             android:layout_height="wrap_content"
             android:id="@+id/password"
             android:layout_marginTop="10dp"
-            android:hint="Password"/>
+            android:hint="Password"
+            android:inputType="textPassword"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/showPassword"
+            android:text="  Show"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="5dp"/>
         <Button
             android:id="@+id/btn_register"
             android:text="Register"
@@ -57,6 +68,5 @@
             android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/buttonshape"/>
-
     </LinearLayout>
 </RelativeLayout>
