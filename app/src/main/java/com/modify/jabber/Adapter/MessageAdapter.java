@@ -64,7 +64,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             {
                 holder.show_message.setVisibility(View.GONE);
                 holder.image_text.setVisibility(View.VISIBLE);
-                //Picasso.get().load(chat.getMessage()).into(holder.image_text);
                 Glide.with(mContext).load(chat.getMessage()).centerCrop().into(holder.image_text);
             }
 
@@ -82,10 +81,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 } else {
                     holder.txt_seen.setText("Delivered");
                 }
+                if(chat.isTyping())
+                {
+                    holder.txt_typing.setText("Typing...");
+                }
             } else {
                 holder.txt_seen.setVisibility(View.GONE);
+                holder.txt_typing.setVisibility(View.GONE);
             }
-
         }
 
         @Override
@@ -99,6 +102,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             public ImageView image_text;
             public CircleImageView profile_image;
             public TextView txt_seen;
+            public TextView txt_typing;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -107,6 +111,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 profile_image = itemView.findViewById(R.id.profile_image);
                 txt_seen = itemView.findViewById(R.id.txt_seen);
                 image_text = itemView.findViewById(R.id.messageImage);
+                txt_typing = itemView.findViewById(R.id.txt_typing);
             }
         }
 

@@ -13,24 +13,17 @@ public class User implements Serializable
     private String bio;
 
     public User(String id, String username, String imageURL,
-                String status, String typing, String search, String bio) {
+                String status, String search, String bio) {
         this.id = id;
         this.username = username;
         this.imageURL = imageURL;
         this.status = status;
-        this.typing = typing;
         this.search = search;
         this.bio = bio;
     }
 
     public User() {
 
-    }
-    public String getTyping() {
-        return typing;
-    }
-    public void setTyping(String typing) {
-        this.typing = typing;
     }
     public String getBio() {
         return bio;

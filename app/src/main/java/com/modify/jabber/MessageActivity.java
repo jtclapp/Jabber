@@ -164,20 +164,20 @@ public class MessageActivity extends AppCompatActivity {
         text_send.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                notTyping(userid);
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     if(charSequence.toString().trim().length() == 0)
                     {
-//                        typing();
+                        typing(userid);
                     }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                notTyping(userid);
             }
         });
         seenMessage(userid);
@@ -342,13 +342,47 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.updateChildren(hashMap);
     }
-    private void typing(String typing){
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+    private void typing(String userid){
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        seenListener = reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if (chat.getReceiver().equals(fuser.getUid()) && chat.getSender().equals(userid)){
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("typing", true);
+                        snapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+            }
 
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("isTyping", typing);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        reference.updateChildren(hashMap);
+            }
+        });
+    }
+    private void notTyping(String userid){
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        seenListener = reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if (chat.getReceiver().equals(fuser.getUid()) && chat.getSender().equals(userid)){
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("typing", false);
+                        snapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
     private void openImage() {
         Intent intent = new Intent();

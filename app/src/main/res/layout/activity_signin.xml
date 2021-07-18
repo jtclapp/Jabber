@@ -41,6 +41,16 @@
             android:id="@+id/password"
             android:layout_marginTop="10dp"
             android:hint="Password"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/showPasswordLogin"
+            android:text="  Show"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="5dp"/>
 
         <Button
             android:id="@+id/signInButton"
