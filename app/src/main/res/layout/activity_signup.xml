@@ -62,8 +62,7 @@
         <Button
             android:id="@+id/btn_register"
             android:text="Register"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:layout_width="130dp"
             android:layout_height="45dp"
             android:layout_marginTop="10dp"

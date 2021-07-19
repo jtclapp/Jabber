@@ -45,7 +45,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String pass = password.getText().toString();
-                if(pass != null)
+                if(!pass.equals(""))
                 {
                     if(show.getText().toString().equals("Show"))
                     {

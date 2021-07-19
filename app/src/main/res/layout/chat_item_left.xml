@@ -20,6 +20,7 @@
         android:text="hello"
         android:id="@+id/show_message"
         android:textSize="18sp"
+        android:layout_marginTop="18dp"
         android:textColor="#ffff"
         android:padding="8dp"
         android:background="@drawable/background_left"/>
@@ -32,6 +33,9 @@
         android:padding="10dp"
         android:src="@drawable/ic_image_black"
         android:scaleType="fitCenter"
+        android:layout_toEndOf="@id/profile_image"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="18dp"
         android:background="@drawable/background_left" />
 
     <TextView
@@ -40,10 +44,4 @@
         android:id="@+id/txt_seen"
         android:visibility="gone"
         android:layout_below="@id/messageImage"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/txt_typing"
-        android:visibility="gone"
-        android:layout_below="@+id/txt_seen"/>
 </RelativeLayout>

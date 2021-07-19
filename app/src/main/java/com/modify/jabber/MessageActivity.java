@@ -161,25 +161,6 @@ public class MessageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        text_send.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                notTyping(userid);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    if(charSequence.toString().trim().length() == 0)
-                    {
-                        typing(userid);
-                    }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                notTyping(userid);
-            }
-        });
         seenMessage(userid);
     }
 
@@ -215,6 +196,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("message", message);
         hashMap.put("type","text");
         hashMap.put("isseen", false);
+        hashMap.put("typing", false);
 
         reference.child("Chats").push().setValue(hashMap);
 
@@ -431,6 +413,7 @@ public class MessageActivity extends AppCompatActivity {
                                     hashMap.put("message","" + mUri);
                                     hashMap.put("type", "image");
                                     hashMap.put("isseen", false);
+                                    hashMap.put("typing", false);
                                     databaseReference.child("Chats").push().setValue(hashMap);
                                     pd.dismiss();
                                     final String msg = "Sent a photo...";

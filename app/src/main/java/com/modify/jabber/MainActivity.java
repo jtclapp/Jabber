@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 int unread = 0;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    if (chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsSeen()){
+                    if (chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsseen()){
                         unread++;
                     }
                 }

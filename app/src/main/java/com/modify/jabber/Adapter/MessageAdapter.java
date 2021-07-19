@@ -76,18 +76,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             }
 
             if (position == (mChat.size() - 1)){
-                if (chat.isIsSeen()){
+                if (chat.isIsseen()){
                     holder.txt_seen.setText("Seen");
                 } else {
                     holder.txt_seen.setText("Delivered");
                 }
-                if(chat.isTyping())
-                {
-                    holder.txt_typing.setText("Typing...");
-                }
             } else {
                 holder.txt_seen.setVisibility(View.GONE);
-                holder.txt_typing.setVisibility(View.GONE);
             }
         }
 
@@ -102,7 +97,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             public ImageView image_text;
             public CircleImageView profile_image;
             public TextView txt_seen;
-            public TextView txt_typing;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -111,7 +105,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 profile_image = itemView.findViewById(R.id.profile_image);
                 txt_seen = itemView.findViewById(R.id.txt_seen);
                 image_text = itemView.findViewById(R.id.messageImage);
-                txt_typing = itemView.findViewById(R.id.txt_typing);
             }
         }
 

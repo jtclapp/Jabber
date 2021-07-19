@@ -7,9 +7,8 @@ public class Chat {
     private String message;
     private String type;
     private boolean isseen;
-    private boolean typing;
 
-    public Chat(String sender, String receiver, String message, String type, boolean isseen, boolean typing) {
+    public Chat(String sender, String receiver, String message, String type, boolean isseen) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
@@ -26,13 +25,6 @@ public class Chat {
         this.isseen = isseen;
     }
 
-    public boolean isTyping() {
-        return typing;
-    }
-
-    public void setTyping(boolean typing) {
-        this.typing = typing;
-    }
     public String getSender() {
         return sender;
     }
@@ -55,14 +47,6 @@ public class Chat {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public boolean isIsSeen() {
-        return isseen;
-    }
-
-    public void setIsSeen(boolean isseen) {
-        this.isseen = isseen;
     }
 
     public String getType() {

@@ -3,6 +3,8 @@ package com.modify.jabber;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,10 +37,7 @@ public class SigninActivity extends AppCompatActivity {
     TextView forgot_password;
     FirebaseAuth auth;
     Button button;
-    SignInButton signInButton;
-    GoogleSignInClient mGoogleSignInClient;
-    FirebaseAuth firebaseAuth;
-    int RC_SIGN_IN = 9001;
+    TextView show;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +47,32 @@ public class SigninActivity extends AppCompatActivity {
         button = findViewById(R.id.signInButton);
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
+        show = findViewById(R.id.showPasswordLogin);
         forgot_password = findViewById(R.id.forgot_password);
         forgot_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SigninActivity.this, ResetPasswordActivity.class));
+            }
+        });
+
+        show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String pass = password.getText().toString();
+                if(!pass.equals(""))
+                {
+                    if(show.getText().toString().equals("Show"))
+                    {
+                        show.setText("Hide");
+                        password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    }
+                    else
+                    {
+                        show.setText("Show");
+                        password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    }
+                }
             }
         });
 
@@ -84,69 +104,9 @@ public class SigninActivity extends AppCompatActivity {
                 }
             }
         });
-        signInButton = findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        firebaseAuth = FirebaseAuth.getInstance();
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.sign_in_button:
-                        signIn();
-                        break;
-                    // ...
-                }
-            }
-        });
     }
 
     private void setSupportActionBar(Toolbar toolbar) {
     }
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-                firebaseAuthWithGoogle(account.getIdToken());
-            } catch (ApiException e) {
-                // The ApiException status code indicates the detailed failure reason.
-                // Please refer to the GoogleSignInStatusCodes class reference for more information.
-                Log.w(TAG, "Google Sign In Failed!",e);
-            }
-        }
-    }
-    private void firebaseAuthWithGoogle(String idToken)
-    {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken,null);
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful())
-                {
-                    Intent intent = new Intent(SigninActivity.this,MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Toast.makeText(SigninActivity.this,"Google Sign In Failed!",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
 }

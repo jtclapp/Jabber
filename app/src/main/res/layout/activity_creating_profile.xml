@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,7 +32,8 @@
         android:id="@+id/InsertProfileButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:layout_below="@id/CreateProfileImage"/>
+        android:layout_below="@id/CreateProfileImage"
+        android:backgroundTint="@color/black" />
 
     <EditText
         android:id="@+id/Bio"
@@ -42,7 +44,7 @@
         android:layout_marginTop="29dp"
         android:textSize="16sp"
         android:gravity="start"
-        android:hint=" Enter Bio "
+        android:hint=" Tell People About Yourself "
         android:inputType="textMultiLine"
         android:textColor="@color/black"
         android:background="@drawable/edit_text_boarder"
@@ -51,7 +53,7 @@
     <Button
         android:id="@+id/FinishSignUp"
         android:text="Finish"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/black"
         android:textSize="18sp"
         android:layout_width="100dp"
         android:layout_marginTop="20dp"
