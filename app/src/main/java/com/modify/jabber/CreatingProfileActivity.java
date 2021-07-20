@@ -10,10 +10,12 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -95,8 +97,9 @@ public class CreatingProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 userDelete = dataSnapshot.getValue(User.class);
-                    if (user.getImageURL().equals("default")) {
-                        circleImageView.setImageResource(R.mipmap.ic_launcher);
+                    if (user.getImageURL().equals("default"))
+                    {
+                        circleImageView.setBackground(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_black_logo_no_background_small));
                     } else {
                         if(getApplicationContext() != null) {
                             Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(circleImageView);

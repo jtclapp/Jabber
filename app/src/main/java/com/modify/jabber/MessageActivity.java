@@ -509,4 +509,11 @@ public class MessageActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startActivity(new Intent(MessageActivity.this,MainActivity.class));
+        finish();
+    }
 }

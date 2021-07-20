@@ -26,7 +26,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create a new account"
+            android:text="Create a Jabber account"
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"/>
 
@@ -53,10 +54,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/showPassword"
-            android:text="  Show"
+            android:text="Show"
             android:textSize="14sp"
             android:textColor="@color/black"
-            android:textStyle="bold"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="5dp"/>
         <Button

@@ -17,13 +17,12 @@
         android:textColor="@color/gray"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:id="@+id/CreateProfileImage"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:layout_below="@+id/creatingSpacing"
-        android:src="@mipmap/ic_launcher"/>
+        android:layout_below="@+id/creatingSpacing" />
 
     <ImageButton
         android:layout_width="30dp"
@@ -37,7 +36,7 @@
 
     <EditText
         android:id="@+id/Bio"
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="150dp"
         android:layout_below="@id/InsertProfileButton"
         android:layout_centerHorizontal="true"
