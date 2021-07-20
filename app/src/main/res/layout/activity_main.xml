@@ -12,7 +12,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black"
+            android:background="#303841"
             android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/MenuStyle">
 
@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/username"
                 android:textSize="18sp"
-                android:textColor="#ffff"
+                android:textColor="#f8fbf8"
                 android:textStyle="bold"
                 android:layout_marginStart="25dp" />
 
@@ -37,10 +37,10 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black"
-            app:tabSelectedTextColor="#ffff"
-            app:tabIndicatorColor="#ffff"
-            app:tabTextColor="#ffff"/>
+            android:background="#303841"
+            app:tabSelectedTextColor="#f8fbf8"
+            app:tabIndicatorColor="#f8fbf8"
+            app:tabTextColor="#f8fbf8"/>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
