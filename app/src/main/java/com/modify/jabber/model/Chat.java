@@ -7,16 +7,26 @@ public class Chat {
     private String message;
     private String type;
     private boolean isseen;
+    private String search;
 
-    public Chat(String sender, String receiver, String message, String type, boolean isseen) {
+    public Chat(String sender, String receiver, String message, String type, boolean isseen,String search) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
         this.isseen = isseen;
+        this.search = search;
     }
 
     public Chat() {
     }
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
     public boolean isIsseen() {
         return isseen;
     }

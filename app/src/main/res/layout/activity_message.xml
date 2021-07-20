@@ -19,7 +19,6 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:id="@+id/profile_image"/>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -31,12 +30,24 @@
 
         </androidx.appcompat.widget.Toolbar>
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:hint="Search For Messages..."
+        android:inputType="text"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/black"
+        android:id="@+id/search_messages"
+        android:layout_below="@+id/toolbar2"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom"
-        android:layout_below="@id/toolbar2" />
+        android:layout_below="@id/search_messages" />
 
     <RelativeLayout
         android:layout_width="match_parent"

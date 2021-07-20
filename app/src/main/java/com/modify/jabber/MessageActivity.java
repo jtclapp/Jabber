@@ -41,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.modify.jabber.Adapter.MessageAdapter;
+import com.modify.jabber.Adapter.UserAdapter;
 import com.modify.jabber.Fragments.APIService;
 import com.modify.jabber.Notifications.Client;
 import com.modify.jabber.Notifications.Data;
@@ -76,6 +77,7 @@ public class MessageActivity extends AppCompatActivity {
     ValueEventListener seenListener;
     String userid;
     APIService apiService;
+    EditText search_messages;
     boolean notify = false;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
@@ -99,8 +101,43 @@ public class MessageActivity extends AppCompatActivity {
         btn_send = findViewById(R.id.btn_send);
         btn_image = findViewById(R.id.btn_send_image);
         text_send = findViewById(R.id.text_send);
+        search_messages = findViewById(R.id.search_messages);
+        search_messages.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        username.setText(user.getUsername());
+                        if (user.getImageURL().equals("default")){
+                            profile_image.setImageResource(R.mipmap.ic_launcher);
+                        } else {
+                            //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
+                            Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
+                        }
+
+                        searchMessages(fuser.getUid(), userid, user.getImageURL(),charSequence.toString().toLowerCase());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         Toolbar toolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
@@ -196,7 +233,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("message", message);
         hashMap.put("type","text");
         hashMap.put("isseen", false);
-        hashMap.put("typing", false);
+        hashMap.put("search",message.toLowerCase());
 
         reference.child("Chats").push().setValue(hashMap);
 
@@ -309,7 +346,35 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
+    private void searchMessages(final String myid, final String userid, final String imageurl,String s) {
+        Query query = FirebaseDatabase.getInstance().getReference("Chats").orderByChild("search")
+                .startAt(s)
+                .endAt(s+"\uf8ff");
+        mchat = new ArrayList<>();
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        query.addValueEventListener(new ValueEventListener() {
 
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mchat.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
+                            chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
+                        mchat.add(chat);
+                    }
+
+                    messageAdapter = new MessageAdapter(getApplicationContext(), mchat,imageurl);
+                    recyclerView.setAdapter(messageAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     private void currentUser(String userid){
         SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
         editor.putString("currentuser", userid);
@@ -324,48 +389,6 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.updateChildren(hashMap);
     }
-    private void typing(String userid){
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
-        seenListener = reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Chat chat = snapshot.getValue(Chat.class);
-                    if (chat.getReceiver().equals(fuser.getUid()) && chat.getSender().equals(userid)){
-                        HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put("typing", true);
-                        snapshot.getRef().updateChildren(hashMap);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-    private void notTyping(String userid){
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
-        seenListener = reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Chat chat = snapshot.getValue(Chat.class);
-                    if (chat.getReceiver().equals(fuser.getUid()) && chat.getSender().equals(userid)){
-                        HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put("typing", false);
-                        snapshot.getRef().updateChildren(hashMap);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
     private void openImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -378,7 +401,6 @@ public class MessageActivity extends AppCompatActivity {
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
-
     private void uploadImage() throws IOException
     {
                     final ProgressDialog pd = new ProgressDialog(MessageActivity.this);
@@ -413,7 +435,7 @@ public class MessageActivity extends AppCompatActivity {
                                     hashMap.put("message","" + mUri);
                                     hashMap.put("type", "image");
                                     hashMap.put("isseen", false);
-                                    hashMap.put("typing", false);
+                                    hashMap.put("search","" + mUri.toLowerCase());
                                     databaseReference.child("Chats").push().setValue(hashMap);
                                     pd.dismiss();
                                     final String msg = "Sent a photo...";
@@ -470,7 +492,7 @@ public class MessageActivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.message_menu, menu);
         return true;
     }
 
@@ -486,8 +508,10 @@ public class MessageActivity extends AppCompatActivity {
             case R.id.settings:
                 startActivity(new Intent(MessageActivity.this,SettingActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 return true;
+            case R.id.search:
+                search_messages.setVisibility(View.VISIBLE);
+                return true;
         }
-
         return false;
     }
     @Override
