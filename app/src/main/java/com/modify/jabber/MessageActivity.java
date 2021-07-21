@@ -122,8 +122,13 @@ public class MessageActivity extends AppCompatActivity {
                             //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
                             Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
                         }
-
-                        searchMessages(fuser.getUid(), userid, user.getImageURL(),charSequence.toString().toLowerCase());
+                        if(charSequence.toString().equals(""))
+                        {
+                            readMessages(fuser.getUid(),userid,user.getImageURL());
+                        }
+                        else {
+                            searchMessages(fuser.getUid(), userid, user.getImageURL(), charSequence.toString().toLowerCase());
+                        }
                     }
 
                     @Override
@@ -135,7 +140,6 @@ public class MessageActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
         Toolbar toolbar = findViewById(R.id.toolbar2);
@@ -509,7 +513,35 @@ public class MessageActivity extends AppCompatActivity {
                 startActivity(new Intent(MessageActivity.this,SettingActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 return true;
             case R.id.search:
-                search_messages.setVisibility(View.VISIBLE);
+                if(search_messages.getVisibility() == View.VISIBLE)
+                {
+                    search_messages.setVisibility(View.GONE);
+                    search_messages.setText("");
+                    reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            username.setText(user.getUsername());
+                            if (user.getImageURL().equals("default")){
+                                profile_image.setImageResource(R.mipmap.ic_launcher);
+                            } else {
+                                //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
+                                Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
+                            }
+
+                            readMessages(fuser.getUid(), userid, user.getImageURL());
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                else {
+                    search_messages.setVisibility(View.VISIBLE);
+                }
                 return true;
         }
         return false;
