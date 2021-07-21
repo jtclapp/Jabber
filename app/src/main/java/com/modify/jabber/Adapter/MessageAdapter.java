@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,9 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.installations.Utils;
 import com.modify.jabber.R;
 import com.modify.jabber.model.Chat;
+import com.modify.jabber.model.User;
 
+import java.util.Calendar;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -28,7 +37,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         private Context mContext;
         private List<Chat> mChat;
         private String imageurl;
+        private String date;
 
+        DatabaseReference reference;
         FirebaseUser fuser;
 
         public MessageAdapter(Context mContext, List<Chat> mChat, String imageurl){
@@ -51,20 +62,57 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         @Override
         public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
-
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             Chat chat = mChat.get(position);
             String type = chat.getType();
+            if(position >= 1)
+            {
+                Chat chat1 = mChat.get(position - 1);
+                if(chat.getDate().equals(chat1.getDate()))
+                {
+                    holder.txt_date.setVisibility(View.GONE);
+                }
+                else {
+                    holder.txt_date.setVisibility(View.VISIBLE);
+                    holder.txt_date.setText(chat1.getDate());
+                }
+            }
+            else {
+                holder.txt_date.setVisibility(View.VISIBLE);
+                holder.txt_date.setText(chat.getDate());
+            }
+            reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                        if (user.getImageURL().equals("default")) {
+                            holder.your_profile_image.setImageResource(R.mipmap.ic_launcher);
+                        } else {
+                            Glide.with(mContext).load(user.getImageURL()).centerCrop().into(holder.your_profile_image);
+                        }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                }
+            });
             if(type.equals("text")) {
                 holder.show_message.setVisibility(View.VISIBLE);
-                holder.image_text.setVisibility(View.GONE);
+                holder.image_text.setVisibility(View.INVISIBLE);
                 holder.show_message.setText(chat.getMessage());
+                params.addRule(RelativeLayout.BELOW,R.id.show_message);
+                params.addRule(RelativeLayout.START_OF,R.id.Your_profile_image);
+                holder.txt_seen.setLayoutParams(params);
             }
             if(type.equals("image"))
             {
                 holder.show_message.setVisibility(View.GONE);
                 holder.image_text.setVisibility(View.VISIBLE);
                 Glide.with(mContext).load(chat.getMessage()).centerCrop().into(holder.image_text);
+                params.addRule(RelativeLayout.BELOW,R.id.messageImage);
+                params.addRule(RelativeLayout.START_OF,R.id.Your_profile_image);
+                holder.txt_seen.setLayoutParams(params);
             }
 
             if (imageurl.equals("default")){
@@ -76,11 +124,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             }
 
             if (position == (mChat.size() - 1)){
-                if (chat.isIsseen()){
-                    holder.txt_seen.setText("Seen");
-                } else {
-                    holder.txt_seen.setText("Delivered");
-                }
+                    if (chat.isIsseen()) {
+                        holder.txt_seen.setText("Seen");
+                    } else {
+                        holder.txt_seen.setText("Delivered");
+                    }
             } else {
                 holder.txt_seen.setVisibility(View.GONE);
             }
@@ -93,10 +141,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         public  class ViewHolder extends RecyclerView.ViewHolder{
 
-            public TextView show_message;
+            public TextView show_message,txt_seen,txt_date;
             public ImageView image_text;
-            public CircleImageView profile_image;
-            public TextView txt_seen;
+            public CircleImageView profile_image,your_profile_image;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -105,6 +152,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 profile_image = itemView.findViewById(R.id.profile_image);
                 txt_seen = itemView.findViewById(R.id.txt_seen);
                 image_text = itemView.findViewById(R.id.messageImage);
+                your_profile_image = itemView.findViewById(R.id.Your_profile_image);
+                txt_date = itemView.findViewById(R.id.message_date);
             }
         }
 

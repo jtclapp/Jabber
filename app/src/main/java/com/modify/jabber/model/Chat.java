@@ -8,17 +8,19 @@ public class Chat {
     private String type;
     private boolean isseen;
     private String search;
+    private String date;
 
-    public Chat(String sender, String receiver, String message, String type, boolean isseen,String search) {
+    public Chat(String sender, String receiver, String message, String type, boolean isseen,String search,String date) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
         this.isseen = isseen;
         this.search = search;
+        this.date = date;
     }
-
     public Chat() {
     }
+
     public String getSearch() {
         return search;
     }
@@ -67,4 +69,11 @@ public class Chat {
         this.type = type;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 }

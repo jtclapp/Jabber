@@ -6,23 +6,40 @@
     android:layout_height="wrap_content"
     android:background="#f8fbf8">
 
+    <TextView
+        android:id="@+id/message_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:id="@+id/profile_image"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/ic_launcher"
+        android:layout_below="@id/message_date"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/Your_profile_image"
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/profile_image"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="4dp"
         android:text="hello"
         android:id="@+id/show_message"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:layout_marginTop="18dp"
         android:textColor="#ffff"
         android:padding="8dp"
+        android:layout_below="@id/message_date"
         android:background="@drawable/background_left"/>
 
     <ImageView
@@ -30,18 +47,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:padding="10dp"
+        android:padding="8dp"
         android:src="@drawable/ic_image_black"
         android:scaleType="fitCenter"
         android:layout_toEndOf="@id/profile_image"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="18dp"
+        android:layout_below="@id/message_date"
         android:background="@drawable/background_left" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txt_seen"
-        android:visibility="gone"
-        android:layout_below="@id/messageImage"/>
+        android:visibility="gone" />
 </RelativeLayout>

@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
-        if(reference == null)
+        if(reference == null || firebaseUser == null)
         {
             startActivity(new Intent(getApplicationContext(),StartActivity.class));
         }
@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
                     if (user.getImageURL().equals("default")) {
                         profile_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                        //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
                         Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
                     }
                 }

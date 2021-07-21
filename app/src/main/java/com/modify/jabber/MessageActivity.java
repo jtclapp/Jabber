@@ -52,7 +52,9 @@ import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -238,7 +240,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("type","text");
         hashMap.put("isseen", false);
         hashMap.put("search",message.toLowerCase());
-
+        hashMap.put("date",curentDate());
         reference.child("Chats").push().setValue(hashMap);
 
 
@@ -440,6 +442,7 @@ public class MessageActivity extends AppCompatActivity {
                                     hashMap.put("type", "image");
                                     hashMap.put("isseen", false);
                                     hashMap.put("search","" + mUri.toLowerCase());
+                                    hashMap.put("date",curentDate());
                                     databaseReference.child("Chats").push().setValue(hashMap);
                                     pd.dismiss();
                                     final String msg = "Sent a photo...";
@@ -545,6 +548,12 @@ public class MessageActivity extends AppCompatActivity {
                 return true;
         }
         return false;
+    }
+    public String curentDate()
+    {
+        Calendar calendar = Calendar.getInstance();
+        String currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
+        return currentDate;
     }
     @Override
     protected void onResume() {
