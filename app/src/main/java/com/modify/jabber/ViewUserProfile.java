@@ -31,6 +31,7 @@ import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -175,9 +176,29 @@ public class ViewUserProfile extends AppCompatActivity {
 
         return false;
     }
+    private void status(String status){
+        toolbar_reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+
+        toolbar_reference.updateChildren(hashMap);
+    }
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("offline");
     }
 }

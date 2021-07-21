@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.modify.jabber.MessageActivity;
+import com.modify.jabber.R;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
 
@@ -46,7 +47,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
     private void sendOreoNotification(RemoteMessage remoteMessage){
         String user = remoteMessage.getData().get("user");
-        String icon = remoteMessage.getData().get("icon");
+        String icon = remoteMessage.getData().get(R.mipmap.ic_launcher_symbol);
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
 
@@ -76,7 +77,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
     private void sendNotification(RemoteMessage remoteMessage) {
 
         String user = remoteMessage.getData().get("user");
-        String icon = remoteMessage.getData().get("icon");
+        String icon = remoteMessage.getData().get(R.mipmap.ic_launcher_symbol);
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
 
