@@ -1,6 +1,10 @@
 package com.modify.jabber.Adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +29,7 @@ import com.modify.jabber.R;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -37,7 +43,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         private Context mContext;
         private List<Chat> mChat;
         private String imageurl;
-        private String date;
 
         DatabaseReference reference;
         FirebaseUser fuser;
@@ -65,6 +70,39 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             Chat chat = mChat.get(position);
             String type = chat.getType();
+//            int color;
+//            Drawable buttonDrawable;
+//            GradientDrawable myGrad = (GradientDrawable)textView.getBackground();
+//            myGrad.setStroke(convertDpToPx(3), Color.RED);
+//            if(getItemViewType(position) == MSG_TYPE_RIGHT)
+//            {
+//                final SharedPreferences sharedPreferences = mContext.getSharedPreferences("sent",Context.MODE_PRIVATE);
+//                color = sharedPreferences.getInt("sent",0);
+//                if(color != 0) {
+//                    buttonDrawable = holder.show_message.getBackground();
+//                    buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+//                    DrawableCompat.setTint(buttonDrawable, color);
+//                    holder.image_text.setBackground(buttonDrawable);
+//                    buttonDrawable = holder.image_text.getBackground();
+//                    buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+//                    DrawableCompat.setTint(buttonDrawable, color);
+//                    holder.show_message.setBackground(buttonDrawable);
+//                }
+//            } else {
+//                final SharedPreferences sharedPreferences1 = mContext.getSharedPreferences("received",Context.MODE_PRIVATE);
+//                color = sharedPreferences1.getInt("received",0);
+//                if(color != 0) {
+//                    buttonDrawable = holder.show_message.getBackground();
+//                    buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+//                    DrawableCompat.setTint(buttonDrawable, color);
+//                    holder.image_text.setBackground(buttonDrawable);
+//                    buttonDrawable = holder.image_text.getBackground();
+//                    buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+//                    DrawableCompat.setTint(buttonDrawable, color);
+//                    holder.show_message.setBackground(buttonDrawable);
+//                }
+//            }
+
             if(position >= 1)
             {
                 Chat chat1 = mChat.get(position - 1);
@@ -74,13 +112,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 }
                 else {
                     holder.txt_date.setVisibility(View.VISIBLE);
-                    holder.txt_date.setText(chat1.getDate());
+                    holder.txt_date.setText(chat.getDate());
                 }
             }
             else {
                 holder.txt_date.setVisibility(View.VISIBLE);
                 holder.txt_date.setText(chat.getDate());
             }
+
             reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -99,10 +138,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             });
             if(type.equals("text")) {
                 holder.show_message.setVisibility(View.VISIBLE);
-                holder.image_text.setVisibility(View.INVISIBLE);
+                holder.image_text.setVisibility(View.GONE);
                 holder.show_message.setText(chat.getMessage());
                 params.addRule(RelativeLayout.BELOW,R.id.show_message);
                 params.addRule(RelativeLayout.START_OF,R.id.Your_profile_image);
+                params.addRule(RelativeLayout.ALIGN_END,R.id.show_message);
                 holder.txt_seen.setLayoutParams(params);
             }
             if(type.equals("image"))
@@ -112,6 +152,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 Glide.with(mContext).load(chat.getMessage()).centerCrop().into(holder.image_text);
                 params.addRule(RelativeLayout.BELOW,R.id.messageImage);
                 params.addRule(RelativeLayout.START_OF,R.id.Your_profile_image);
+                params.addRule(RelativeLayout.ALIGN_END,R.id.messageImage );
                 holder.txt_seen.setLayoutParams(params);
             }
 
@@ -123,12 +164,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 Glide.with(mContext).load(imageurl).centerCrop().into(holder.profile_image);
             }
 
-            if (position == (mChat.size() - 1)){
-                    if (chat.isIsseen()) {
-                        holder.txt_seen.setText("Seen");
-                    } else {
-                        holder.txt_seen.setText("Delivered");
-                    }
+            if (position == mChat.size()-1){
+                if (mChat.get(position).isIsseen()){
+                    holder.txt_seen.setText("Seen");
+                } else {
+                    holder.txt_seen.setText("Delivered");
+                }
             } else {
                 holder.txt_seen.setVisibility(View.GONE);
             }
@@ -165,5 +206,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             } else {
                 return MSG_TYPE_LEFT;
             }
+        }
+        public void filterList(ArrayList<Chat> filteredList)
+        {
+            mChat = filteredList;
+            notifyDataSetChanged();
         }
 }

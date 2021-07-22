@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -109,39 +111,14 @@ public class MessageActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
-                reference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        username.setText(user.getUsername());
-                        if (user.getImageURL().equals("default")){
-                            profile_image.setImageResource(R.mipmap.ic_launcher);
-                        } else {
-                            //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
-                            Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
-                        }
-                        if(charSequence.toString().equals(""))
-                        {
-                            readMessages(fuser.getUid(),userid,user.getImageURL());
-                        }
-                        else {
-                            searchMessages(fuser.getUid(), userid, user.getImageURL(), charSequence.toString().toLowerCase());
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
+
+                searchMessages(editable.toString());
             }
         });
         Toolbar toolbar = findViewById(R.id.toolbar2);
@@ -239,7 +216,6 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("message", message);
         hashMap.put("type","text");
         hashMap.put("isseen", false);
-        hashMap.put("search",message.toLowerCase());
         hashMap.put("date",curentDate());
         reference.child("Chats").push().setValue(hashMap);
 
@@ -340,7 +316,6 @@ public class MessageActivity extends AppCompatActivity {
                             chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
                         mchat.add(chat);
                     }
-
                     messageAdapter = new MessageAdapter(getApplicationContext(), mchat, imageurl);
                     recyclerView.setAdapter(messageAdapter);
                 }
@@ -352,34 +327,16 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
-    private void searchMessages(final String myid, final String userid, final String imageurl,String s) {
-        Query query = FirebaseDatabase.getInstance().getReference("Chats").orderByChild("search")
-                .startAt(s)
-                .endAt(s+"\uf8ff");
-        mchat = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
-        query.addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mchat.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Chat chat = snapshot.getValue(Chat.class);
-                    if (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
-                            chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
-                        mchat.add(chat);
-                    }
-
-                    messageAdapter = new MessageAdapter(getApplicationContext(), mchat,imageurl);
-                    recyclerView.setAdapter(messageAdapter);
-                }
+    private void searchMessages(String s) {
+        ArrayList<Chat> filteredList = new ArrayList<>();
+        for(Chat chat : mchat)
+        {
+            if(chat.getMessage().toLowerCase().contains(s.toLowerCase()))
+            {
+                filteredList.add(chat);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        }
+        messageAdapter.filterList(filteredList);
     }
     private void currentUser(String userid){
         SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
@@ -441,7 +398,6 @@ public class MessageActivity extends AppCompatActivity {
                                     hashMap.put("message","" + mUri);
                                     hashMap.put("type", "image");
                                     hashMap.put("isseen", false);
-                                    hashMap.put("search","" + mUri.toLowerCase());
                                     hashMap.put("date",curentDate());
                                     databaseReference.child("Chats").push().setValue(hashMap);
                                     pd.dismiss();

@@ -18,7 +18,7 @@
                 android:id="@+id/edit_profile"
                 android:layout_alignParentEnd="true"
                 android:text="Edit Profile"
-                android:textColor="@color/black"/>
+                android:textColor="@color/link_blue"/>
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="100dp"

@@ -28,6 +28,7 @@ import com.modify.jabber.Fragments.ChatFragment;
 import com.modify.jabber.Fragments.ProfileFragment;
 import com.modify.jabber.Fragments.UserFragment;
 import com.modify.jabber.model.Chat;
+import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
 
 import java.util.ArrayList;
@@ -87,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
         final TabLayout tabLayout = findViewById(R.id.tab_layout);
         final ViewPager viewPager = findViewById(R.id.view_pager);
-
+        Intent intent = getIntent();
+        int sendToProfile = intent.getIntExtra("viewProfile",0);
 
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
@@ -114,7 +116,10 @@ public class MainActivity extends AppCompatActivity {
                 viewPager.setAdapter(viewPagerAdapter);
 
                 tabLayout.setupWithViewPager(viewPager);
-
+                if(sendToProfile == 2)
+                {
+                    viewPager.setCurrentItem(2);
+                }
             }
 
             @Override

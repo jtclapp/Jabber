@@ -36,5 +36,34 @@
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
-
+    <TextView
+        android:id="@+id/SettingSpacing1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/bar_layout4"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="Jabber wants to customize your experience to your liking. Click the links below to change the color of received messages, and sent messages."/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ChangeReceivedMessageColor"
+        android:layout_below="@+id/SettingSpacing1"
+        android:text="Change the color of received messages"
+        android:textColor="@color/link_blue"
+        android:layout_marginLeft="25dp"
+        android:textSize="10dp"
+        android:background="@null"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ChangeSendMessageColor"
+        android:layout_below="@+id/ChangeReceivedMessageColor"
+        android:text="Change the color of sent messages"
+        android:textColor="@color/link_blue"
+        android:layout_marginLeft="25dp"
+        android:textSize="10dp"
+        android:background="@null"/>
 </RelativeLayout>
