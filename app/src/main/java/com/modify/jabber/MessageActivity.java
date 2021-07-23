@@ -1,13 +1,22 @@
 package com.modify.jabber;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -22,6 +31,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,7 +53,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.modify.jabber.Adapter.MessageAdapter;
-import com.modify.jabber.Adapter.UserAdapter;
 import com.modify.jabber.Fragments.APIService;
 import com.modify.jabber.Notifications.Client;
 import com.modify.jabber.Notifications.Data;
@@ -53,7 +62,10 @@ import com.modify.jabber.Notifications.Token;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -84,6 +96,7 @@ public class MessageActivity extends AppCompatActivity {
     EditText search_messages;
     boolean notify = false;
     private static final int IMAGE_REQUEST = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private Uri imageUri;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
 
@@ -147,8 +160,23 @@ public class MessageActivity extends AppCompatActivity {
         btn_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                notify = true;
-                openImage();
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
+                builder.setIcon(R.mipmap.ic_launcher_color);
+                builder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        notify = true;
+                        dispatchTakePictureIntent();
+                    }
+                });
+                builder.setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        notify = true;
+                        openImage();
+                    }
+                });
+                builder.show();
             }
         });
         storageReference = FirebaseStorage.getInstance().getReference("ChatImages-" + userid);
@@ -216,7 +244,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("message", message);
         hashMap.put("type","text");
         hashMap.put("isseen", false);
-        hashMap.put("date",curentDate());
+        hashMap.put("date",currentDate());
         reference.child("Chats").push().setValue(hashMap);
 
 
@@ -352,6 +380,12 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.updateChildren(hashMap);
     }
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent();
+        intent.setType("image/*");
+        takePictureIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+    }
     private void openImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -398,7 +432,7 @@ public class MessageActivity extends AppCompatActivity {
                                     hashMap.put("message","" + mUri);
                                     hashMap.put("type", "image");
                                     hashMap.put("isseen", false);
-                                    hashMap.put("date",curentDate());
+                                    hashMap.put("date",currentDate());
                                     databaseReference.child("Chats").push().setValue(hashMap);
                                     pd.dismiss();
                                     final String msg = "Sent a photo...";
@@ -433,7 +467,6 @@ public class MessageActivity extends AppCompatActivity {
                         Toast.makeText(MessageActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
                     }
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -452,7 +485,56 @@ public class MessageActivity extends AppCompatActivity {
                 }
             }
         }
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK
+                && data != null)
+        {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            if (uploadTask != null && uploadTask.isInProgress()){
+                Toast.makeText(MessageActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+            } else {
+                try {
+                    uploadImage();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
+//    private static Bitmap rotateImageIfRequired(Context context, Bitmap img, Uri selectedImage) throws IOException {
+//
+//        InputStream input = context.getContentResolver().openInputStream(selectedImage);
+//        ExifInterface ei;
+//        if (Build.VERSION.SDK_INT > 23)
+//            ei = new ExifInterface(input);
+//        else
+//            ei = new ExifInterface(selectedImage.getPath());
+//        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+//
+//        switch (orientation) {
+//            case ExifInterface.ORIENTATION_ROTATE_90:
+//                return rotateImage(img, 90);
+//            case ExifInterface.ORIENTATION_ROTATE_180:
+//                return rotateImage(img, 180);
+//            case ExifInterface.ORIENTATION_ROTATE_270:
+//            case ExifInterface.ORIENTATION_UNDEFINED:
+//                return rotateImage(img, 270);
+//            default:
+//                return img;
+//        }
+//    }
+//    private static Bitmap rotateImage(Bitmap source, float angle) {
+//        Matrix matrix = new Matrix();
+//        matrix.postRotate(angle);
+//        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+//                matrix, true);
+//    }
+//    public Uri getImageUri(Context inContext, Bitmap inImage) {
+//        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(),
+//                inImage, "Title", null);
+//        return Uri.parse(path);
+//    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.message_menu, menu);
@@ -505,7 +587,7 @@ public class MessageActivity extends AppCompatActivity {
         }
         return false;
     }
-    public String curentDate()
+    public String currentDate()
     {
         Calendar calendar = Calendar.getInstance();
         String currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());

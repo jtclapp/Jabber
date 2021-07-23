@@ -47,7 +47,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
     private void sendOreoNotification(RemoteMessage remoteMessage){
         String user = remoteMessage.getData().get("user");
-        String icon = remoteMessage.getData().get(R.mipmap.ic_launcher_symbol);
+        String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
 
@@ -77,7 +77,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
     private void sendNotification(RemoteMessage remoteMessage) {
 
         String user = remoteMessage.getData().get("user");
-        String icon = remoteMessage.getData().get(R.mipmap.ic_launcher_symbol);
+        String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
 
