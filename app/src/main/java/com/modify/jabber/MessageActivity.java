@@ -484,10 +484,7 @@ public class MessageActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        }
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK
-                && data != null)
-        {
+        } else {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
 
@@ -502,39 +499,6 @@ public class MessageActivity extends AppCompatActivity {
             }
         }
     }
-//    private static Bitmap rotateImageIfRequired(Context context, Bitmap img, Uri selectedImage) throws IOException {
-//
-//        InputStream input = context.getContentResolver().openInputStream(selectedImage);
-//        ExifInterface ei;
-//        if (Build.VERSION.SDK_INT > 23)
-//            ei = new ExifInterface(input);
-//        else
-//            ei = new ExifInterface(selectedImage.getPath());
-//        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-//
-//        switch (orientation) {
-//            case ExifInterface.ORIENTATION_ROTATE_90:
-//                return rotateImage(img, 90);
-//            case ExifInterface.ORIENTATION_ROTATE_180:
-//                return rotateImage(img, 180);
-//            case ExifInterface.ORIENTATION_ROTATE_270:
-//            case ExifInterface.ORIENTATION_UNDEFINED:
-//                return rotateImage(img, 270);
-//            default:
-//                return img;
-//        }
-//    }
-//    private static Bitmap rotateImage(Bitmap source, float angle) {
-//        Matrix matrix = new Matrix();
-//        matrix.postRotate(angle);
-//        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
-//                matrix, true);
-//    }
-//    public Uri getImageUri(Context inContext, Bitmap inImage) {
-//        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(),
-//                inImage, "Title", null);
-//        return Uri.parse(path);
-//    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.message_menu, menu);
