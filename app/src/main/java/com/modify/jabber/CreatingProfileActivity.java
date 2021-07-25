@@ -168,7 +168,6 @@ public class CreatingProfileActivity extends AppCompatActivity {
                     if (!task.isSuccessful()){
                         throw  task.getException();
                     }
-
                     return  fileReference.getDownloadUrl();
                 }
             }).addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -181,6 +180,13 @@ public class CreatingProfileActivity extends AppCompatActivity {
                         Glide.with(getApplicationContext()).load(imageUri).centerCrop().into(circleImageView);
                         pd.dismiss();
                         Toast.makeText(CreatingProfileActivity.this,"Image uploaded Successfully!",Toast.LENGTH_SHORT).show();
+                        if(mCurrentPhotoPath != null) {
+                            File file = new File(mCurrentPhotoPath);
+                            if(file != null)
+                            {
+                                file.delete();
+                            }
+                        }
                     } else {
                         Toast.makeText(CreatingProfileActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                         pd.dismiss();

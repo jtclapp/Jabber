@@ -67,8 +67,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -91,7 +93,7 @@ public class MessageActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     Intent intent;
     ValueEventListener seenListener;
-    String userid;
+    String userid,mCurrentPhotoPath;
     APIService apiService;
     EditText search_messages;
     boolean notify = false;
@@ -322,7 +324,6 @@ public class MessageActivity extends AppCompatActivity {
                             });
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -380,19 +381,12 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.updateChildren(hashMap);
     }
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent();
-        intent.setType("image/*");
-        takePictureIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-    }
     private void openImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, IMAGE_REQUEST);
     }
-
     private String getFileExtension(Uri uri){
         ContentResolver contentResolver = MessageActivity.this.getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
@@ -451,6 +445,13 @@ public class MessageActivity extends AppCompatActivity {
 
                                         }
                                     });
+                                    if(mCurrentPhotoPath != null) {
+                                        File file = new File(mCurrentPhotoPath);
+                                        if(file != null)
+                                        {
+                                            file.delete();
+                                        }
+                                    }
                                 } else {
                                     Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                                     pd.dismiss();
@@ -465,38 +466,75 @@ public class MessageActivity extends AppCompatActivity {
                         });
                     } else {
                         Toast.makeText(MessageActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
                     }
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null){
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
+        {
             imageUri = data.getData();
-
-            if (uploadTask != null && uploadTask.isInProgress()){
-                Toast.makeText(MessageActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
-            } else {
-                try {
-                    uploadImage();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        }
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            galleryAddPic();
+        }
+        if (uploadTask != null && uploadTask.isInProgress()){
+            Toast.makeText(MessageActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
         } else {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-
-            if (uploadTask != null && uploadTask.isInProgress()){
-                Toast.makeText(MessageActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
-            } else {
-                try {
-                    uploadImage();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                uploadImage();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
+    }
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.modify.jabber.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+        if(contentUri != null)
+        {
+            imageUri = contentUri;
         }
     }
     @Override

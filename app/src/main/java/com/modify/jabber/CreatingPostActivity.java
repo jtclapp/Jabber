@@ -1,10 +1,14 @@
 package com.modify.jabber;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -38,6 +43,7 @@ import com.google.firebase.storage.UploadTask;
 import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,10 +59,11 @@ public class CreatingPostActivity extends AppCompatActivity {
     CircleImageView toolbar_image_profile;
     TextView toolbar_username;
     private static final int IMAGE_REQUEST = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private Uri imageUri;
     FirebaseUser fuser;
     StorageReference storageReference;
-    String mUri,date,postid;
+    String mUri,date,postid,mCurrentPhotoPath;
     ProfileMedia editPost;
     DatabaseReference databaseReference, toolbarReference;
     HashMap<String, Object> hashMap;
@@ -161,7 +168,21 @@ public class CreatingPostActivity extends AppCompatActivity {
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openImage();
+                final AlertDialog.Builder builder = new AlertDialog.Builder(CreatingPostActivity.this);
+                builder.setIcon(R.mipmap.ic_launcher_color);
+                builder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dispatchTakePictureIntent();
+                    }
+                });
+                builder.setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        openImage();
+                    }
+                });
+                builder.show();
             }
         });
         // this will run if updating a already posted post.
@@ -222,7 +243,13 @@ public class CreatingPostActivity extends AppCompatActivity {
                         uploadedPhoto.setVisibility(View.VISIBLE);
                         pd.dismiss();
                         Toast.makeText(CreatingPostActivity.this,"Image uploaded Successfully!",Toast.LENGTH_SHORT).show();
-
+                        if(mCurrentPhotoPath != null) {
+                            File file = new File(mCurrentPhotoPath);
+                            if(file != null)
+                            {
+                                file.delete();
+                            }
+                        }
                     } else {
                         Toast.makeText(CreatingPostActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                         pd.dismiss();
@@ -237,6 +264,7 @@ public class CreatingPostActivity extends AppCompatActivity {
             });
         } else {
             Toast.makeText(CreatingPostActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
+            pd.dismiss();
         }
     }
 
@@ -244,19 +272,68 @@ public class CreatingPostActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null){
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
+        {
             imageUri = data.getData();
-
-            if (uploadTask != null && uploadTask.isInProgress()){
-                Toast.makeText(CreatingPostActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
-            } else {
-                try {
-                    uploadImage();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        }
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            galleryAddPic();
+        }
+        if (uploadTask != null && uploadTask.isInProgress()){
+            Toast.makeText(CreatingPostActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+        } else {
+            try {
+                uploadImage();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
+    }
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.modify.jabber.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+        if(contentUri != null)
+        {
+            imageUri = contentUri;
         }
     }
     @Override
