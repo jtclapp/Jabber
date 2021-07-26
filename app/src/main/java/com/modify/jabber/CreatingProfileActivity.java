@@ -81,7 +81,8 @@ public class CreatingProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(CreatingProfileActivity.this);
-                builder.setIcon(R.mipmap.ic_launcher_color);
+                builder.setTitle("Select An Image");
+                builder.setIcon(R.mipmap.ic_launcher_symbol);
                 builder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -154,7 +155,8 @@ public class CreatingProfileActivity extends AppCompatActivity {
     private void uploadImage() throws IOException {
 
         final ProgressDialog pd = new ProgressDialog(CreatingProfileActivity.this);
-        pd.setMessage("Uploading");
+        pd.setTitle("Uploading");
+        pd.setIcon(R.mipmap.ic_launcher_symbol);
         pd.show();
 
         if (imageUri != null){
