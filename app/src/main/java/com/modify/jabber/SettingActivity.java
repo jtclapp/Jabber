@@ -1,19 +1,18 @@
 package com.modify.jabber;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,18 +22,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.modify.jabber.model.Settings;
 import com.modify.jabber.model.User;
+
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class SettingActivity extends AppCompatActivity {
     CircleImageView toolbar_image_profile;
-    SharedPreferences prefs;
     TextView toolbar_username;
-    DatabaseReference toolbarReference;
+    DatabaseReference toolbarReference,databaseReference;
     FirebaseUser fuser;
-    int mDefaultColor;
+    int receivedColor,sentColor;
     Button received,sent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +70,22 @@ public class SettingActivity extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(getApplicationContext(),"Failed",Toast.LENGTH_SHORT).show();
             }
         });
-
-        mDefaultColor = ContextCompat.getColor(SettingActivity.this,R.color.black);
+        databaseReference = FirebaseDatabase.getInstance().getReference("Settings").child("Settings-" + fuser.getUid());
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Settings settings = snapshot.getValue(Settings.class);
+                receivedColor = Color.parseColor(settings.getReceivedColor());
+                sentColor = Color.parseColor(settings.getSentColor());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplicationContext(),"Failed",Toast.LENGTH_SHORT).show();
+            }
+        });
         received = findViewById(R.id.ChangeReceivedMessageColor);
         sent = findViewById(R.id.ChangeSendMessageColor);
         received.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +103,7 @@ public class SettingActivity extends AppCompatActivity {
     }
     public void openColorPickerForReceived()
     {
-        AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(this, mDefaultColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+        AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(this, receivedColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override
             public void onCancel(AmbilWarnaDialog dialog) {
 
@@ -99,16 +111,17 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void onOk(AmbilWarnaDialog dialog, int color) {
-                mDefaultColor = color;
-                prefs = getSharedPreferences("received",Context.MODE_PRIVATE);
-                prefs.edit().putInt("received",mDefaultColor).apply();
+                receivedColor = color;
+                HashMap<String,Object> hashMap = new HashMap<>();
+                hashMap.put("receivedColor", "#" + Integer.toHexString(receivedColor));
+                databaseReference.updateChildren(hashMap);
             }
         });
         colorPicker.show();
     }
     public void openColorPickerForSent()
     {
-        AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(this, mDefaultColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+        AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(this, sentColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override
             public void onCancel(AmbilWarnaDialog dialog) {
 
@@ -116,9 +129,10 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void onOk(AmbilWarnaDialog dialog, int color) {
-                mDefaultColor = color;
-                prefs = getSharedPreferences("sent",0);
-                prefs.edit().putInt("sent",mDefaultColor).apply();
+                sentColor = color;
+                HashMap<String,Object> hashMap = new HashMap<>();
+                hashMap.put("sentColor", "#" + Integer.toHexString(sentColor));
+                databaseReference.updateChildren(hashMap);
             }
         });
         colorPicker.show();

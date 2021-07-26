@@ -199,7 +199,7 @@ public class CreatingPostActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, IMAGE_REQUEST);
+        startActivityForResult(intent, 1);
     }
 
     private String getFileExtension(Uri uri){
@@ -274,11 +274,12 @@ public class CreatingPostActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null)
         {
             imageUri = data.getData();
         }
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if(requestCode == 2 && resultCode == RESULT_OK) {
+            // Making sure the user selected an image
             galleryAddPic();
         }
         if (uploadTask != null && uploadTask.isInProgress()){
@@ -323,7 +324,7 @@ public class CreatingPostActivity extends AppCompatActivity {
                         "com.modify.jabber.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                startActivityForResult(takePictureIntent, 2);
             }
         }
     }

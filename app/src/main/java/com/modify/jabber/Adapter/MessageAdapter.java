@@ -1,12 +1,15 @@
 package com.modify.jabber.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.modify.jabber.R;
 import com.modify.jabber.model.Chat;
+import com.modify.jabber.model.Settings;
 import com.modify.jabber.model.User;
 
 import java.util.ArrayList;
@@ -36,8 +40,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         private Context mContext;
         private List<Chat> mChat;
         private String imageurl;
-
-        DatabaseReference reference;
+        private DatabaseReference reference,databaseReference;
         FirebaseUser fuser;
 
         public MessageAdapter(Context mContext, List<Chat> mChat, String imageurl){
@@ -63,38 +66,37 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             Chat chat = mChat.get(position);
             String type = chat.getType();
-//            int color;
-//            Drawable buttonDrawable;
-//            GradientDrawable myGrad = (GradientDrawable)textView.getBackground();
-//            myGrad.setStroke(convertDpToPx(3), Color.RED);
-//            if(getItemViewType(position) == MSG_TYPE_RIGHT)
-//            {
-//                final SharedPreferences sharedPreferences = mContext.getSharedPreferences("sent",Context.MODE_PRIVATE);
-//                color = sharedPreferences.getInt("sent",0);
-//                if(color != 0) {
-//                    buttonDrawable = holder.show_message.getBackground();
-//                    buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-//                    DrawableCompat.setTint(buttonDrawable, color);
-//                    holder.image_text.setBackground(buttonDrawable);
-//                    buttonDrawable = holder.image_text.getBackground();
-//                    buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-//                    DrawableCompat.setTint(buttonDrawable, color);
-//                    holder.show_message.setBackground(buttonDrawable);
-//                }
-//            } else {
-//                final SharedPreferences sharedPreferences1 = mContext.getSharedPreferences("received",Context.MODE_PRIVATE);
-//                color = sharedPreferences1.getInt("received",0);
-//                if(color != 0) {
-//                    buttonDrawable = holder.show_message.getBackground();
-//                    buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-//                    DrawableCompat.setTint(buttonDrawable, color);
-//                    holder.image_text.setBackground(buttonDrawable);
-//                    buttonDrawable = holder.image_text.getBackground();
-//                    buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-//                    DrawableCompat.setTint(buttonDrawable, color);
-//                    holder.show_message.setBackground(buttonDrawable);
-//                }
-//            }
+
+            fuser = FirebaseAuth.getInstance().getCurrentUser();
+            databaseReference = FirebaseDatabase.getInstance().getReference("Settings").child("Settings-" + fuser.getUid());
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Settings settings = snapshot.getValue(Settings.class);
+                    GradientDrawable backgroundGradient;
+                    String receivedColor,sentColor;
+                    receivedColor = settings.getReceivedColor();
+                    sentColor = settings.getSentColor();
+                    if(getItemViewType(position) == MSG_TYPE_RIGHT)
+                    {
+                        backgroundGradient = (GradientDrawable)holder.image_text.getBackground();
+                        backgroundGradient.setColor(Color.parseColor(sentColor));
+
+                        backgroundGradient = (GradientDrawable)holder.show_message.getBackground();
+                        backgroundGradient.setColor(Color.parseColor(sentColor));
+                    } else {
+                        backgroundGradient = (GradientDrawable)holder.image_text.getBackground();
+                        backgroundGradient.setColor(Color.parseColor(receivedColor));
+
+                        backgroundGradient = (GradientDrawable)holder.show_message.getBackground();
+                        backgroundGradient.setColor(Color.parseColor(receivedColor));
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                }
+            });
 
             if(position >= 1)
             {

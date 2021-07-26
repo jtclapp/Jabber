@@ -2,18 +2,11 @@ package com.modify.jabber;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -62,10 +55,8 @@ import com.modify.jabber.Notifications.Token;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -386,7 +377,7 @@ public class MessageActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, IMAGE_REQUEST);
+        startActivityForResult(intent, 1);
     }
     private String getFileExtension(Uri uri){
         ContentResolver contentResolver = MessageActivity.this.getContentResolver();
@@ -475,11 +466,12 @@ public class MessageActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null)
         {
             imageUri = data.getData();
         }
-        else {
+        if(requestCode == 2 && resultCode == RESULT_OK) {
+            // Making sure the user selected an image
             galleryAddPic();
         }
         if (uploadTask != null && uploadTask.isInProgress()){
@@ -524,7 +516,7 @@ public class MessageActivity extends AppCompatActivity {
                         "com.modify.jabber.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                startActivityForResult(takePictureIntent, 2);
             }
         }
     }

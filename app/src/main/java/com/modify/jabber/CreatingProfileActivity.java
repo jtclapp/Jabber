@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
@@ -125,12 +123,16 @@ public class CreatingProfileActivity extends AppCompatActivity {
                 userDelete = dataSnapshot.getValue(User.class);
                     if (user.getImageURL().equals("default"))
                     {
-                        circleImageView.setBackground(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_black_logo_no_background_small));
+                        Glide.with(getApplicationContext()).load(R.mipmap.ic_launcher_color).circleCrop().into(circleImageView);
                     } else {
                         if(getApplicationContext() != null) {
                             Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(circleImageView);
                         }
-                        bio.setText(user.getBio());
+                        if(!user.getBio().equals("default bio"))
+                        {
+                            bio.setText(user.getBio());
+                            finish.setText("Update");
+                        }
                     }
                 }
             @Override
@@ -143,7 +145,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, IMAGE_REQUEST);
+        startActivityForResult(intent, 1);
     }
 
     private String getFileExtension(Uri uri){
@@ -179,6 +181,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
                         Uri downloadUri = task.getResult();
                         mUri = downloadUri.toString();
                         hashMap.put("imageURL", "" + mUri);
+                        databaseReference.updateChildren(hashMap);
                         Glide.with(getApplicationContext()).load(imageUri).centerCrop().into(circleImageView);
                         pd.dismiss();
                         Toast.makeText(CreatingProfileActivity.this,"Image uploaded Successfully!",Toast.LENGTH_SHORT).show();
@@ -202,6 +205,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
                 }
             });
         } else {
+            pd.dismiss();
             Toast.makeText(CreatingProfileActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
         }
     }
@@ -209,12 +213,13 @@ public class CreatingProfileActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null)
         {
             imageUri = data.getData();
         }
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            galleryAddPic();
+        if(requestCode == 2 && resultCode == RESULT_OK) {
+            // Making sure the user selected an image
+                galleryAddPic();
         }
         if (uploadTask != null && uploadTask.isInProgress()){
             Toast.makeText(CreatingProfileActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
@@ -251,6 +256,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
+                Toast.makeText(CreatingProfileActivity.this, "...", Toast.LENGTH_SHORT).show();
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
@@ -258,7 +264,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
                         "com.modify.jabber.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                startActivityForResult(takePictureIntent, 2);
             }
         }
     }

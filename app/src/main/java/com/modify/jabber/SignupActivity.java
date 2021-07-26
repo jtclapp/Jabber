@@ -28,7 +28,7 @@ public class SignupActivity extends AppCompatActivity {
     EditText username,email,password;
     Button btn_register;
     FirebaseAuth auth;
-    DatabaseReference reference;
+    DatabaseReference reference,databaseReference;
     TextView show;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,16 +98,25 @@ public class SignupActivity extends AppCompatActivity {
                     hashMap.put("status", "offline");
                     hashMap.put("search",username.toLowerCase());
                     hashMap.put("bio","default bio");
-
                     reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful())
                             {
-                                Intent intent = new Intent(SignupActivity.this,CreatingProfileActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
+                                databaseReference = FirebaseDatabase.getInstance().getReference("Settings").child("Settings-" + userid);
+                                HashMap<String,String> hash = new HashMap<>();
+                                hash.put("id",userid);
+                                hash.put("sentColor","#FFA500");
+                                hash.put("receivedColor","#0BDA51");
+                                databaseReference.setValue(hash).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Intent intent = new Intent(SignupActivity.this,CreatingProfileActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
                             }
                         }
                     });

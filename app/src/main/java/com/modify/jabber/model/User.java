@@ -8,7 +8,6 @@ public class User implements Serializable
     private String username;
     private String imageURL;
     private String status;
-    private String typing;
     private String search;
     private String bio;
 

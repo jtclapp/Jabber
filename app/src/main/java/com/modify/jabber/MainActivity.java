@@ -10,14 +10,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -44,8 +42,6 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
-
-    private Context mContext= MainActivity.this;
     private static final int REQUEST = 112;
     CircleImageView profile_image;
     TextView username;
@@ -71,16 +67,14 @@ public class MainActivity extends AppCompatActivity {
         {
             String[] PERMISSIONS = {Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                     Manifest.permission.CAMERA,Manifest.permission.ACCESS_NETWORK_STATE,Manifest.permission.INTERNET};
-            if (!hasPermissions(mContext, PERMISSIONS))
+            if (!hasPermissions(MainActivity.this, PERMISSIONS))
             {
-                ActivityCompat.requestPermissions((Activity) mContext, PERMISSIONS, REQUEST );
+                ActivityCompat.requestPermissions((Activity) MainActivity.this, PERMISSIONS, REQUEST );
             }
             else
             {
                 //do here
             }
-        } else {
-            //do here
         }
 
         if(reference == null || firebaseUser == null)

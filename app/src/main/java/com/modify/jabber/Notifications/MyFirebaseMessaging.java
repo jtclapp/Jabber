@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.modify.jabber.MessageActivity;
-import com.modify.jabber.R;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
 
