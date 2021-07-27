@@ -237,31 +237,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("date",currentDate());
         reference.child("Chats").push().setValue(hashMap);
 
-
-        // add user to chat fragment
-        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
-                .child(fuser.getUid())
-                .child(userid);
-
-        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()){
-                    chatRef.child("id").setValue(userid);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        final DatabaseReference chatRefReceiver = FirebaseDatabase.getInstance().getReference("Chatlist")
-                .child(userid)
-                .child(fuser.getUid());
-        chatRefReceiver.child("id").setValue(fuser.getUid());
-
+        addUserToChatFragment();
         final String msg = message;
 
         reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
@@ -416,6 +392,7 @@ public class MessageActivity extends AppCompatActivity {
                                     hashMap.put("isseen", false);
                                     hashMap.put("date",currentDate());
                                     databaseReference.child("Chats").push().setValue(hashMap);
+                                    addUserToChatFragment();
                                     pd.dismiss();
                                     final String msg = "Sent a photo...";
                                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
@@ -544,6 +521,32 @@ public class MessageActivity extends AppCompatActivity {
                 Toast.makeText(MessageActivity.this,"Failed",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void addUserToChatFragment()
+    {
+        // add user to chat fragment
+        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
+                .child(fuser.getUid())
+                .child(userid);
+
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()){
+                    chatRef.child("id").setValue(userid);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference chatRefReceiver = FirebaseDatabase.getInstance().getReference("Chatlist")
+                .child(userid)
+                .child(fuser.getUid());
+        chatRefReceiver.child("id").setValue(fuser.getUid());
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

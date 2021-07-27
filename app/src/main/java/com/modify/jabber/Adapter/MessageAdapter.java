@@ -74,20 +74,25 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Settings settings = snapshot.getValue(Settings.class);
                     GradientDrawable backgroundGradient;
-                    String receivedColor,sentColor;
+                    String receivedColor,sentColor,receivedTextColor,sentTextColor;
                     receivedColor = settings.getReceivedColor();
                     sentColor = settings.getSentColor();
+                    receivedTextColor = settings.getReceivedTextColor();
+                    sentTextColor = settings.getSentTextColor();
+
                     if(getItemViewType(position) == MSG_TYPE_RIGHT)
                     {
                         backgroundGradient = (GradientDrawable)holder.image_text.getBackground();
                         backgroundGradient.setColor(Color.parseColor(sentColor));
 
+                        holder.show_message.setTextColor(Color.parseColor(sentTextColor));
                         backgroundGradient = (GradientDrawable)holder.show_message.getBackground();
                         backgroundGradient.setColor(Color.parseColor(sentColor));
                     } else {
                         backgroundGradient = (GradientDrawable)holder.image_text.getBackground();
                         backgroundGradient.setColor(Color.parseColor(receivedColor));
 
+                        holder.show_message.setTextColor(Color.parseColor(receivedTextColor));
                         backgroundGradient = (GradientDrawable)holder.show_message.getBackground();
                         backgroundGradient.setColor(Color.parseColor(receivedColor));
                     }

@@ -67,7 +67,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 Glide.with(mContext).load(user.getImageURL()).centerCrop().into(holder.profile_image);
             }
         }
-
         if (ischat){
             lastMessage(user.getId(), holder.last_msg);
         } else {
