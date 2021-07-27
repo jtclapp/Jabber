@@ -58,8 +58,6 @@ public class CreatingPostActivity extends AppCompatActivity {
     ImageView photo,uploadedPhoto;
     CircleImageView toolbar_image_profile;
     TextView toolbar_username;
-    private static final int IMAGE_REQUEST = 1;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private Uri imageUri;
     FirebaseUser fuser;
     StorageReference storageReference;

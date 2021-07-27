@@ -6,6 +6,10 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,6 +58,7 @@ import com.modify.jabber.Notifications.MyResponse;
 import com.modify.jabber.Notifications.Sender;
 import com.modify.jabber.Notifications.Token;
 import com.modify.jabber.model.Chat;
+import com.modify.jabber.model.Settings;
 import com.modify.jabber.model.User;
 
 import java.io.File;
@@ -75,7 +81,7 @@ public class MessageActivity extends AppCompatActivity {
     CircleImageView profile_image;
     TextView username;
     FirebaseUser fuser;
-    DatabaseReference reference;
+    DatabaseReference reference,databaseReference;
     StorageReference storageReference;
     ImageButton btn_send,btn_image;
     EditText text_send;
@@ -88,8 +94,6 @@ public class MessageActivity extends AppCompatActivity {
     APIService apiService;
     EditText search_messages;
     boolean notify = false;
-    private static final int IMAGE_REQUEST = 1;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private Uri imageUri;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
 
@@ -204,8 +208,8 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
         seenMessage(userid);
+        setColorOfButtons();
     }
-
     private void seenMessage(final String userid){
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         seenListener = reference.addValueEventListener(new ValueEventListener() {
@@ -227,7 +231,6 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
-
     private void sendMessage(String sender, final String receiver, String message){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -322,7 +325,6 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
-
     private void readMessages(final String myid, final String userid, final String imageurl){
         mchat = new ArrayList<>();
 
@@ -531,12 +533,30 @@ public class MessageActivity extends AppCompatActivity {
             imageUri = contentUri;
         }
     }
+    private void setColorOfButtons()
+    {
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Settings").child("Settings-" + fuser.getUid());
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String sentColor;
+                Settings settings = snapshot.getValue(Settings.class);
+                sentColor = settings.getSentColor();
+                    btn_image.getBackground().setColorFilter(Color.parseColor(sentColor), PorterDuff.Mode.SRC_IN);
+                    btn_send.getBackground().setColorFilter(Color.parseColor(sentColor), PorterDuff.Mode.SRC_IN);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MessageActivity.this,"Failed",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.message_menu, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){

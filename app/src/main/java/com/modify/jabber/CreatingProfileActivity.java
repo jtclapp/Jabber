@@ -53,8 +53,6 @@ public class CreatingProfileActivity extends AppCompatActivity {
     CircleImageView circleImageView;
     DatabaseReference databaseReference;
     HashMap<String, Object> hashMap;
-    private static final int IMAGE_REQUEST = 1;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private Uri imageUri;
     FirebaseUser fuser;
     User userDelete;
@@ -69,7 +67,6 @@ public class CreatingProfileActivity extends AppCompatActivity {
         finish = findViewById(R.id.FinishSignUp);
         bio = findViewById(R.id.Bio);
         circleImageView = findViewById(R.id.CreateProfileImage);
-
         hashMap = new HashMap<>();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
