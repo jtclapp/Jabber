@@ -37,35 +37,54 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
     <TextView
-        android:id="@+id/SettingSpacing1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
+        android:id="@+id/ColorTitle"
+        android:layout_marginTop="10dp"
         android:layout_below="@+id/bar_layout4"
-        android:textStyle="bold"
+        android:text="Color Layout Options:"
+        android:textSize="18sp"
         android:textColor="@color/black"
-        android:text="Jabber wants to customize your experience to your liking. Click the links below to change the color of received messages, and sent messages."/>
+        android:textStyle="bold"/>
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ChangeReceivedMessageColor"
-        android:layout_below="@+id/SettingSpacing1"
-        android:text="Change the color of received messages"
-        android:textColor="@color/link_blue"
-        android:layout_marginLeft="25dp"
-        android:textSize="12dp"
-        android:textStyle="italic"
+        android:layout_below="@+id/ColorTitle"
+        android:text="Background color of received messages"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dp"
+        android:textSize="14sp"
+        android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
         android:background="@null"/>
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ChangeReceivedTextColor"
+        android:layout_below="@+id/ChangeReceivedMessageColor"
+        android:text="Text color of received messages"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
+        android:background="@null"/>
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ChangeSendMessageColor"
-        android:layout_below="@+id/ChangeReceivedMessageColor"
-        android:text="Change the color of sent messages"
-        android:textColor="@color/link_blue"
-        android:layout_marginLeft="25dp"
-        android:textSize="12dp"
-        android:textStyle="italic"
+        android:layout_below="@+id/ChangeReceivedTextColor"
+        android:text="Background color of sent messages"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
+        android:background="@null"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ChangeSendTextColor"
+        android:layout_below="@+id/ChangeSendMessageColor"
+        android:text="Text color of sent messages"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
         android:background="@null"/>
 </RelativeLayout>

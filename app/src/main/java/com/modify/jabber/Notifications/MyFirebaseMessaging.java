@@ -43,7 +43,6 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
             }
         }
     }
-
     private void sendOreoNotification(RemoteMessage remoteMessage){
         String user = remoteMessage.getData().get("user");
         String icon = remoteMessage.getData().get("icon");

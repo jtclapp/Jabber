@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,8 +37,8 @@ public class SettingActivity extends AppCompatActivity {
     TextView toolbar_username;
     DatabaseReference toolbarReference,databaseReference;
     FirebaseUser fuser;
-    int receivedColor,sentColor;
-    Button received,sent;
+    int receivedColor,sentColor,receivedTextColor,sentTextColor;
+    Button received,sent,receivedText,sentText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +82,8 @@ public class SettingActivity extends AppCompatActivity {
                 Settings settings = snapshot.getValue(Settings.class);
                 receivedColor = Color.parseColor(settings.getReceivedColor());
                 sentColor = Color.parseColor(settings.getSentColor());
+                receivedTextColor = Color.parseColor(settings.getReceivedTextColor());
+                sentTextColor = Color.parseColor(settings.getSentTextColor());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -88,6 +92,9 @@ public class SettingActivity extends AppCompatActivity {
         });
         received = findViewById(R.id.ChangeReceivedMessageColor);
         sent = findViewById(R.id.ChangeSendMessageColor);
+        receivedText = findViewById(R.id.ChangeReceivedTextColor);
+        sentText = findViewById(R.id.ChangeSendTextColor);
+
         received.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,6 +105,18 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 openColorPickerForSent();
+            }
+        });
+        receivedText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openColorPickerForReceivedText();
+            }
+        });
+        sentText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openColorPickerForSentText();
             }
         });
     }
@@ -132,6 +151,42 @@ public class SettingActivity extends AppCompatActivity {
                 sentColor = color;
                 HashMap<String,Object> hashMap = new HashMap<>();
                 hashMap.put("sentColor", "#" + Integer.toHexString(sentColor));
+                databaseReference.updateChildren(hashMap);
+            }
+        });
+        colorPicker.show();
+    }
+    public void openColorPickerForReceivedText()
+    {
+        AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(this, receivedTextColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {
+
+            }
+
+            @Override
+            public void onOk(AmbilWarnaDialog dialog, int color) {
+                receivedTextColor = color;
+                HashMap<String,Object> hashMap = new HashMap<>();
+                hashMap.put("receivedTextColor", "#" + Integer.toHexString(receivedTextColor));
+                databaseReference.updateChildren(hashMap);
+            }
+        });
+        colorPicker.show();
+    }
+    public void openColorPickerForSentText()
+    {
+        AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(this, sentTextColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {
+
+            }
+
+            @Override
+            public void onOk(AmbilWarnaDialog dialog, int color) {
+                sentTextColor = color;
+                HashMap<String,Object> hashMap = new HashMap<>();
+                hashMap.put("sentTextColor", "#" + Integer.toHexString(sentTextColor));
                 databaseReference.updateChildren(hashMap);
             }
         });

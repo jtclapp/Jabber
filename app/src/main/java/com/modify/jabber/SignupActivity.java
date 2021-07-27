@@ -108,6 +108,8 @@ public class SignupActivity extends AppCompatActivity {
                                 hash.put("id",userid);
                                 hash.put("sentColor","#FFA500");
                                 hash.put("receivedColor","#0BDA51");
+                                hash.put("sentTextColor","#FFFFFF");
+                                hash.put("receivedTextColor","#FFFFFF");
                                 databaseReference.setValue(hash).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
