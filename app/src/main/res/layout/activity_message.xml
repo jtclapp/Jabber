@@ -46,9 +46,42 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom"
+        android:layout_above="@+id/suggestionButton1"
         android:layout_below="@id/search_messages" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:id="@+id/suggestionButton1"
+        android:background="@drawable/rounded_button"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:layout_above="@id/bottom"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:backgroundTint="@color/gray"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:id="@+id/suggestionButton2"
+        android:background="@drawable/rounded_button"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:layout_above="@id/bottom"
+        android:layout_toLeftOf="@+id/suggestionButton1"
+        android:visibility="gone"
+        android:backgroundTint="@color/gray"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:id="@+id/suggestionButton3"
+        android:background="@drawable/rounded_button"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:layout_above="@id/bottom"
+        android:layout_toRightOf="@+id/suggestionButton1"
+        android:visibility="gone"
+        android:backgroundTint="@color/gray"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:padding="5dp"
@@ -56,14 +89,12 @@
         android:background="#ffff"
         android:layout_alignParentBottom="true"
         android:layout_height="wrap_content">
-
         <ImageButton
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:background="@drawable/ic_image_action"
             android:id="@+id/btn_send_image"
             android:layout_alignParentStart="true" />
-
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

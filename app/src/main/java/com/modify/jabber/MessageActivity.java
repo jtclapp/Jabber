@@ -18,20 +18,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,6 +49,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.google.mlkit.nl.smartreply.SmartReply;
+import com.google.mlkit.nl.smartreply.SmartReplyGenerator;
+import com.google.mlkit.nl.smartreply.SmartReplySuggestion;
+import com.google.mlkit.nl.smartreply.SmartReplySuggestionResult;
+import com.google.mlkit.nl.smartreply.TextMessage;
 import com.modify.jabber.Adapter.MessageAdapter;
 import com.modify.jabber.Fragments.APIService;
 import com.modify.jabber.Notifications.Client;
@@ -55,6 +64,7 @@ import com.modify.jabber.Notifications.Token;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.Settings;
 import com.modify.jabber.model.User;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -64,6 +74,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -80,12 +91,14 @@ public class MessageActivity extends AppCompatActivity {
     EditText text_send;
     MessageAdapter messageAdapter;
     List<Chat> mchat;
+    List<TextMessage> conversation;
     RecyclerView recyclerView;
     Intent intent;
     ValueEventListener seenListener;
     String userid,mCurrentPhotoPath;
     APIService apiService;
     EditText search_messages;
+    Button suggestion1,suggestion2,suggestion3;
     boolean notify = false;
     private Uri imageUri;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
@@ -108,6 +121,10 @@ public class MessageActivity extends AppCompatActivity {
         btn_send = findViewById(R.id.btn_send);
         btn_image = findViewById(R.id.btn_send_image);
         text_send = findViewById(R.id.text_send);
+        suggestion1 = findViewById(R.id.suggestionButton1);
+        suggestion2 = findViewById(R.id.suggestionButton2);
+        suggestion3 = findViewById(R.id.suggestionButton3);
+
         search_messages = findViewById(R.id.search_messages);
         search_messages.addTextChangedListener(new TextWatcher() {
             @Override
@@ -134,6 +151,24 @@ public class MessageActivity extends AppCompatActivity {
         userid = intent.getStringExtra("userid");
         fuser = FirebaseAuth.getInstance().getCurrentUser();
 
+        suggestion1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendMessage(fuser.getUid(),userid,suggestion1.getText().toString());
+            }
+        });
+        suggestion2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendMessage(fuser.getUid(),userid,suggestion2.getText().toString());
+            }
+        });
+        suggestion3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendMessage(fuser.getUid(),userid,suggestion3.getText().toString());
+            }
+        });
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -296,21 +331,31 @@ public class MessageActivity extends AppCompatActivity {
     }
     private void readMessages(final String myid, final String userid, final String imageurl){
         mchat = new ArrayList<>();
-
+        conversation = new ArrayList<>();
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mchat.clear();
+                conversation.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
                     if (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
                             chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
                         mchat.add(chat);
                     }
+                    if(chat.getReceiver().equals(myid) && chat.getSender().equals(userid))
+                    {
+                        conversation.add(TextMessage.createForLocalUser(chat.getMessage(),System.currentTimeMillis()));
+                    }
+                    if(chat.getReceiver().equals(userid) && chat.getSender().equals(myid))
+                    {
+                        conversation.add(TextMessage.createForRemoteUser(chat.getMessage(),System.currentTimeMillis(),userid));
+                    }
                     messageAdapter = new MessageAdapter(getApplicationContext(), mchat, imageurl);
                     recyclerView.setAdapter(messageAdapter);
                 }
+                getSmartReply();
             }
 
             @Override
@@ -521,6 +566,55 @@ public class MessageActivity extends AppCompatActivity {
                 Toast.makeText(MessageActivity.this,"Failed",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void getSmartReply()
+    {
+        SmartReplyGenerator smartReply = SmartReply.getClient();
+        smartReply.suggestReplies(conversation)
+                .addOnSuccessListener(new OnSuccessListener<SmartReplySuggestionResult>() {
+                    @Override
+                    public void onSuccess(SmartReplySuggestionResult replySuggestionResult) {
+                        if (replySuggestionResult.getStatus() == SmartReplySuggestionResult.STATUS_NOT_SUPPORTED_LANGUAGE) {
+                            suggestion1.setVisibility(View.GONE);
+                            suggestion2.setVisibility(View.GONE);
+                            suggestion3.setVisibility(View.GONE);
+
+                        } else if (replySuggestionResult.getStatus() == SmartReplySuggestionResult.STATUS_SUCCESS) {
+                            suggestion1.setText("");
+                            suggestion2.setText("");
+                            suggestion3.setText("");
+                            for (SmartReplySuggestion suggestion : replySuggestionResult.getSuggestions()) {
+                                String replyText = suggestion.getText();
+                                if(suggestion1.getText().toString().equals(""))
+                                {
+                                    suggestion1.setText(replyText);
+                                    continue;
+                                }
+                                if(suggestion2.getText().toString().equals(""))
+                                {
+                                    suggestion2.setText(replyText);
+                                    continue;
+                                }
+                                if(suggestion3.getText().toString().equals(""))
+                                {
+                                    suggestion3.setText(replyText);
+                                    continue;
+                                }
+                            }
+                            suggestion1.setVisibility(View.VISIBLE);
+                            suggestion2.setVisibility(View.VISIBLE);
+                            suggestion3.setVisibility(View.VISIBLE);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        suggestion1.setVisibility(View.GONE);
+                        suggestion2.setVisibility(View.GONE);
+                        suggestion3.setVisibility(View.GONE);
+                    }
+                });
     }
     private void addUserToChatFragment()
     {
