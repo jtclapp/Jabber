@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.modify.jabber.Fragments.ChatFragment;
 import com.modify.jabber.Fragments.ProfileFragment;
+import com.modify.jabber.Fragments.ThreadFragment;
 import com.modify.jabber.Fragments.UserFragment;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
@@ -130,14 +131,15 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 viewPagerAdapter.addFragment(new UserFragment(), "Users");
+                viewPagerAdapter.addFragment(new ThreadFragment(), "Threads");
                 viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
 
                 viewPager.setAdapter(viewPagerAdapter);
 
                 tabLayout.setupWithViewPager(viewPager);
-                if(sendToProfile == 2)
+                if(sendToProfile == 3)
                 {
-                    viewPager.setCurrentItem(2);
+                    viewPager.setCurrentItem(3);
                 }
             }
 

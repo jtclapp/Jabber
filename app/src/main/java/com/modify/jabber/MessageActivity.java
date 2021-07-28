@@ -137,7 +137,6 @@ public class MessageActivity extends AppCompatActivity {
             }
             @Override
             public void afterTextChanged(Editable editable) {
-
                 searchMessages(editable.toString());
             }
         });

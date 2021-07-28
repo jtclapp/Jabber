@@ -135,7 +135,7 @@ public class CreatingPostActivity extends AppCompatActivity {
                     databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
                     databaseReference.child(editPost.getId()).updateChildren(hash);
                     Intent editStart = new Intent(CreatingPostActivity.this, MainActivity.class);
-                    editStart.putExtra("viewProfile",2);
+                    editStart.putExtra("viewProfile",3);
                     startActivity(editStart);
                 } else {
                     if (mUri == null) {
@@ -156,7 +156,7 @@ public class CreatingPostActivity extends AppCompatActivity {
                         hashMap.put("date", date);
                         databaseReference.child(postid).setValue(hashMap);
                         Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
-                        start.putExtra("viewProfile",2);
+                        start.putExtra("viewProfile",3);
                         startActivity(start);
                     }
                 }

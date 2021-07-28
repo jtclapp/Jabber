@@ -23,6 +23,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.modify.jabber.Adapter.UserAdapter;
 import com.modify.jabber.R;
+import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class UserFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                searchUsers(charSequence.toString().toLowerCase());
+                searchUsers(charSequence.toString());
             }
 
             @Override
@@ -75,36 +76,15 @@ public class UserFragment extends Fragment {
     }
 
     private void searchUsers(String s) {
-
-        final FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
-        Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("search")
-                .startAt(s)
-                .endAt(s+"\uf8ff");
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mUsers.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    User user = snapshot.getValue(User.class);
-
-                    assert user != null;
-                    assert fuser != null;
-                    if (!user.getId().equals(fuser.getUid())){
-                        mUsers.add(user);
-                    }
-                }
-
-                userAdapter = new UserAdapter(getContext(), mUsers, false);
-                recyclerView.setAdapter(userAdapter);
+        ArrayList<User> filteredList = new ArrayList<>();
+        for(User user : mUsers)
+        {
+            if(user.getUsername().toLowerCase().contains(s.toLowerCase()))
+            {
+                filteredList.add(user);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
+        }
+        userAdapter.filterList(filteredList);
     }
     private void readUsers() {
 

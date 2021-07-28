@@ -25,6 +25,7 @@ import com.modify.jabber.ViewUserProfile;
 import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -174,5 +175,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
             }
         });
+    }
+    public void filterList(ArrayList<User> filteredList)
+    {
+        mUsers = filteredList;
+        notifyDataSetChanged();
     }
 }
