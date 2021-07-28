@@ -31,8 +31,8 @@
             android:layout_height="40dp"
             android:id="@+id/Your_profile_image"
             android:src="@mipmap/ic_launcher"
-            android:layout_below="@id/message_date"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/message_date"/>
 
         <TextView
             android:layout_width="wrap_content"

@@ -40,13 +40,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         private Context mContext;
         private List<Chat> mChat;
         private String imageurl;
+        private String yourImageurl;
         private DatabaseReference reference,databaseReference;
         FirebaseUser fuser;
 
-        public MessageAdapter(Context mContext, List<Chat> mChat, String imageurl){
+        public MessageAdapter(Context mContext, List<Chat> mChat, String imageurl, String yourImageurl){
             this.mChat = mChat;
             this.mContext = mContext;
             this.imageurl = imageurl;
+            this.yourImageurl = yourImageurl;
         }
 
         @NonNull
@@ -128,7 +130,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                         if (user.getImageURL().equals("default")) {
                             holder.your_profile_image.setImageResource(R.mipmap.ic_launcher);
                         } else {
-                            Glide.with(mContext).load(user.getImageURL()).centerCrop().into(holder.your_profile_image);
+                            Glide.with(mContext).load(yourImageurl).centerCrop().into(holder.your_profile_image);
                         }
                 }
                 @Override

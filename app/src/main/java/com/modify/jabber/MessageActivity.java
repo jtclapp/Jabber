@@ -95,7 +95,7 @@ public class MessageActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     Intent intent;
     ValueEventListener seenListener;
-    String userid,mCurrentPhotoPath;
+    String userid, mCurrentPhotoPath, yourImageUrl;
     APIService apiService;
     EditText search_messages;
     Button suggestion1,suggestion2,suggestion3;
@@ -168,6 +168,14 @@ public class MessageActivity extends AppCompatActivity {
                 sendMessage(fuser.getUid(),userid,suggestion3.getText().toString());
             }
         });
+        username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ViewUserProfile.class);
+                intent.putExtra("UserID", userid);
+                startActivity(intent);
+            }
+        });
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -204,6 +212,19 @@ public class MessageActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                yourImageUrl = user.getImageURL();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MessageActivity.this,"Failed",Toast.LENGTH_SHORT).show();
+            }
+        });
         storageReference = FirebaseStorage.getInstance().getReference("ChatImages-" + userid);
         reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
         reference.addValueEventListener(new ValueEventListener() {
@@ -214,24 +235,13 @@ public class MessageActivity extends AppCompatActivity {
                 if (user.getImageURL().equals("default")){
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 } else {
-                    //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
                     Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
                 }
-
                 readMessages(fuser.getUid(), userid, user.getImageURL());
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
-        username.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), ViewUserProfile.class);
-                intent.putExtra("UserID", userid);
-                startActivity(intent);
             }
         });
         seenMessage(userid);
@@ -358,7 +368,7 @@ public class MessageActivity extends AppCompatActivity {
                         conversation.add(TextMessage.createForLocalUser(chat.getMessage(),System.currentTimeMillis()));
                     }
                 }
-                messageAdapter = new MessageAdapter(getApplicationContext(), mchat, imageurl);
+                messageAdapter = new MessageAdapter(getApplicationContext(), mchat, imageurl, yourImageUrl);
                 recyclerView.setAdapter(messageAdapter);
                 getSmartReply(conversation);
             }
@@ -554,7 +564,6 @@ public class MessageActivity extends AppCompatActivity {
     }
     private void setColorOfButtons()
     {
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference("Settings").child("Settings-" + fuser.getUid());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
