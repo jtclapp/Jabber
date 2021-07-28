@@ -346,18 +346,23 @@ public class MessageActivity extends AppCompatActivity {
                     }
                     if(chat.getReceiver().equals(myid) && chat.getSender().equals(userid))
                     {
-                        conversation.add(TextMessage.createForLocalUser(chat.getMessage(),System.currentTimeMillis()));
+                        suggestion1.setVisibility(View.VISIBLE);
+                        suggestion2.setVisibility(View.VISIBLE);
+                        suggestion3.setVisibility(View.VISIBLE);
+                        conversation.add(TextMessage.createForRemoteUser(chat.getMessage(),System.currentTimeMillis(),userid));
                     }
                     if(chat.getReceiver().equals(userid) && chat.getSender().equals(myid))
                     {
-                        conversation.add(TextMessage.createForRemoteUser(chat.getMessage(),System.currentTimeMillis(),userid));
+                        suggestion1.setVisibility(View.GONE);
+                        suggestion2.setVisibility(View.GONE);
+                        suggestion3.setVisibility(View.GONE);
+                        conversation.add(TextMessage.createForLocalUser(chat.getMessage(),System.currentTimeMillis()));
                     }
-                    messageAdapter = new MessageAdapter(getApplicationContext(), mchat, imageurl);
-                    recyclerView.setAdapter(messageAdapter);
                 }
-                getSmartReply();
+                messageAdapter = new MessageAdapter(getApplicationContext(), mchat, imageurl);
+                recyclerView.setAdapter(messageAdapter);
+                getSmartReply(conversation);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -567,10 +572,10 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
-    private void getSmartReply()
+    private void getSmartReply(List<TextMessage> conv)
     {
         SmartReplyGenerator smartReply = SmartReply.getClient();
-        smartReply.suggestReplies(conversation)
+        smartReply.suggestReplies(conv)
                 .addOnSuccessListener(new OnSuccessListener<SmartReplySuggestionResult>() {
                     @Override
                     public void onSuccess(SmartReplySuggestionResult replySuggestionResult) {
@@ -601,9 +606,6 @@ public class MessageActivity extends AppCompatActivity {
                                     continue;
                                 }
                             }
-                            suggestion1.setVisibility(View.VISIBLE);
-                            suggestion2.setVisibility(View.VISIBLE);
-                            suggestion3.setVisibility(View.VISIBLE);
                         }
                     }
                 })
