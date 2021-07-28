@@ -38,16 +38,11 @@
 
 public class ProfileFragment extends Fragment {
 
-    CircleImageView image_profile;
-    TextView username,bio;
     DatabaseReference reference;
     FirebaseUser fuser;
-    StorageReference storageReference;
     ProfileAdapter profileAdapter;
     RecyclerView recyclerView;
     List<ProfileMedia> mprofile;
-    ImageButton create;
-    TextView editProfile;
     LinearLayoutManager linearLayoutManager;
 
 
@@ -57,61 +52,14 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        image_profile = view.findViewById(R.id.profile_image);
-        editProfile = view.findViewById(R.id.edit_profile);
-        bio = view.findViewById(R.id.ProfileBio);
-        username = view.findViewById(R.id.username);
         recyclerView = view.findViewById(R.id.recycler_view_Profile);
-        create = view.findViewById(R.id.CreatePost);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
-
         fuser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
 
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getUsername());
-                if(user.getImageURL() == null)
-                {
-                    image_profile.setImageResource(R.mipmap.ic_launcher);
-                }
-                else {
-                    if (user.getImageURL().equals("default")) {
-                        image_profile.setImageResource(R.mipmap.ic_launcher);
-                        bio.setText(user.getBio());
-                    } else {
-                        if(getActivity() != null) {
-                            Glide.with(getActivity()).load(user.getImageURL()).centerCrop().into(image_profile);
-                        }
-                        bio.setText(user.getBio());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getContext(), CreatingPostActivity.class));
-            }
-        });
-        editProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), CreatingProfileActivity.class));
-            }
-        });
         readPosts();
         return view;
     }

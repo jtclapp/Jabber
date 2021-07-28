@@ -3,66 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
+    android:padding="6dp"
     android:background="#f8fbf8"
     tools:context=".Fragments.ProfileFragment"
     android:id="@+id/ProfileFragment">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="#f8fbf8">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/edit_profile"
-                android:layout_alignParentEnd="true"
-                android:text="Edit Profile"
-                android:textColor="@color/link_blue"/>
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:id="@+id/profile_image"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp"
-                android:src="@mipmap/ic_launcher"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="username"
-                android:layout_below="@id/profile_image"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:id="@+id/username"
-                android:textSize="18sp"
-                android:layout_marginBottom="15dp"/>
-            <ImageButton
-                android:id="@+id/CreatePost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/username"
-                android:layout_centerHorizontal="true"
-                android:background="@null"
-                android:layout_marginBottom="15dp"
-                android:src="@drawable/createpost"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/CreatePost"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/gray"
-                android:id="@+id/ProfileBio"
-                android:textSize="14sp"
-                android:layout_marginBottom="5dp"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_Profile"
                 android:layout_width="match_parent"
-                android:layout_height="472dp"
-                android:layout_below="@id/ProfileBio"
+                android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"/>
+
         </RelativeLayout>
 </LinearLayout>

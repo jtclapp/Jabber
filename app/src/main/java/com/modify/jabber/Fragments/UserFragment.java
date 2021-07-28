@@ -84,7 +84,9 @@ public class UserFragment extends Fragment {
                 filteredList.add(user);
             }
         }
-        userAdapter.filterList(filteredList);
+        if(!filteredList.isEmpty()) {
+            userAdapter.filterList(filteredList);
+        }
     }
     private void readUsers() {
 

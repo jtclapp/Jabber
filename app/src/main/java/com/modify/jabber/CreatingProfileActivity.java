@@ -108,7 +108,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
                     hashMap.put("bio",bio.getText().toString());
                     databaseReference.updateChildren(hashMap);
                     Intent start = new Intent(CreatingProfileActivity.this, MainActivity.class);
-                    start.putExtra("viewProfile",2);
+                    start.putExtra("viewProfile",3);
                     startActivity(start);
                 }
             }

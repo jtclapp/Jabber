@@ -589,17 +589,17 @@ public class MessageActivity extends AppCompatActivity {
                             suggestion3.setText("");
                             for (SmartReplySuggestion suggestion : replySuggestionResult.getSuggestions()) {
                                 String replyText = suggestion.getText();
-                                if(suggestion1.getText().toString().equals(""))
+                                if(suggestion1.getText().toString().equals("") && !replyText.equals(""))
                                 {
                                     suggestion1.setText(replyText);
                                     continue;
                                 }
-                                if(suggestion2.getText().toString().equals(""))
+                                if(suggestion2.getText().toString().equals("") && !replyText.equals(""))
                                 {
                                     suggestion2.setText(replyText);
                                     continue;
                                 }
-                                if(suggestion3.getText().toString().equals(""))
+                                if(suggestion3.getText().toString().equals("") && !replyText.equals(""))
                                 {
                                     suggestion3.setText(replyText);
                                     continue;

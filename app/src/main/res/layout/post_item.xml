@@ -4,10 +4,67 @@
     android:layout_height="wrap_content"
     android:background="#f8fbf8">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profileWall"
+        android:background="#f8fbf8">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:id="@+id/edit_profile"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:text="Edit Profile"
+            android:textColor="@color/link_blue"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/profile_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/edit_profile"
+            android:src="@mipmap/ic_launcher"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="username"
+            android:layout_below="@id/profile_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:id="@+id/username"
+            android:textSize="18sp"
+            android:layout_marginBottom="15dp"/>
+        <ImageButton
+            android:id="@+id/CreatePost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/username"
+            android:layout_centerHorizontal="true"
+            android:background="@null"
+            android:layout_marginBottom="15dp"
+            android:src="@drawable/createpost"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/CreatePost"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/gray"
+            android:id="@+id/ProfileBio"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/spacing"
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="30dp"
+        android:layout_below="@id/profileWall"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="35dp"
@@ -44,6 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        android:layout_marginTop="10dp"
         android:padding="2dp"
         android:src="@drawable/ic_image_black"
         android:scaleType="fitCenter"
@@ -52,7 +110,7 @@
     <TextView
         android:id="@+id/spacing2"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="12dp"
         android:layout_below="@+id/postImage"/>
 
     <TextView
@@ -63,7 +121,6 @@
         android:id="@+id/typed_post"
         android:textSize="18sp"
         android:textColor="@color/black"
-        android:padding="2dp"
         android:layout_below="@+id/spacing2"/>
     <TextView
         android:layout_width="wrap_content"

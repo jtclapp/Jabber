@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.modify.jabber.CreatingPostActivity;
+import com.modify.jabber.CreatingProfileActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
@@ -36,6 +40,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     private List<ProfileMedia> profileMediaList;
     private DatabaseReference reference;
     private StorageReference storageReference;
+    private FirebaseUser fuser;
 
     public ProfileAdapter(Context mContext, List<ProfileMedia> profileMediaList) {
         this.mContext = mContext;
@@ -55,6 +60,45 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         ProfileMedia profileMedia = profileMediaList.get(position);
         String type = profileMedia.getType();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(profileMedia.getSender());
+        if(position == profileMediaList.size() - 1)
+        {
+            fuser = FirebaseAuth.getInstance().getCurrentUser();
+            storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
+            reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    holder.bold_username.setText(user.getUsername());
+                    if(user.getImageURL() == null)
+                    {
+                        holder.image_profile.setImageResource(R.mipmap.ic_launcher);
+                    }
+                    else {
+                        if (user.getImageURL().equals("default")) {
+                            holder.image_profile.setImageResource(R.mipmap.ic_launcher);
+                            holder.bio.setText(user.getBio());
+                        } else {
+                            if(mContext.getApplicationContext() != null) {
+                                Glide.with(mContext.getApplicationContext()).load(user.getImageURL()).centerCrop().into(holder.image_profile);
+                            }
+                            holder.bio.setText(user.getBio());
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } else if(position != profileMediaList.size() - 1)
+        {
+            holder.bold_username.setVisibility(View.GONE);
+            holder.image_profile.setVisibility(View.GONE);
+            holder.bio.setVisibility(View.GONE);
+            holder.editProfile.setVisibility(View.GONE);
+            holder.create.setVisibility(View.GONE);
+        }
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,7 +138,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                 builder.show();
             }
         });
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -150,10 +193,11 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         return profileMediaList.size();
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView show_message, show_date,spacing;
+        public TextView show_message, show_date, spacing, editProfile;
         public ImageView image_text, menu;
-        public CircleImageView username_image;
-        public TextView username;
+        public CircleImageView username_image, image_profile;
+        public TextView username, bold_username, bio;
+        ImageButton create;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -164,6 +208,24 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             username = itemView.findViewById(R.id.YourUsername);
             username_image = itemView.findViewById(R.id.Your_profile_image);
             menu = itemView.findViewById(R.id.postMenu);
+            create = itemView.findViewById(R.id.CreatePost);
+            editProfile = itemView.findViewById(R.id.edit_profile);
+            bio = itemView.findViewById(R.id.ProfileBio);
+            bold_username = itemView.findViewById(R.id.username);
+            image_profile = itemView.findViewById(R.id.profile_image);
+
+            create.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mContext.startActivity(new Intent(mContext.getApplicationContext(), CreatingPostActivity.class));
+                }
+            });
+            editProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mContext.startActivity(new Intent(mContext.getApplicationContext(), CreatingProfileActivity.class));
+                }
+            });
         }
     }
 }
