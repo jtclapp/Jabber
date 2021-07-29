@@ -6,6 +6,7 @@
         <item name="android:colorPrimary">#303841</item>
         <item name="android:colorPrimaryDark">#303841</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme</item>
     </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -18,5 +19,9 @@
     <style name="PopupMenu" parent="ThemeOverlay.AppCompat.Dark">
         <item name="android:popupBackground">#303841</item>
         <item name="android:textColor">"#f8fbf8"</item>
+    </style>
+    <style name="itemTextStyle.AppTheme" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">"#f8fbf8"</item>
+        <item name="android:textSize">16sp</item>
     </style>
 </resources>

@@ -133,6 +133,9 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                     public void onClick(View view) {
                         PopupMenu popupMenu = new PopupMenu(mContext, holder.menu);
                         popupMenu.inflate(R.menu.postmenu);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            popupMenu.setForceShowIcon(true);
+                        }
                         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                             @Override
                             public boolean onMenuItemClick(MenuItem menuItem) {
