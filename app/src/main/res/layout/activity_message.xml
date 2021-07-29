@@ -7,28 +7,28 @@
     android:background="#f8fbf8"
     tools:context=".MessageActivity">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar2"
-            android:layout_width="match_parent"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#303841"
+        android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/MenuStyle">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/profile_image"/>
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#303841"
-            android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/MenuStyle">
+            android:id="@+id/username"
+            android:textSize="18sp"
+            android:textColor="#f8fbf8"
+            android:textStyle="bold"
+            android:layout_marginStart="25dp" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:id="@+id/profile_image"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/username"
-                android:textSize="18sp"
-                android:textColor="#f8fbf8"
-                android:textStyle="bold"
-                android:layout_marginStart="25dp" />
-
-        </androidx.appcompat.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <EditText
         android:layout_width="match_parent"
@@ -73,7 +73,7 @@
         android:padding="3dp"
         android:textColor="#f8fbf8"
         android:layout_above="@id/bottom"
-        android:layout_toLeftOf="@+id/suggestionButton1"
+        android:layout_toStartOf="@+id/suggestionButton1"
         android:visibility="gone"
         android:backgroundTint="#BEBEBE"/>
     <Button
@@ -85,7 +85,7 @@
         android:textColor="#f8fbf8"
         android:padding="3dp"
         android:layout_above="@id/bottom"
-        android:layout_toRightOf="@+id/suggestionButton1"
+        android:layout_toEndOf="@+id/suggestionButton1"
         android:visibility="gone"
         android:backgroundTint="#BEBEBE"/>
     <RelativeLayout
@@ -109,8 +109,8 @@
             android:id="@+id/text_send"
             android:background="@android:color/transparent"
             android:hint="Send a message..."
-            android:layout_toLeftOf="@id/btn_send"
-            android:layout_toRightOf="@id/btn_send_image"
+            android:layout_toStartOf="@id/btn_send"
+            android:layout_toEndOf="@id/btn_send_image"
             android:layout_centerVertical="true"/>
         <ImageButton
             android:layout_width="35dp"

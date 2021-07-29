@@ -416,82 +416,79 @@ public class MessageActivity extends AppCompatActivity {
     }
     private void uploadImage() throws IOException
     {
-                    final ProgressDialog pd = new ProgressDialog(MessageActivity.this);
-                    pd.setTitle("Uploading");
-                    pd.setIcon(R.mipmap.ic_launcher_symbol);
-                    pd.show();
+        final ProgressDialog pd = new ProgressDialog(MessageActivity.this);
+        pd.setTitle("Uploading");
+        pd.setIcon(R.mipmap.ic_launcher_symbol);
+        pd.show();
 
-                    if (imageUri != null){
-                        final  StorageReference fileReference = storageReference.child(System.currentTimeMillis()
-                                +"."+getFileExtension(imageUri));
+        if (imageUri != null){
+            final  StorageReference fileReference = storageReference.child(System.currentTimeMillis()
+                    +"."+getFileExtension(imageUri));
 
-                        uploadTask = fileReference.putFile(imageUri);
-                        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            uploadTask = fileReference.putFile(imageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()){
+                        throw  task.getException();
+                    }
+
+                    return  fileReference.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()){
+                        Uri downloadUri = task.getResult();
+                        String mUri = downloadUri.toString();
+
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("sender", fuser.getUid());
+                        hashMap.put("receiver", userid);
+                        hashMap.put("message","" + mUri);
+                        hashMap.put("type", "image");
+                        hashMap.put("isseen", false);
+                        hashMap.put("date",currentDate());
+                        databaseReference.child("Chats").push().setValue(hashMap);
+                        addUserToChatFragment();
+                        pd.dismiss();
+                        final String msg = "Sent a photo...";
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+                        reference.addValueEventListener(new ValueEventListener() {
                             @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if (!task.isSuccessful()){
-                                    throw  task.getException();
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                User user = dataSnapshot.getValue(User.class);
+                                if (notify) {
+                                    sendNotification(userid, user.getUsername(), msg);
                                 }
-
-                                return  fileReference.getDownloadUrl();
+                                notify = false;
                             }
-                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                             @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()){
-                                    Uri downloadUri = task.getResult();
-                                    String mUri = downloadUri.toString();
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                                    HashMap<String, Object> hashMap = new HashMap<>();
-                                    hashMap.put("sender", fuser.getUid());
-                                    hashMap.put("receiver", userid);
-                                    hashMap.put("message","" + mUri);
-                                    hashMap.put("type", "image");
-                                    hashMap.put("isseen", false);
-                                    hashMap.put("date",currentDate());
-                                    databaseReference.child("Chats").push().setValue(hashMap);
-                                    addUserToChatFragment();
-                                    pd.dismiss();
-                                    final String msg = "Sent a photo...";
-                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
-                                    reference.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            User user = dataSnapshot.getValue(User.class);
-                                            if (notify) {
-                                                sendNotification(userid, user.getUsername(), msg);
-                                            }
-                                            notify = false;
-                                        }
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                        }
-                                    });
-                                    if(mCurrentPhotoPath != null) {
-                                        File file = new File(mCurrentPhotoPath);
-                                        if(file != null)
-                                        {
-                                            file.delete();
-                                        }
-                                    }
-                                } else {
-                                    Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
-                                    pd.dismiss();
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(MessageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                pd.dismiss();
                             }
                         });
+                        if(mCurrentPhotoPath != null) {
+                            File file = new File(mCurrentPhotoPath);
+                            file.delete();
+                        }
                     } else {
-                        Toast.makeText(MessageActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(MessageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
+                }
+            });
+        } else {
+            Toast.makeText(MessageActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
+            pd.dismiss();
+        }
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -571,8 +568,8 @@ public class MessageActivity extends AppCompatActivity {
                 String sentColor;
                 Settings settings = snapshot.getValue(Settings.class);
                 sentColor = settings.getSentColor();
-                    btn_image.getBackground().setColorFilter(Color.parseColor(sentColor), PorterDuff.Mode.SRC_IN);
-                    btn_send.getBackground().setColorFilter(Color.parseColor(sentColor), PorterDuff.Mode.SRC_IN);
+                btn_image.getBackground().setColorFilter(Color.parseColor(sentColor), PorterDuff.Mode.SRC_IN);
+                btn_send.getBackground().setColorFilter(Color.parseColor(sentColor), PorterDuff.Mode.SRC_IN);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -611,7 +608,6 @@ public class MessageActivity extends AppCompatActivity {
                                 if(suggestion3.getText().toString().equals("") && !replyText.equals(""))
                                 {
                                     suggestion3.setText(replyText);
-                                    continue;
                                 }
                             }
                         }
@@ -706,8 +702,7 @@ public class MessageActivity extends AppCompatActivity {
     public String currentDate()
     {
         Calendar calendar = Calendar.getInstance();
-        String currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
-        return currentDate;
+        return DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
     }
     @Override
     protected void onResume() {

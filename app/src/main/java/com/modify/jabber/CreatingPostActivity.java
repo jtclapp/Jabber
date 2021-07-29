@@ -162,7 +162,6 @@ public class CreatingPostActivity extends AppCompatActivity {
                 }
             }
         });
-
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -245,10 +244,7 @@ public class CreatingPostActivity extends AppCompatActivity {
                         Toast.makeText(CreatingPostActivity.this,"Image uploaded Successfully!",Toast.LENGTH_SHORT).show();
                         if(mCurrentPhotoPath != null) {
                             File file = new File(mCurrentPhotoPath);
-                            if(file != null)
-                            {
-                                file.delete();
-                            }
+                            file.delete();
                         }
                     } else {
                         Toast.makeText(CreatingPostActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
@@ -267,7 +263,6 @@ public class CreatingPostActivity extends AppCompatActivity {
             pd.dismiss();
         }
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

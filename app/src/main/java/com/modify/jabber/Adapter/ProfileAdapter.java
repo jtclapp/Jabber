@@ -60,8 +60,14 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         ProfileMedia profileMedia = profileMediaList.get(position);
         String type = profileMedia.getType();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(profileMedia.getSender());
-        if(position == profileMediaList.size() - 1)
-        {
+
+        if (position == profileMediaList.size() - 1) {
+            holder.bold_username.setVisibility(View.VISIBLE);
+            holder.image_profile.setVisibility(View.VISIBLE);
+            holder.bio.setVisibility(View.VISIBLE);
+            holder.editProfile.setVisibility(View.VISIBLE);
+            holder.create.setVisibility(View.VISIBLE);
+
             fuser = FirebaseAuth.getInstance().getCurrentUser();
             storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
             reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
@@ -70,35 +76,34 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
                     holder.bold_username.setText(user.getUsername());
-                    if(user.getImageURL() == null)
-                    {
+                    if (user.getImageURL() == null) {
                         holder.image_profile.setImageResource(R.mipmap.ic_launcher);
-                    }
-                    else {
+                    } else {
                         if (user.getImageURL().equals("default")) {
                             holder.image_profile.setImageResource(R.mipmap.ic_launcher);
                             holder.bio.setText(user.getBio());
                         } else {
-                            if(mContext.getApplicationContext() != null) {
+                            if (mContext.getApplicationContext() != null) {
                                 Glide.with(mContext.getApplicationContext()).load(user.getImageURL()).centerCrop().into(holder.image_profile);
                             }
                             holder.bio.setText(user.getBio());
                         }
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
             });
-        } else if(position != profileMediaList.size() - 1)
-        {
-            holder.bold_username.setVisibility(View.GONE);
-            holder.image_profile.setVisibility(View.GONE);
-            holder.bio.setVisibility(View.GONE);
-            holder.editProfile.setVisibility(View.GONE);
-            holder.create.setVisibility(View.GONE);
         }
+        if(!profileMedia.getId().equals("")) {
+            holder.show_message.setVisibility(View.VISIBLE);
+            holder.show_date.setVisibility(View.VISIBLE);
+            holder.image_text.setVisibility(View.VISIBLE);
+            holder.menu.setVisibility(View.VISIBLE);
+            holder.username_image.setVisibility(View.VISIBLE);
+            holder.username.setVisibility(View.VISIBLE);
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,15 +119,14 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                             public void onClick(DialogInterface dialog, int which) {
                                 // Delete the post from Realtime database and Firebase storage
                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
-                                if(type.equals("image"))
-                                {
+                                if (type.equals("image")) {
                                     storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getMessage());
                                     storageReference.delete();
                                 }
                                 ref.child(profileMedia.getId()).removeValue();
                             }
                         });
-                        builder1.setNegativeButton("No",null);
+                        builder1.setNegativeButton("No", null);
                         builder1.show();
                     }
                 });
@@ -131,7 +135,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                     public void onClick(DialogInterface dialog, int which) {
                         // Send the user to the edit page...
                         Intent start = new Intent(mContext, CreatingPostActivity.class);
-                        start.putExtra("EditPost",profileMedia);
+                        start.putExtra("EditPost", profileMedia);
                         mContext.startActivity(start);
                     }
                 });
@@ -144,15 +148,13 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                 User user = dataSnapshot.getValue(User.class);
                 assert user.getUsername() != null;
                 holder.username.setText(user.getUsername());
-                if(user.getImageURL() == null)
-                {
+                if (user.getImageURL() == null) {
                     holder.username_image.setImageResource(R.mipmap.ic_launcher);
-                }
-                else {
+                } else {
                     if (user.getImageURL().equals("default")) {
                         holder.username_image.setImageResource(R.mipmap.ic_launcher);
                     } else {
-                            Glide.with(mContext.getApplicationContext()).load(user.getImageURL()).centerCrop().into(holder.username_image);
+                        Glide.with(mContext.getApplicationContext()).load(user.getImageURL()).centerCrop().into(holder.username_image);
                     }
                 }
             }
@@ -162,21 +164,17 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
             }
         });
-        if(type.equals("text"))
-        {
+        if (type.equals("text")) {
             holder.spacing.setVisibility(View.VISIBLE);
             holder.show_message.setVisibility(View.VISIBLE);
             holder.image_text.setVisibility(View.GONE);
             holder.show_message.setText(profileMedia.getCaption());
         }
 
-        if(type.equals("image"))
-        {
-            if(profileMedia.getCaption() == null)
-            {
+        if (type.equals("image")) {
+            if (profileMedia.getCaption() == null) {
                 holder.show_message.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 holder.show_message.setVisibility(View.VISIBLE);
                 holder.spacing.setVisibility(View.GONE);
             }
@@ -186,8 +184,11 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             holder.show_message.setText(profileMedia.getCaption());
         }
         holder.show_date.setText(profileMedia.getDate());
+        } else {
+            holder.image_text.setVisibility(View.VISIBLE);
+            holder.image_text.setImageResource(R.drawable.ic_black_logo___no_background);
+        }
     }
-
     @Override
     public int getItemCount() {
         return profileMediaList.size();

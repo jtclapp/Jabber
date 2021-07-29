@@ -36,14 +36,15 @@
         android:id="@+id/postSpacing"
         android:layout_width="match_parent"
         android:layout_height="60dp" />
+
     <ImageView
         android:id="@+id/PostedImage"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:adjustViewBounds="true"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/postSpacing"
-        android:src="@drawable/ic_black_logo___no_background"/>
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_black_logo___no_background" />
     <ImageButton
         android:layout_width="27dp"
         android:layout_height="27dp"
