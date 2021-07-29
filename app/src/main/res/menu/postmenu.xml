@@ -6,6 +6,6 @@
         app:showAsAction="never"/>
     <item android:id="@+id/edit"
         android:title="Edit"
-        app:showAsAction="never"/>
-
+        app:showAsAction="never"
+        />
 </menu>

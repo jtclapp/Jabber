@@ -52,7 +52,17 @@
             android:layout_centerHorizontal="true"
             android:background="@null"
             android:layout_marginBottom="15dp"
-            android:src="@drawable/createpost"
+            android:src="@drawable/create_post_button"
+            android:visibility="gone"/>
+        <ImageButton
+            android:id="@+id/ViewChatButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/username"
+            android:layout_centerHorizontal="true"
+            android:background="@null"
+            android:layout_marginBottom="15dp"
+            android:src="@drawable/message_button"
             android:visibility="gone"/>
         <TextView
             android:layout_width="wrap_content"
@@ -125,7 +135,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="13dp"
         android:text="hello"
         android:id="@+id/typed_post"
         android:textSize="18sp"
@@ -135,7 +145,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="13dp"
         android:text="Date"
         android:id="@+id/post_date"
         android:textSize="14sp"

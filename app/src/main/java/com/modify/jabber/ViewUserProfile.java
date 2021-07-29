@@ -37,18 +37,16 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewUserProfile extends AppCompatActivity {
-    CircleImageView image_profile,toolbar_image_profile;
-    TextView username,bio,toolbar_username;
+    CircleImageView toolbar_image_profile;
+    TextView toolbar_username;
     DatabaseReference reference,toolbar_reference;
     FirebaseUser fuser;
-    StorageReference storageReference;
     ProfileAdapter profileAdapter;
     RecyclerView recyclerView;
     List<ProfileMedia> mprofile;
-    ImageButton message;
     LinearLayoutManager linearLayoutManager;
     String userid;
-    private StorageTask<UploadTask.TaskSnapshot> uploadTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,42 +58,18 @@ public class ViewUserProfile extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        image_profile = findViewById(R.id.ViewProfile_image);
         toolbar_image_profile = findViewById(R.id.toolbar4_profile_image);
         toolbar_username = findViewById(R.id.toolbar4_username);
-        bio = findViewById(R.id.ViewProfileBio);
-        username = findViewById(R.id.View_username);
-        message = findViewById(R.id.ViewChatButton);
         recyclerView = findViewById(R.id.view_recycler_view_Profile);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(ViewUserProfile.this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
 
         Intent intent = getIntent();
         userid = intent.getStringExtra("UserID");
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                assert user.getUsername() != null;
-                username.setText(user.getUsername());
-                    if (user.getImageURL().equals("default")) {
-                        image_profile.setImageResource(R.mipmap.ic_launcher);
-                    } else {
-                        Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(image_profile);
-                    }
-                    bio.setText(user.getBio());
-                    readPosts();
-                }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         toolbar_reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
         toolbar_reference.addValueEventListener(new ValueEventListener() {
@@ -119,15 +93,7 @@ public class ViewUserProfile extends AppCompatActivity {
 
             }
         });
-
-        message.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent start = new Intent(ViewUserProfile.this, MessageActivity.class);
-                start.putExtra("userid", userid);
-                startActivity(start);
-            }
-        });
+        readPosts();
     }
     private void readPosts()
     {
@@ -145,8 +111,16 @@ public class ViewUserProfile extends AppCompatActivity {
                         mprofile.add(media);
                     }
                 }
-                profileAdapter = new ProfileAdapter(getApplicationContext(),mprofile);
-                recyclerView.setAdapter(profileAdapter);
+                if(mprofile.isEmpty())
+                {
+                    mprofile.add(createStandIn());
+                    profileAdapter = new ProfileAdapter(getApplicationContext(),mprofile);
+                    recyclerView.setAdapter(profileAdapter);
+                }
+                else {
+                    profileAdapter = new ProfileAdapter(getApplicationContext(), mprofile);
+                    recyclerView.setAdapter(profileAdapter);
+                }
             }
 
             @Override
@@ -154,6 +128,10 @@ public class ViewUserProfile extends AppCompatActivity {
 
             }
         });
+    }
+    private ProfileMedia createStandIn()
+    {
+        return new ProfileMedia("",userid,"","","","");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

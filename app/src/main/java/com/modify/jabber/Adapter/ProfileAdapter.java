@@ -4,14 +4,18 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -26,7 +30,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.modify.jabber.CreatingPostActivity;
 import com.modify.jabber.CreatingProfileActivity;
+import com.modify.jabber.MessageActivity;
 import com.modify.jabber.R;
+import com.modify.jabber.ViewUserProfile;
 import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
 
@@ -59,18 +65,26 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
         ProfileMedia profileMedia = profileMediaList.get(position);
         String type = profileMedia.getType();
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(profileMedia.getSender());
 
         if (position == profileMediaList.size() - 1) {
             holder.bold_username.setVisibility(View.VISIBLE);
             holder.image_profile.setVisibility(View.VISIBLE);
             holder.bio.setVisibility(View.VISIBLE);
-            holder.editProfile.setVisibility(View.VISIBLE);
-            holder.create.setVisibility(View.VISIBLE);
 
-            fuser = FirebaseAuth.getInstance().getCurrentUser();
+            if(!fuser.getUid().equals(profileMedia.getSender()))
+            {
+                holder.editProfile.setVisibility(View.INVISIBLE);
+                holder.create.setVisibility(View.INVISIBLE);
+                holder.message.setVisibility(View.VISIBLE);
+            } else if(fuser.getUid().equals(profileMedia.getSender())) {
+                holder.editProfile.setVisibility(View.VISIBLE);
+                holder.create.setVisibility(View.VISIBLE);
+                holder.message.setVisibility(View.GONE);
+            }
             storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
-            reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+            reference = FirebaseDatabase.getInstance().getReference("Users").child(profileMedia.getSender());
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -90,10 +104,18 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                         }
                     }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                }
+            });
+            holder.message.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent start = new Intent(mContext, MessageActivity.class);
+                    start.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    start.putExtra("userid", profileMedia.getSender());
+                    mContext.startActivity(start);
                 }
             });
         }
@@ -101,47 +123,43 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             holder.show_message.setVisibility(View.VISIBLE);
             holder.show_date.setVisibility(View.VISIBLE);
             holder.image_text.setVisibility(View.VISIBLE);
-            holder.menu.setVisibility(View.VISIBLE);
             holder.username_image.setVisibility(View.VISIBLE);
             holder.username.setVisibility(View.VISIBLE);
-        holder.menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setMessage("Do you want to edit or delete this post?");
-                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+            if(profileMedia.getSender().equals(fuser.getUid())) {
+                holder.menu.setVisibility(View.VISIBLE);
+                holder.menu.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        final AlertDialog.Builder builder1 = new AlertDialog.Builder(mContext);
-                        builder1.setMessage("Are you sure you want to delete?");
-                        builder1.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(View view) {
+                        PopupMenu popupMenu = new PopupMenu(mContext, holder.menu);
+                        popupMenu.inflate(R.menu.postmenu);
+                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Delete the post from Realtime database and Firebase storage
-                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
-                                if (type.equals("image")) {
-                                    storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getMessage());
-                                    storageReference.delete();
+                            public boolean onMenuItemClick(MenuItem menuItem) {
+                                switch (menuItem.getItemId()) {
+                                    case R.id.delete:
+                                        // Delete the post from Realtime database and Firebase storage
+                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+                                        if (type.equals("image")) {
+                                            storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getMessage());
+                                            storageReference.delete();
+                                        }
+                                        ref.child(profileMedia.getId()).removeValue();
+                                        return true;
+                                    case R.id.edit:
+                                        // Send the user to the edit page...
+                                        Intent start = new Intent(mContext, CreatingPostActivity.class);
+                                        start.putExtra("EditPost", profileMedia);
+                                        mContext.startActivity(start);
+                                        return true;
                                 }
-                                ref.child(profileMedia.getId()).removeValue();
+                                return false;
                             }
                         });
-                        builder1.setNegativeButton("No", null);
-                        builder1.show();
+                        popupMenu.show();
                     }
                 });
-                builder.setNegativeButton("Edit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Send the user to the edit page...
-                        Intent start = new Intent(mContext, CreatingPostActivity.class);
-                        start.putExtra("EditPost", profileMedia);
-                        mContext.startActivity(start);
-                    }
-                });
-                builder.show();
             }
-        });
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -172,13 +190,13 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         }
 
         if (type.equals("image")) {
-            if (profileMedia.getCaption() == null) {
+            if (profileMedia.getCaption().equals("")) {
                 holder.show_message.setVisibility(View.GONE);
             } else {
                 holder.show_message.setVisibility(View.VISIBLE);
-                holder.spacing.setVisibility(View.GONE);
             }
             holder.image_text.setVisibility(View.VISIBLE);
+            holder.spacing.setVisibility(View.GONE);
             //Picasso.get().load(profileMedia.getMessage()).rotate(270).into(holder.image_text);
             Glide.with(mContext).load(profileMedia.getMessage()).centerCrop().into(holder.image_text);
             holder.show_message.setText(profileMedia.getCaption());
@@ -198,7 +216,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         public ImageView image_text, menu;
         public CircleImageView username_image, image_profile;
         public TextView username, bold_username, bio;
-        ImageButton create;
+        ImageButton create, message;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -214,6 +232,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             bio = itemView.findViewById(R.id.ProfileBio);
             bold_username = itemView.findViewById(R.id.username);
             image_profile = itemView.findViewById(R.id.profile_image);
+            message = itemView.findViewById(R.id.ViewChatButton);
 
             create.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -3,9 +3,20 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/drawable-anydpi/ic_image_action.xml" value="0.12685185185185185" />
+        <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/drawable/create_post_button.xml" value="0.12685185185185185" />
+        <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/drawable/createpost.xml" value="0.12685185185185185" />
+        <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.1" />
+        <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.1" />
+        <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/drawable/ic_black_logo___no_background.xml" value="0.12685185185185185" />
+        <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/drawable/postmenu.xml" value="0.1" />
         <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/layout/activity_creating_post.xml" value="0.1" />
+        <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/layout/activity_creating_profile.xml" value="0.1" />
         <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/layout/activity_message.xml" value="0.1" />
+        <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/layout/activity_view_user_profile.xml" value="0.1" />
+        <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/layout/fragment_profile.xml" value="0.1" />
         <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/layout/post_item.xml" value="0.1" />
+        <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/menu/menu.xml" value="0.1" />
       </map>
     </option>
   </component>

@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:background="#303841"
             android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/MenuStyle">
+            app:popupTheme="@style/MyMenuStyle">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="30dp"
@@ -28,7 +28,6 @@
                 android:id="@+id/username"
                 android:textSize="18sp"
                 android:textColor="#f8fbf8"
-                android:textStyle="bold"
                 android:layout_marginStart="25dp" />
 
 
