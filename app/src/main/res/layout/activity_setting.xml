@@ -7,40 +7,18 @@
     tools:context=".SettingActivity"
     android:background="#f8fbf8">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/bar_layout4"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/container2">
+    </FrameLayout>
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#303841"
-            android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/MyMenuStyle">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:id="@+id/toolbar5_profile_image"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/toolbar5_username"
-                android:textSize="18sp"
-                android:textColor="#f8fbf8"
-                android:layout_marginStart="25dp" />
-
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ColorTitle"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/bar_layout4"
+        android:layout_below="@+id/container2"
         android:text="Color Layout Options:"
         android:textSize="18sp"
         android:textColor="@color/black"

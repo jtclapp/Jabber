@@ -134,9 +134,9 @@ public class CreatingPostActivity extends AppCompatActivity {
                     }
                     databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
                     databaseReference.child(editPost.getId()).updateChildren(hash);
-                    Intent editStart = new Intent(CreatingPostActivity.this, MainActivity.class);
-                    editStart.putExtra("viewProfile",3);
-                    startActivity(editStart);
+                    Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
+                    start.putExtra("viewFragment",3);
+                    startActivity(start);
                 } else {
                     if (mUri == null) {
                         postid = databaseReference.push().getKey();

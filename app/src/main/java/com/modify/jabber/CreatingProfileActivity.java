@@ -47,6 +47,7 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CreatingProfileActivity extends AppCompatActivity {
+
     ImageButton photo;
     Button finish;
     EditText bio;
@@ -108,7 +109,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
                     hashMap.put("bio",bio.getText().toString());
                     databaseReference.updateChildren(hashMap);
                     Intent start = new Intent(CreatingProfileActivity.this, MainActivity.class);
-                    start.putExtra("viewProfile",3);
+                    start.putExtra("viewFragment",3);
                     startActivity(start);
                 }
             }
