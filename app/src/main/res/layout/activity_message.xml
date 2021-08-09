@@ -7,27 +7,11 @@
     android:background="#f8fbf8"
     tools:context=".MessageActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar2"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#303841"
-        android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/MyMenuStyle">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/profile_image"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/username"
-            android:textSize="18sp"
-            android:textColor="#f8fbf8"
-            android:layout_marginStart="25dp" />
-
-    </androidx.appcompat.widget.Toolbar>
+        android:id="@+id/container3">
+    </FrameLayout>
 
     <EditText
         android:layout_width="match_parent"
@@ -38,7 +22,7 @@
         android:textColorHint="@color/gray"
         android:textColor="@color/black"
         android:id="@+id/search_messages"
-        android:layout_below="@+id/toolbar2"
+        android:layout_below="@+id/container3"
         android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView

@@ -6,11 +6,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.modify.jabber.Adapter.ProfileAdapter;
+import com.modify.jabber.Fragments.MenuFragment;
 import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
 
@@ -36,9 +42,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ViewUserProfile extends AppCompatActivity {
-    CircleImageView toolbar_image_profile;
-    TextView toolbar_username;
+public class ViewUserProfile extends MenuActivity {
     DatabaseReference reference,toolbar_reference;
     FirebaseUser fuser;
     ProfileAdapter profileAdapter;
@@ -46,50 +50,63 @@ public class ViewUserProfile extends AppCompatActivity {
     List<ProfileMedia> mprofile;
     LinearLayoutManager linearLayoutManager;
     String userid;
+    boolean isMenuFragmentLoaded;
+    Fragment menuFragment;
+    TextView title;
+    ImageView menuButton;
+    CircleImageView profile_image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_user_profile);
+        initAddlayout(R.layout.activity_view_user_profile);
 
-        Toolbar toolbar = findViewById(R.id.toolbar4);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        toolbar_image_profile = findViewById(R.id.toolbar4_profile_image);
-        toolbar_username = findViewById(R.id.toolbar4_username);
         recyclerView = findViewById(R.id.view_recycler_view_Profile);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(ViewUserProfile.this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+        title = findViewById(R.id.title_top);
+        profile_image = findViewById(R.id.profile_image);
+        menuButton = findViewById(R.id.menu_icon);
+        isMenuFragmentLoaded = false;
 
         Intent intent = getIntent();
         userid = intent.getStringExtra("UserID");
-
         fuser = FirebaseAuth.getInstance().getCurrentUser();
+
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isMenuFragmentLoaded) {
+                    loadMenuFragment();
+
+                } if(isMenuFragmentLoaded) {
+                    if (menuFragment.isAdded()) {
+                        hideMenuFragment();
+                    }
+                }
+            }
+        });
         toolbar_reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
         toolbar_reference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                assert user.getUsername() != null;
-                toolbar_username.setText(user.getUsername());
-                if(user.getImageURL().equals("default"))
-                {
-                    toolbar_image_profile.setImageResource(R.mipmap.ic_launcher);
-                }
-                else
-                {
-                    Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(toolbar_image_profile);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                title.setText(user.getUsername());
+                if (user.getImageURL() == null) {
+                    profile_image.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    if (user.getImageURL().equals("default")) {
+                        profile_image.setImageResource(R.mipmap.ic_launcher);
+                    } else {
+                        Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
+                    }
                 }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
@@ -133,27 +150,6 @@ public class ViewUserProfile extends AppCompatActivity {
     {
         return new ProfileMedia("",userid,"","","","");
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-
-            case  R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(ViewUserProfile.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                return true;
-            case R.id.settings:
-                startActivity(new Intent(ViewUserProfile.this,SettingActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                return true;
-        }
-
-        return false;
-    }
     private void status(String status){
         toolbar_reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
 
@@ -161,6 +157,25 @@ public class ViewUserProfile extends AppCompatActivity {
         hashMap.put("status", status);
 
         toolbar_reference.updateChildren(hashMap);
+    }
+    public void hideMenuFragment(){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
+        fragmentTransaction.remove(menuFragment);
+        fragmentTransaction.commit();
+        isMenuFragmentLoaded = false;
+    }
+    public void loadMenuFragment(){
+        FragmentManager fm = getSupportFragmentManager();
+        menuFragment = fm.findFragmentById(R.id.container4);
+        if(menuFragment == null){
+            menuFragment = new MenuFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
+            fragmentTransaction.add(R.id.container4,menuFragment);
+            fragmentTransaction.commit();
+        }
+        isMenuFragmentLoaded = true;
     }
     @Override
     public boolean onSupportNavigateUp() {

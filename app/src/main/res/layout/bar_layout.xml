@@ -40,6 +40,14 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_custom_menu"
                     android:layout_gravity="end" />
+                <ImageView
+                    android:id="@+id/Bar_search_messages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_search"
+                    android:layout_marginEnd="10dp"
+                    android:visibility="gone"
+                    android:layout_gravity="end"/>
             </androidx.appcompat.widget.Toolbar>
 
         </RelativeLayout>

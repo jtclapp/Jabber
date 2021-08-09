@@ -8,28 +8,11 @@
     tools:context=".CreatingPostActivity"
     android:id="@+id/CreatingPostActivity">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#303841"
-            android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/MyMenuStyle">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:id="@+id/toolbar3_profile_image"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/toolbar3_username"
-                android:textSize="18sp"
-                android:textColor="#f8fbf8"
-                android:layout_marginStart="25dp" />
-
-        </androidx.appcompat.widget.Toolbar>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/container5">
+    </FrameLayout>
 
     <TextView
         android:id="@+id/postSpacing"

@@ -21,6 +21,8 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,6 +61,7 @@ import com.google.mlkit.nl.smartreply.SmartReplySuggestionResult;
 import com.google.mlkit.nl.smartreply.TextMessage;
 import com.modify.jabber.Adapter.MessageAdapter;
 import com.modify.jabber.Fragments.APIService;
+import com.modify.jabber.Fragments.MenuFragment;
 import com.modify.jabber.Notifications.Client;
 import com.modify.jabber.Notifications.Data;
 import com.modify.jabber.Notifications.MyResponse;
@@ -80,10 +86,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MessageActivity extends AppCompatActivity {
+public class MessageActivity extends MenuActivity {
 
-    CircleImageView profile_image;
-    TextView username;
     FirebaseUser fuser;
     DatabaseReference reference,databaseReference;
     StorageReference storageReference;
@@ -102,11 +106,16 @@ public class MessageActivity extends AppCompatActivity {
     boolean notify = false;
     private Uri imageUri;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
-
+    boolean isMenuFragmentLoaded;
+    Fragment menuFragment;
+    TextView title;
+    ImageView menuButton, search;
+    CircleImageView profile_image;
+    RelativeLayout relativeLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message);
+        initAddlayout(R.layout.activity_message);
 
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
@@ -116,15 +125,84 @@ public class MessageActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        profile_image = findViewById(R.id.profile_image);
-        username = findViewById(R.id.username);
         btn_send = findViewById(R.id.btn_send);
         btn_image = findViewById(R.id.btn_send_image);
         text_send = findViewById(R.id.text_send);
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+        title = findViewById(R.id.title_top);
+        profile_image = findViewById(R.id.profile_image);
+        menuButton = findViewById(R.id.menu_icon);
+        search = findViewById(R.id.Bar_search_messages);
         suggestion1 = findViewById(R.id.suggestionButton1);
         suggestion2 = findViewById(R.id.suggestionButton2);
         suggestion3 = findViewById(R.id.suggestionButton3);
+        relativeLayout = findViewById(R.id.bottom);
+        isMenuFragmentLoaded = false;
+        intent = getIntent();
+        userid = intent.getStringExtra("userid");
+        search.setVisibility(View.VISIBLE);
 
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(search_messages.getVisibility() == View.VISIBLE)
+                {
+                    search_messages.setVisibility(View.GONE);
+                    search_messages.setText("");
+                    reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            readMessages(fuser.getUid(), userid, user.getImageURL());
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                else {
+                    search_messages.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isMenuFragmentLoaded) {
+                    loadMenuFragment();
+
+                } if(isMenuFragmentLoaded) {
+                    if (menuFragment.isAdded()) {
+                        hideMenuFragment();
+                    }
+                }
+            }
+        });
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                title.setText(user.getUsername());
+                if (user.getImageURL() == null) {
+                    profile_image.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    if (user.getImageURL().equals("default")) {
+                        profile_image.setImageResource(R.mipmap.ic_launcher);
+                    } else {
+                        Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
+                    }
+                }
+                readMessages(fuser.getUid(), userid, user.getImageURL());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         search_messages = findViewById(R.id.search_messages);
         search_messages.addTextChangedListener(new TextWatcher() {
             @Override
@@ -140,16 +218,6 @@ public class MessageActivity extends AppCompatActivity {
                 searchMessages(editable.toString());
             }
         });
-        Toolbar toolbar = findViewById(R.id.toolbar2);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        intent = getIntent();
-        userid = intent.getStringExtra("userid");
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
-
         suggestion1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,14 +234,6 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sendMessage(fuser.getUid(),userid,suggestion3.getText().toString());
-            }
-        });
-        username.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), ViewUserProfile.class);
-                intent.putExtra("UserID", userid);
-                startActivity(intent);
             }
         });
         btn_send.setOnClickListener(new View.OnClickListener() {
@@ -212,7 +272,6 @@ public class MessageActivity extends AppCompatActivity {
                 builder.show();
             }
         });
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -226,24 +285,6 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
         storageReference = FirebaseStorage.getInstance().getReference("ChatImages-" + userid);
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getUsername());
-                if (user.getImageURL().equals("default")){
-                    profile_image.setImageResource(R.mipmap.ic_launcher);
-                } else {
-                    Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
-                }
-                readMessages(fuser.getUid(), userid, user.getImageURL());
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
         seenMessage(userid);
         setColorOfButtons();
     }
@@ -370,7 +411,10 @@ public class MessageActivity extends AppCompatActivity {
                 }
                 messageAdapter = new MessageAdapter(getApplicationContext(), mchat, imageurl, yourImageUrl);
                 recyclerView.setAdapter(messageAdapter);
-                getSmartReply(conversation);
+                if(!conversation.isEmpty())
+                {
+                    getSmartReply(conversation);
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -648,56 +692,26 @@ public class MessageActivity extends AppCompatActivity {
                 .child(fuser.getUid());
         chatRefReceiver.child("id").setValue(fuser.getUid());
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.message_menu, menu);
-        return true;
+    public void hideMenuFragment(){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
+        fragmentTransaction.remove(menuFragment);
+        relativeLayout.setVisibility(View.VISIBLE);
+        fragmentTransaction.commit();
+        isMenuFragmentLoaded = false;
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-
-            case  R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                // change this code because your app will crash
-                startActivity(new Intent(MessageActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                return true;
-            case R.id.settings:
-                startActivity(new Intent(MessageActivity.this,SettingActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                return true;
-            case R.id.search:
-                if(search_messages.getVisibility() == View.VISIBLE)
-                {
-                    search_messages.setVisibility(View.GONE);
-                    search_messages.setText("");
-                    reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
-                    reference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
-                            username.setText(user.getUsername());
-                            if (user.getImageURL().equals("default")){
-                                profile_image.setImageResource(R.mipmap.ic_launcher);
-                            } else {
-                                //Picasso.get().load(user.getImageURL()).fit().centerInside().rotate(270).into(profile_image);
-                                Glide.with(getApplicationContext()).load(user.getImageURL()).centerCrop().into(profile_image);
-                            }
-
-                            readMessages(fuser.getUid(), userid, user.getImageURL());
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-                else {
-                    search_messages.setVisibility(View.VISIBLE);
-                }
-                return true;
+    public void loadMenuFragment(){
+        FragmentManager fm = getSupportFragmentManager();
+        menuFragment = fm.findFragmentById(R.id.container3);
+        if(menuFragment == null){
+            menuFragment = new MenuFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
+            fragmentTransaction.add(R.id.container3,menuFragment);
+            relativeLayout.setVisibility(View.GONE);
+            fragmentTransaction.commit();
         }
-        return false;
+        isMenuFragmentLoaded = true;
     }
     public String currentDate()
     {

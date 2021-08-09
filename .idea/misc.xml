@@ -6,13 +6,17 @@
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/drawable/ic_custom_menu.xml" value="0.1" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/drawable/ic_logout.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/drawable/postmenu.xml" value="0.1" />
+        <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/activity_creating_post.xml" value="0.17831813576494426" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/activity_menu.xml" value="0.1762917933130699" />
+        <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/activity_message.xml" value="0.10511651469098278" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/activity_setting.xml" value="0.3079710144927536" />
-        <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/bar_layout.xml" value="0.1" />
+        <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/bar_layout.xml" value="0.25" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/fragment_menu.xml" value="0.11548913043478261" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/main_menu.xml" value="0.33" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/menu/main_menu.xml" value="0.2361111111111111" />
+        <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/menu/menu.xml" value="0.18703703703703703" />
+        <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/menu/message_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/drawable-anydpi/ic_image_action.xml" value="0.12685185185185185" />
         <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/drawable/create_post_button.xml" value="0.12685185185185185" />
         <entry key="..\:/Users/jtcla/AndroidStudioProjects/Jabber/app/src/main/res/drawable/createpost.xml" value="0.12685185185185185" />

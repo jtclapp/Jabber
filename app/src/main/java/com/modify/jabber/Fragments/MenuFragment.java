@@ -29,15 +29,14 @@ import com.modify.jabber.MainActivity;
 import com.modify.jabber.MessageActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.SettingActivity;
+import com.modify.jabber.StartActivity;
 import com.modify.jabber.model.User;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MenuFragment extends Fragment {
-
-    GestureDetector gestureDetector;
     CircleImageView profile_image;
-    TextView username;
+    TextView username, logout;
     FirebaseUser firebaseUser;
     DatabaseReference reference;
     LinearLayout chat;
@@ -57,6 +56,7 @@ public class MenuFragment extends Fragment {
         users = rootView.findViewById(R.id.UserLayout);
         thread = rootView.findViewById(R.id.TheardLayout);
         settings = rootView.findViewById(R.id.SettingsLayout);
+        logout = rootView.findViewById(R.id.MenuLogout);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
@@ -119,6 +119,15 @@ public class MenuFragment extends Fragment {
             public void onClick(View v) {
                 Intent start = new Intent(rootView.getContext(), SettingActivity.class);
                 startActivity(start);
+            }
+        });
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+               Intent start = new Intent(rootView.getContext(), StartActivity.class);
+               start.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+               startActivity(start);
             }
         });
         return rootView;
