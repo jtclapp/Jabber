@@ -1,6 +1,8 @@
 package com.modify.jabber.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -133,13 +135,24 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                             public boolean onMenuItemClick(MenuItem menuItem) {
                                 switch (menuItem.getItemId()) {
                                     case R.id.delete:
-                                        // Delete the post from Realtime database and Firebase storage
-                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
-                                        if (type.equals("image")) {
-                                            storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getMessage());
-                                            storageReference.delete();
-                                        }
-                                        ref.child(profileMedia.getId()).removeValue();
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                                        builder.setTitle("Delete Post");
+                                        builder.setIcon(R.mipmap.ic_launcher_symbol_round);
+                                        builder.setMessage("Are you sure you want to delete this post?");
+                                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        // Delete the post from Realtime database and Firebase storage
+                                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+                                                        if (type.equals("image")) {
+                                                            storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getMessage());
+                                                            storageReference.delete();
+                                                        }
+                                                        ref.child(profileMedia.getId()).removeValue();
+                                                    }
+                                                });
+                                        builder.setNegativeButton("No",null);
+                                        builder.show();
                                         return true;
                                     case R.id.edit:
                                         // Send the user to the edit page...

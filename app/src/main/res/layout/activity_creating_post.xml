@@ -59,18 +59,19 @@
         android:layout_width="match_parent"
         android:layout_height="15dp"
         android:layout_below="@id/uploaded_caption"/>
-    <Button
-        android:id="@+id/CreatePostButton"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/postSpacing2"
-        android:text="Create"
-        android:textColor="@color/white"
-        android:backgroundTint="#BEBEBE"
-        android:textAllCaps="true"
-        android:padding="3dp"
-        android:drawableRight="@drawable/add_item_button"
-        android:background="@drawable/rounded_button"/>
+
+        <Button
+            android:id="@+id/CreatePostButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/postSpacing2"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="#BEBEBE"
+            android:padding="3dp"
+            android:textSize="16dp"
+            android:text="Post"
+            android:textAllCaps="true"
+            android:textColor="@color/white" />
     </RelativeLayout>
 </RelativeLayout>

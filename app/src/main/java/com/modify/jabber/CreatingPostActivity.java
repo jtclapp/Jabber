@@ -214,6 +214,7 @@ public class CreatingPostActivity extends MenuActivity {
             if(editPost.getMessage() != null) {
                 Glide.with(getApplicationContext()).load(editPost.getMessage()).centerCrop().into(uploadedPhoto);
             }
+            create.setText("Update");
             typedCaption.setText(editPost.getCaption());
         }
     }

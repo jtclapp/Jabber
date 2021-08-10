@@ -12,15 +12,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
 import com.modify.jabber.R;
+import com.modify.jabber.model.ProfileMedia;
+import com.modify.jabber.model.Thread;
+
+import java.util.List;
 
 public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.ViewHolder>
 {
     private Context mContext;
+    private List<Thread> threadList;
     private DatabaseReference reference;
     private StorageReference storageReference;
     private FirebaseUser fuser;
-    public ThreadAdapter(Context mContext) {
+    public ThreadAdapter(Context mContext,List<Thread> threadList) {
         this.mContext = mContext;
+        this.threadList = threadList;
     }
     @NonNull
     @Override
