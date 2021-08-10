@@ -10,7 +10,7 @@
         android:id="@+id/creatingSpacing"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:text="Create your Profile"
+        android:text="Create Your Profile"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:textColor="@color/black"/>

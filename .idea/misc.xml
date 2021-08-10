@@ -3,10 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/drawable/ic_baseline_arrow_back_ios_24.xml" value="0.3828125" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/drawable/ic_custom_menu.xml" value="0.1" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/drawable/ic_logout.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/drawable/postmenu.xml" value="0.1" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/activity_creating_post.xml" value="0.17831813576494426" />
+        <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/activity_creating_profile.xml" value="0.1" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/activity_menu.xml" value="0.1762917933130699" />
         <entry key="..\:/Users/Tim/Downloads/Jabber/app/src/main/res/layout/activity_message.xml" value="0.10511651469098278" />

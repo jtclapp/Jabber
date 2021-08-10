@@ -14,6 +14,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -59,6 +60,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
     User userDelete;
     StorageReference storageReference;
     String mUri,mCurrentPhotoPath;
+    TextView title;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
         photo = findViewById(R.id.InsertProfileButton);
         finish = findViewById(R.id.FinishSignUp);
         bio = findViewById(R.id.Bio);
+        title = findViewById(R.id.creatingSpacing);
         circleImageView = findViewById(R.id.CreateProfileImage);
         hashMap = new HashMap<>();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
@@ -130,6 +133,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
                         {
                             bio.setText(user.getBio());
                             finish.setText("Update");
+                            title.setText("Update Your Profile");
                         }
                     }
                 }

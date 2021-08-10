@@ -16,6 +16,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,8 +72,9 @@ public class CreatingPostActivity extends MenuActivity {
     boolean isMenuFragmentLoaded;
     Fragment menuFragment;
     TextView title;
-    ImageView menuButton;
+    ImageView menuButton,backButton;
     CircleImageView profile_image;
+    RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,13 +89,24 @@ public class CreatingPostActivity extends MenuActivity {
         photo = findViewById(R.id.btn_get_image);
         uploadedPhoto = findViewById(R.id.PostedImage);
         typedCaption = findViewById(R.id.uploaded_caption);
+        relativeLayout = findViewById(R.id.CreatingPostActivityItems);
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("FeedImages");
         title = findViewById(R.id.title_top);
         profile_image = findViewById(R.id.profile_image);
         menuButton = findViewById(R.id.menu_icon);
+        backButton = findViewById(R.id.BackArrow);
+        backButton.setVisibility(View.VISIBLE);
         isMenuFragmentLoaded = false;
 
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
+                start.putExtra("viewFragment",3);
+                startActivity(start);
+            }
+        });
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -352,6 +365,7 @@ public class CreatingPostActivity extends MenuActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
         fragmentTransaction.remove(menuFragment);
+        relativeLayout.setVisibility(View.VISIBLE);
         fragmentTransaction.commit();
         isMenuFragmentLoaded = false;
     }
@@ -363,14 +377,10 @@ public class CreatingPostActivity extends MenuActivity {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
             fragmentTransaction.add(R.id.container5,menuFragment);
+            relativeLayout.setVisibility(View.GONE);
             fragmentTransaction.commit();
         }
         isMenuFragmentLoaded = true;
-    }
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
     }
     private void status(String status){
 

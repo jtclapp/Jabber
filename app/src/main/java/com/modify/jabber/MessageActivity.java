@@ -109,7 +109,7 @@ public class MessageActivity extends MenuActivity {
     boolean isMenuFragmentLoaded;
     Fragment menuFragment;
     TextView title;
-    ImageView menuButton, search;
+    ImageView menuButton, search, backButton;
     CircleImageView profile_image;
     RelativeLayout relativeLayout;
     @Override
@@ -132,6 +132,7 @@ public class MessageActivity extends MenuActivity {
         title = findViewById(R.id.title_top);
         profile_image = findViewById(R.id.profile_image);
         menuButton = findViewById(R.id.menu_icon);
+        backButton = findViewById(R.id.BackArrow);
         search = findViewById(R.id.Bar_search_messages);
         suggestion1 = findViewById(R.id.suggestionButton1);
         suggestion2 = findViewById(R.id.suggestionButton2);
@@ -140,6 +141,7 @@ public class MessageActivity extends MenuActivity {
         isMenuFragmentLoaded = false;
         intent = getIntent();
         userid = intent.getStringExtra("userid");
+        backButton.setVisibility(View.VISIBLE);
         search.setVisibility(View.VISIBLE);
 
         search.setOnClickListener(new View.OnClickListener() {
@@ -168,6 +170,14 @@ public class MessageActivity extends MenuActivity {
                 }
             }
         });
+        title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ViewUserProfile.class);
+                intent.putExtra("UserID", userid);
+                startActivity(intent);
+            }
+        });
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,6 +189,14 @@ public class MessageActivity extends MenuActivity {
                         hideMenuFragment();
                     }
                 }
+            }
+        });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent start = new Intent(MessageActivity.this, MainActivity.class);
+                start.putExtra("viewFragment",0);
+                startActivity(start);
             }
         });
         reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
@@ -731,17 +749,5 @@ public class MessageActivity extends MenuActivity {
         reference.removeEventListener(seenListener);
         status("offline");
         currentUser("none");
-    }
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-    @Override
-    public void onBackPressed()
-    {
-        super.onBackPressed();
-        startActivity(new Intent(MessageActivity.this,MainActivity.class));
-        finish();
     }
 }

@@ -53,8 +53,9 @@ public class ViewUserProfile extends MenuActivity {
     boolean isMenuFragmentLoaded;
     Fragment menuFragment;
     TextView title;
-    ImageView menuButton;
+    ImageView menuButton,backButton;
     CircleImageView profile_image;
+    int previousPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +71,32 @@ public class ViewUserProfile extends MenuActivity {
         title = findViewById(R.id.title_top);
         profile_image = findViewById(R.id.profile_image);
         menuButton = findViewById(R.id.menu_icon);
+        backButton = findViewById(R.id.BackArrow);
+        backButton.setVisibility(View.VISIBLE);
         isMenuFragmentLoaded = false;
 
         Intent intent = getIntent();
         userid = intent.getStringExtra("UserID");
+        previousPage = intent.getIntExtra("viewFragment",-1);
         fuser = FirebaseAuth.getInstance().getCurrentUser();
 
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(previousPage == -1)
+                {
+                    Intent start = new Intent(ViewUserProfile.this, MessageActivity.class);
+                    start.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    start.putExtra("userid", userid);
+                    startActivity(start);
+                }
+                else {
+                    Intent start = new Intent(ViewUserProfile.this, MainActivity.class);
+                    start.putExtra("viewFragment",previousPage);
+                    startActivity(start);
+                }
+            }
+        });
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,17 +199,10 @@ public class ViewUserProfile extends MenuActivity {
         isMenuFragmentLoaded = true;
     }
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         status("online");
     }
-
     @Override
     protected void onPause() {
         super.onPause();

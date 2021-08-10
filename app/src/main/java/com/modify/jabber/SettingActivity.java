@@ -245,9 +245,4 @@ public class SettingActivity extends MenuActivity {
         super.onPause();
         status("offline");
     }
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
 }
