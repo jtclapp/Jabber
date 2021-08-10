@@ -1,8 +1,6 @@
 package com.modify.jabber.Adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -15,7 +13,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -32,7 +29,6 @@ import com.modify.jabber.CreatingPostActivity;
 import com.modify.jabber.CreatingProfileActivity;
 import com.modify.jabber.MessageActivity;
 import com.modify.jabber.R;
-import com.modify.jabber.ViewUserProfile;
 import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
 
@@ -52,14 +48,12 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         this.mContext = mContext;
         this.profileMediaList = profileMediaList;
     }
-
     @NonNull
     @Override
     public ProfileAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.post_item, parent, false);
         return new ProfileAdapter.ViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull ProfileAdapter.ViewHolder holder, int position) {
 
@@ -76,11 +70,9 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             if(!fuser.getUid().equals(profileMedia.getSender()))
             {
                 holder.editProfile.setVisibility(View.INVISIBLE);
-                holder.create.setVisibility(View.INVISIBLE);
                 holder.message.setVisibility(View.VISIBLE);
             } else if(fuser.getUid().equals(profileMedia.getSender())) {
                 holder.editProfile.setVisibility(View.VISIBLE);
-                holder.create.setVisibility(View.VISIBLE);
                 holder.message.setVisibility(View.GONE);
             }
             storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
@@ -219,7 +211,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         public ImageView image_text, menu;
         public CircleImageView username_image, image_profile;
         public TextView username, bold_username, bio;
-        ImageButton create, message;
+        ImageButton message;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -230,19 +222,12 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             username = itemView.findViewById(R.id.YourUsername);
             username_image = itemView.findViewById(R.id.Your_profile_image);
             menu = itemView.findViewById(R.id.postMenu);
-            create = itemView.findViewById(R.id.CreatePost);
             editProfile = itemView.findViewById(R.id.edit_profile);
             bio = itemView.findViewById(R.id.ProfileBio);
             bold_username = itemView.findViewById(R.id.username);
             image_profile = itemView.findViewById(R.id.profile_image);
             message = itemView.findViewById(R.id.ViewChatButton);
 
-            create.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mContext.startActivity(new Intent(mContext.getApplicationContext(), CreatingPostActivity.class));
-                }
-            });
             editProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

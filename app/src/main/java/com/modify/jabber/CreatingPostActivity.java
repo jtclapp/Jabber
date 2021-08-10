@@ -9,20 +9,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -58,7 +54,7 @@ import java.util.Locale;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CreatingPostActivity extends MenuActivity {
-    ImageButton create;
+    Button create;
     EditText typedCaption;
     ImageView photo,uploadedPhoto;
     private Uri imageUri;

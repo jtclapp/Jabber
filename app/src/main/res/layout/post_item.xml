@@ -45,16 +45,6 @@
             android:layout_marginBottom="15dp"
             android:visibility="gone"/>
         <ImageButton
-            android:id="@+id/CreatePost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/username"
-            android:layout_centerHorizontal="true"
-            android:background="@null"
-            android:layout_marginBottom="15dp"
-            android:src="@drawable/create_post_button"
-            android:visibility="gone"/>
-        <ImageButton
             android:id="@+id/ViewChatButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +57,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/CreatePost"
+            android:layout_below="@+id/ViewChatButton"
             android:layout_centerHorizontal="true"
             android:textColor="@color/gray"
             android:id="@+id/ProfileBio"
