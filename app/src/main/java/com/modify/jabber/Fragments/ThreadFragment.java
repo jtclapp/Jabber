@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.modify.jabber.Adapter.ProfileAdapter;
 import com.modify.jabber.Adapter.ThreadAdapter;
 import com.modify.jabber.CreatingPostActivity;
+import com.modify.jabber.CreatingThreadActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.Thread;
@@ -47,8 +48,8 @@ public class ThreadFragment extends Fragment {
         threadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent start = new Intent(getContext(), CreatingPostActivity.class);
-//                startActivity(start);
+                Intent start = new Intent(getContext(), CreatingThreadActivity.class);
+                startActivity(start);
             }
         });
         readThreads();

@@ -1,9 +1,14 @@
 package com.modify.jabber;
 
-import android.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,18 +16,10 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -41,7 +38,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.modify.jabber.Fragments.MenuFragment;
-import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
 
 import java.io.File;
@@ -53,54 +49,44 @@ import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CreatingPostActivity extends MenuActivity {
-    Button create;
-    EditText typedCaption;
-    ImageView photo,uploadedPhoto;
+public class CreatingThreadActivity extends MenuActivity {
     private Uri imageUri;
     FirebaseUser fuser;
-    StorageReference storageReference;
-    String mUri,date,postid,mCurrentPhotoPath;
-    ProfileMedia editPost;
-    DatabaseReference databaseReference, toolbar_reference;
     HashMap<String, Object> hashMap;
-    private StorageTask<UploadTask.TaskSnapshot> uploadTask;
     boolean isMenuFragmentLoaded;
     Fragment menuFragment;
     TextView title;
     ImageView menuButton,backButton;
+    DatabaseReference databaseReference, toolbar_reference;
     CircleImageView profile_image;
     RelativeLayout relativeLayout;
+    StorageReference storageReference;
+    private StorageTask<UploadTask.TaskSnapshot> uploadTask;
+    String mUri,date,threadID,mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initAddlayout(R.layout.activity_creating_post);
+        initAddlayout(R.layout.activity_creating_thread);
 
-        Intent intent = getIntent();
-        editPost = (ProfileMedia) intent.getSerializableExtra("EditPost");
         hashMap = new HashMap<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
-        create = findViewById(R.id.CreatePostButton);
-        photo = findViewById(R.id.btn_get_image);
-        uploadedPhoto = findViewById(R.id.PostedImage);
-        typedCaption = findViewById(R.id.uploaded_caption);
-        relativeLayout = findViewById(R.id.CreatingPostActivityItems);
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
-        storageReference = FirebaseStorage.getInstance().getReference("FeedImages");
         title = findViewById(R.id.title_top);
         profile_image = findViewById(R.id.profile_image);
+        relativeLayout = findViewById(R.id.CreatingThreadActivityItems);
         menuButton = findViewById(R.id.menu_icon);
         backButton = findViewById(R.id.BackArrow);
         backButton.setVisibility(View.VISIBLE);
         isMenuFragmentLoaded = false;
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Threads");
+        storageReference = FirebaseStorage.getInstance().getReference("ThreadImages");
         date = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
-                start.putExtra("viewFragment",3);
+                Intent start = new Intent(CreatingThreadActivity.this, MainActivity.class);
+                start.putExtra("viewFragment",2);
                 startActivity(start);
             }
         });
@@ -138,85 +124,6 @@ public class CreatingPostActivity extends MenuActivity {
 
             }
         });
-
-        create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String caption = typedCaption.getText().toString();
-                if (editPost != null) {
-                    HashMap<String, Object> hash = new HashMap<>();
-                    if (mUri != null) {
-                        hash.put("message", "" + mUri);
-                        hash.put("type", "image");
-                    }
-                    if (editPost.getMessage() == null && mUri == null) {
-                        hash.put("type", "text");
-                    }
-                    if (caption.equals("")) {
-                        hash.put("caption", "");
-                    } else {
-                        hash.put("caption", caption);
-                    }
-                    databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
-                    databaseReference.child(editPost.getId()).updateChildren(hash);
-                    Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
-                    start.putExtra("viewFragment",3);
-                    startActivity(start);
-                } else {
-                    if (mUri == null) {
-                        postid = databaseReference.push().getKey();
-                        hashMap.put("id", postid);
-                        hashMap.put("sender", fuser.getUid());
-                        hashMap.put("message", "");
-                        hashMap.put("type", "text");
-                    }
-                    if (caption.equals("")) {
-                        hashMap.put("caption", "");
-                    } else {
-                        hashMap.put("caption", caption);
-                    }
-                    if (caption.equals("") && mUri == null) {
-                        Toast.makeText(CreatingPostActivity.this, "Please upload a picture or write what's on your mind.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        hashMap.put("date", date);
-                        databaseReference.child(postid).setValue(hashMap);
-                        Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
-                        start.putExtra("viewProfile",3);
-                        startActivity(start);
-                    }
-                }
-            }
-        });
-        photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(CreatingPostActivity.this);
-                builder.setTitle("Select An Image");
-                builder.setIcon(R.mipmap.ic_launcher_symbol);
-                builder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dispatchTakePictureIntent();
-                    }
-                });
-                builder.setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        openImage();
-                    }
-                });
-                builder.show();
-            }
-        });
-        // this will run if updating a already posted post.
-        if(editPost != null)
-        {
-            if(editPost.getMessage() != null) {
-                Glide.with(getApplicationContext()).load(editPost.getMessage()).centerCrop().into(uploadedPhoto);
-            }
-            create.setText("Update");
-            typedCaption.setText(editPost.getCaption());
-        }
     }
     private void openImage() {
         Intent intent = new Intent();
@@ -224,20 +131,22 @@ public class CreatingPostActivity extends MenuActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, 1);
     }
+
     private String getFileExtension(Uri uri){
-        ContentResolver contentResolver = CreatingPostActivity.this.getContentResolver();
+        ContentResolver contentResolver = CreatingThreadActivity.this.getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
+
     private void uploadImage() throws IOException {
 
-        final ProgressDialog pd = new ProgressDialog(CreatingPostActivity.this);
+        final ProgressDialog pd = new ProgressDialog(CreatingThreadActivity.this);
         pd.setTitle("Uploading");
         pd.setIcon(R.mipmap.ic_launcher_symbol);
         pd.show();
 
         if (imageUri != null){
-            final  StorageReference fileReference = storageReference.child(System.currentTimeMillis()
+            final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
                     +"."+getFileExtension(imageUri));
 
             uploadTask = fileReference.putFile(imageUri);
@@ -256,34 +165,34 @@ public class CreatingPostActivity extends MenuActivity {
                     if (task.isSuccessful()){
                         Uri downloadUri = task.getResult();
                         mUri = downloadUri.toString();
-                        postid = databaseReference.push().getKey();
-                        hashMap.put("id", postid);
+                        threadID = databaseReference.push().getKey();
+                        hashMap.put("id", threadID);
                         hashMap.put("sender", fuser.getUid());
                         hashMap.put("message","" + mUri);
                         hashMap.put("type", "image");
 
-                        Glide.with(getApplicationContext()).load(imageUri).centerCrop().into(uploadedPhoto);
-                        uploadedPhoto.setVisibility(View.VISIBLE);
+//                        Glide.with(getApplicationContext()).load(imageUri).centerCrop().into(uploadedPhoto);
+//                        uploadedPhoto.setVisibility(View.VISIBLE);
                         pd.dismiss();
-                        Toast.makeText(CreatingPostActivity.this,"Image uploaded Successfully!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreatingThreadActivity.this,"Image uploaded Successfully!",Toast.LENGTH_SHORT).show();
                         if(mCurrentPhotoPath != null) {
                             File file = new File(mCurrentPhotoPath);
                             file.delete();
                         }
                     } else {
-                        Toast.makeText(CreatingPostActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreatingThreadActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(CreatingPostActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreatingThreadActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     pd.dismiss();
                 }
             });
         } else {
-            Toast.makeText(CreatingPostActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CreatingThreadActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
             pd.dismiss();
         }
     }
@@ -300,7 +209,7 @@ public class CreatingPostActivity extends MenuActivity {
             galleryAddPic();
         }
         if (uploadTask != null && uploadTask.isInProgress()){
-            Toast.makeText(CreatingPostActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CreatingThreadActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
         } else {
             try {
                 uploadImage();
