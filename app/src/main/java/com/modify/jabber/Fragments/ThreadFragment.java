@@ -92,6 +92,6 @@ public class ThreadFragment extends Fragment {
     }
     private Thread createStandIn()
     {
-        return new Thread("",fuser.getUid(),"","","","");
+        return new Thread("","",fuser.getUid(),"","","","","","");
     }
 }

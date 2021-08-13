@@ -14,10 +14,65 @@
     </FrameLayout>
 
     <RelativeLayout
+        android:layout_marginTop="60dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#f8fbf8"
         android:id="@+id/CreatingThreadActivityItems">
 
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/ViewThreadImages"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:id="@+id/photoCount"
+            android:textSize="12sp"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/gray"
+            android:layout_below="@+id/ViewThreadImages"/>
+        <ImageButton
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/ic_image_camera"
+            android:id="@+id/btn_get_thread_image"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/photoCount"/>
+        <EditText
+            android:id="@+id/uploaded_thread_caption"
+            android:layout_width="400dp"
+            android:layout_height="150dp"
+            android:layout_below="@id/btn_get_thread_image"
+            android:layout_marginTop="25dp"
+            android:gravity="start"
+            android:hint=" What do you want to discuss?"
+            android:inputType="textMultiLine"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/black"
+            android:background="@drawable/edit_text_boarder"
+            android:textColorHint="@color/gray" />
+        <TextView
+            android:id="@+id/threadSpacing"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_below="@id/uploaded_thread_caption"/>
+
+        <Button
+            android:id="@+id/CreateThreadButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/threadSpacing"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="#BEBEBE"
+            android:padding="3dp"
+            android:textSize="16dp"
+            android:text="Create"
+            android:textAllCaps="true"
+            android:textColor="@color/white" />
     </RelativeLayout>
 </RelativeLayout>

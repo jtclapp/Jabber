@@ -6,9 +6,12 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +19,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,14 +42,17 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.modify.jabber.Adapter.ImageAdapter;
 import com.modify.jabber.Fragments.MenuFragment;
 import com.modify.jabber.model.User;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -55,33 +63,72 @@ public class CreatingThreadActivity extends MenuActivity {
     HashMap<String, Object> hashMap;
     boolean isMenuFragmentLoaded;
     Fragment menuFragment;
-    TextView title;
-    ImageView menuButton,backButton;
+    TextView title,threadTitle,imageCount;
+    EditText caption;
+    Button create;
+    ImageView menuButton,backButton,photo;
     DatabaseReference databaseReference, toolbar_reference;
     CircleImageView profile_image;
     RelativeLayout relativeLayout;
     StorageReference storageReference;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
     String mUri,date,threadID,mCurrentPhotoPath;
-
+    ViewPager viewPager;
+    ImageAdapter imageAdapter;
+    List<String> imageIDs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initAddlayout(R.layout.activity_creating_thread);
 
         hashMap = new HashMap<>();
+        imageIDs = new ArrayList<>();
         title = findViewById(R.id.title_top);
+        photo = findViewById(R.id.btn_get_thread_image);
         profile_image = findViewById(R.id.profile_image);
+        imageCount = findViewById(R.id.photoCount);
         relativeLayout = findViewById(R.id.CreatingThreadActivityItems);
         menuButton = findViewById(R.id.menu_icon);
         backButton = findViewById(R.id.BackArrow);
+        caption = findViewById(R.id.uploaded_thread_caption);
+        create = findViewById(R.id.CreateThreadButton);
+        viewPager = findViewById(R.id.ViewThreadImages);
         backButton.setVisibility(View.VISIBLE);
         isMenuFragmentLoaded = false;
         fuser = FirebaseAuth.getInstance().getCurrentUser();
+        imageAdapter = new ImageAdapter(this,imageIDs);
         databaseReference = FirebaseDatabase.getInstance().getReference("Threads");
         storageReference = FirebaseStorage.getInstance().getReference("ThreadImages");
         date = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
 
+        // Adds the content to Firebase
+        create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String final_caption = caption.getText().toString();
+                    if (mUri == null) {
+                        threadID = databaseReference.push().getKey();
+                        hashMap.put("id", threadID);
+                        hashMap.put("sender", fuser.getUid());
+                        hashMap.put("type", "text");
+                    }
+                    if (caption.equals("")) {
+                        hashMap.put("caption", "");
+                    } else {
+                        hashMap.put("caption", final_caption);
+                    }
+                    if (caption.equals("") && mUri == null) {
+                        Toast.makeText(CreatingThreadActivity.this, "Please upload a picture or write what's on your mind.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        hashMap.put("date", date);
+                        addImagesToHashmap();
+                        databaseReference.child(threadID).setValue(hashMap);
+                        Intent start = new Intent(CreatingThreadActivity.this, MainActivity.class);
+                        start.putExtra("viewFragment",2);
+                        startActivity(start);
+                    }
+                }
+        });
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +137,7 @@ public class CreatingThreadActivity extends MenuActivity {
                 startActivity(start);
             }
         });
+        // Controls the showing and hiding of the main menu
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +148,48 @@ public class CreatingThreadActivity extends MenuActivity {
                     if (menuFragment.isAdded()) {
                         hideMenuFragment();
                     }
+                }
+            }
+        });
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+            @Override
+            public void onPageSelected(int position) {
+                imageCount.setText(viewPager.getCurrentItem() + 1 + "/" + imageIDs.size() + "");
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        // This prompts the user, and will ask them if their choosing an image from gallery or camera
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // User can only upload a total of three images
+                if (imageIDs.size() <= 2) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(CreatingThreadActivity.this);
+                    builder.setTitle("Select An Image");
+                    builder.setIcon(R.mipmap.ic_launcher_symbol);
+                    builder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dispatchTakePictureIntent();
+                        }
+                    });
+                    builder.setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            openImage();
+                        }
+                    });
+                    builder.show();
+                } else {
+                    Toast.makeText(CreatingThreadActivity.this, "You can only upload 3 images",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -131,13 +221,12 @@ public class CreatingThreadActivity extends MenuActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, 1);
     }
-
     private String getFileExtension(Uri uri){
         ContentResolver contentResolver = CreatingThreadActivity.this.getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
-
+    // uploadImage() stores the image, and adds certain data to the hashmap
     private void uploadImage() throws IOException {
 
         final ProgressDialog pd = new ProgressDialog(CreatingThreadActivity.this);
@@ -171,8 +260,11 @@ public class CreatingThreadActivity extends MenuActivity {
                         hashMap.put("message","" + mUri);
                         hashMap.put("type", "image");
 
-//                        Glide.with(getApplicationContext()).load(imageUri).centerCrop().into(uploadedPhoto);
-//                        uploadedPhoto.setVisibility(View.VISIBLE);
+                        imageIDs.add(mUri);
+                        imageAdapter = new ImageAdapter(getApplicationContext(),imageIDs);
+                        viewPager.setAdapter(imageAdapter);
+                        imageCount.setText(viewPager.getCurrentItem() + 1 + "/" + imageIDs.size() + "");
+
                         pd.dismiss();
                         Toast.makeText(CreatingThreadActivity.this,"Image uploaded Successfully!",Toast.LENGTH_SHORT).show();
                         if(mCurrentPhotoPath != null) {
@@ -196,6 +288,7 @@ public class CreatingThreadActivity extends MenuActivity {
             pd.dismiss();
         }
     }
+    // This gets called when moving from Gallery or Camera back to Jabber
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -254,6 +347,25 @@ public class CreatingThreadActivity extends MenuActivity {
             }
         }
     }
+    // Adds the URI of each uploaded image to the hashmap
+    private void addImagesToHashmap()
+    {
+        for(int i = 0; i < imageIDs.size(); i++)
+        {
+            if(i == 0)
+            {
+                hashMap.put("image1",imageIDs.get(0));
+            }
+            if(i == 1)
+            {
+                hashMap.put("image2",imageIDs.get(1));
+            }
+            if(i == 2)
+            {
+                hashMap.put("image3",imageIDs.get(2));
+            }
+        }
+    }
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(mCurrentPhotoPath);
@@ -286,6 +398,7 @@ public class CreatingThreadActivity extends MenuActivity {
         }
         isMenuFragmentLoaded = true;
     }
+    // Shows other users if you're currently online or not
     private void status(String status){
 
         HashMap<String, Object> hashMap = new HashMap<>();
