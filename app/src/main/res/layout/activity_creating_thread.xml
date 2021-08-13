@@ -14,17 +14,29 @@
     </FrameLayout>
 
     <RelativeLayout
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#f8fbf8"
         android:id="@+id/CreatingThreadActivityItems">
-
+        <EditText
+            android:id="@+id/thread_title"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="start"
+            android:hint=" Title"
+            android:inputType="textShortMessage"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/black"
+            android:background="@drawable/edit_text_boarder"
+            android:textColorHint="@color/gray" />
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/ViewThreadImages"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/thread_title"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,9 +57,9 @@
         <EditText
             android:id="@+id/uploaded_thread_caption"
             android:layout_width="400dp"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:layout_below="@id/btn_get_thread_image"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             android:gravity="start"
             android:hint=" What do you want to discuss?"
             android:inputType="textMultiLine"

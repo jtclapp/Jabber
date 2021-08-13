@@ -298,7 +298,7 @@ public class MessageActivity extends MenuActivity {
                 Toast.makeText(MessageActivity.this,"Failed",Toast.LENGTH_SHORT).show();
             }
         });
-        storageReference = FirebaseStorage.getInstance().getReference("ChatImages-" + userid);
+        storageReference = FirebaseStorage.getInstance().getReference("ChatImages");
         seenMessage(userid);
         setColorOfButtons();
     }

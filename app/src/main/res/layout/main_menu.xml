@@ -112,7 +112,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Ask A Question"
+                    android:text="Discussions"
                     android:textColor="#ffff"
                     android:textSize="16sp" />
             </LinearLayout>

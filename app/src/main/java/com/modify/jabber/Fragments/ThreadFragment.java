@@ -58,7 +58,7 @@ public class ThreadFragment extends Fragment {
     public void readThreads()
     {
         mThread = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance().getReference("Thread");
+        reference = FirebaseDatabase.getInstance().getReference("Threads");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

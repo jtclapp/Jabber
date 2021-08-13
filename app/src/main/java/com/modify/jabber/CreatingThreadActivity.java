@@ -90,6 +90,7 @@ public class CreatingThreadActivity extends MenuActivity {
         relativeLayout = findViewById(R.id.CreatingThreadActivityItems);
         menuButton = findViewById(R.id.menu_icon);
         backButton = findViewById(R.id.BackArrow);
+        threadTitle = findViewById(R.id.thread_title);
         caption = findViewById(R.id.uploaded_thread_caption);
         create = findViewById(R.id.CreateThreadButton);
         viewPager = findViewById(R.id.ViewThreadImages);
@@ -106,11 +107,23 @@ public class CreatingThreadActivity extends MenuActivity {
             @Override
             public void onClick(View v) {
                 String final_caption = caption.getText().toString();
+                String final_title = threadTitle.getText().toString();
+                threadID = databaseReference.push().getKey();
+                if(!threadTitle.getText().toString().equals("")) {
+                    hashMap.put("id", threadID);
+                    hashMap.put("title", final_title);
+                    hashMap.put("sender", fuser.getUid());
+                }
                     if (mUri == null) {
-                        threadID = databaseReference.push().getKey();
-                        hashMap.put("id", threadID);
-                        hashMap.put("sender", fuser.getUid());
                         hashMap.put("type", "text");
+                    }
+                    if(mUri != null) {
+                        hashMap.put("type", "image");
+                    }
+                    // Title is needed for it to show within the Threads list
+                    if(threadTitle.getText().toString().equals(""))
+                    {
+                       Toast.makeText(CreatingThreadActivity.this,"Please set a title.",Toast.LENGTH_SHORT).show();
                     }
                     if (caption.equals("")) {
                         hashMap.put("caption", "");
@@ -189,7 +202,7 @@ public class CreatingThreadActivity extends MenuActivity {
                     });
                     builder.show();
                 } else {
-                    Toast.makeText(CreatingThreadActivity.this, "You can only upload 3 images",Toast.LENGTH_LONG).show();
+                    Toast.makeText(CreatingThreadActivity.this, "You've already uploaded 3 photos.'",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -254,11 +267,6 @@ public class CreatingThreadActivity extends MenuActivity {
                     if (task.isSuccessful()){
                         Uri downloadUri = task.getResult();
                         mUri = downloadUri.toString();
-                        threadID = databaseReference.push().getKey();
-                        hashMap.put("id", threadID);
-                        hashMap.put("sender", fuser.getUid());
-                        hashMap.put("message","" + mUri);
-                        hashMap.put("type", "image");
 
                         imageIDs.add(mUri);
                         imageAdapter = new ImageAdapter(getApplicationContext(),imageIDs);
