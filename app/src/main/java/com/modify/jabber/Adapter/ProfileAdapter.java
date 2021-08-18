@@ -205,7 +205,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             }
             holder.image_text.setVisibility(View.VISIBLE);
             holder.spacing.setVisibility(View.GONE);
-            //Picasso.get().load(profileMedia.getMessage()).rotate(270).into(holder.image_text);
             Glide.with(mContext).load(profileMedia.getMessage()).centerCrop().into(holder.image_text);
             holder.show_message.setText(profileMedia.getCaption());
         }

@@ -1,10 +1,14 @@
 package com.modify.jabber;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -33,7 +37,6 @@ import com.modify.jabber.Fragments.MenuFragment;
 import com.modify.jabber.Fragments.ProfileFragment;
 import com.modify.jabber.Fragments.ThreadFragment;
 import com.modify.jabber.Fragments.UserFragment;
-import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
 
 import java.util.ArrayList;
@@ -59,11 +62,19 @@ public class MainActivity extends MenuActivity {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
-        title = (TextView) findViewById(R.id.title_top);
-        profile_image = (CircleImageView) findViewById(R.id.profile_image);
-        menuButton = (ImageView) findViewById(R.id.menu_icon);
+        title = findViewById(R.id.title_top);
+        profile_image = findViewById(R.id.profile_image);
+        menuButton = findViewById(R.id.menu_icon);
         isMenuFragmentLoaded = false;
-
+        if(!isConnected())
+        {
+            firebaseUser = null;
+            final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("Please connect to internet to use Jabber.");
+            builder.setIcon(R.mipmap.ic_launcher_symbol);
+            builder.setNegativeButton("Cancel",null);
+            builder.show();
+        }
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,35 +202,27 @@ public class MainActivity extends MenuActivity {
     public void sendToFragment(int position)
     {
         final ViewPager viewPager = findViewById(R.id.view_pager);
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-                int unread = 0;
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Chat chat = snapshot.getValue(Chat.class);
-                    if (chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsseen()) {
-                        unread++;
-                    }
-                }
-                if (unread == 0) {
-                    viewPagerAdapter.addFragment(new ChatFragment(), "Chats");
-                } else {
-                    viewPagerAdapter.addFragment(new ChatFragment(), "(" + unread + ") Chats");
-                }
-                viewPagerAdapter.addFragment(new UserFragment(), "Users");
-                viewPagerAdapter.addFragment(new ThreadFragment(), "Threads");
-                viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
-
-                viewPager.setAdapter(viewPagerAdapter);
-                viewPager.setCurrentItem(position);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragment(new ChatFragment(), "Chats");
+        viewPagerAdapter.addFragment(new UserFragment(), "Users");
+        viewPagerAdapter.addFragment(new ThreadFragment(), "Threads");
+        viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setCurrentItem(position);
+    }
+    public boolean isConnected()
+    {
+        boolean result;
+        try {
+            @SuppressLint({"NewApi", "LocalSuppress"}) ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+            result = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                    connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
+        }
+        catch (Exception e)
+        {
+            result = false;
+        }
+        return result;
     }
     private void status(String status){
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());

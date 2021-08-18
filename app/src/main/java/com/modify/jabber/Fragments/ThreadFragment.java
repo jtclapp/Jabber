@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -18,12 +19,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.modify.jabber.Adapter.ProfileAdapter;
 import com.modify.jabber.Adapter.ThreadAdapter;
-import com.modify.jabber.CreatingPostActivity;
 import com.modify.jabber.CreatingThreadActivity;
 import com.modify.jabber.R;
-import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.Thread;
 
 import java.util.ArrayList;
@@ -35,6 +33,7 @@ public class ThreadFragment extends Fragment {
     List<Thread> mThread;
     ThreadAdapter threadAdapter;
     RecyclerView recyclerView;
+    LinearLayoutManager linearLayoutManager;
     FloatingActionButton threadButton;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -44,6 +43,12 @@ public class ThreadFragment extends Fragment {
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         recyclerView = view.findViewById(R.id.recycler_view_Thread);
         threadButton = view.findViewById(R.id.AddThread);
+        recyclerView.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
 
         threadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,16 +67,10 @@ public class ThreadFragment extends Fragment {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int count = 0;
                 mThread.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    if(count == 1000)
-                    {
-                        break;
-                    }
                     Thread thread = dataSnapshot.getValue(Thread.class);
                     mThread.add(thread);
-                    count++;
                 }
                 if(mThread.isEmpty())
                 {

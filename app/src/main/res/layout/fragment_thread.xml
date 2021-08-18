@@ -15,11 +15,21 @@
         android:layout_height="wrap_content"
         android:background="#f8fbf8">
 
+        <TextView
+            android:id="@+id/thread_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:text="Top Rated Jabber Discussions"
+            android:textSize="16sp"
+            android:layout_marginBottom="10dp"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_Thread"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/thread_title"/>
     </RelativeLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/AddThread"

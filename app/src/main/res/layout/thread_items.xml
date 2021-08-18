@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="#f8fbf8">
 
-
+<TextView
+    android:id="@+id/Title_threadItems"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textColor="@color/black"
+    android:padding="4dp"
+    android:background="@drawable/edit_text_boarder"
+    android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
+    android:textSize="20sp"
+    android:layout_marginBottom="10dp"/>
 </RelativeLayout>

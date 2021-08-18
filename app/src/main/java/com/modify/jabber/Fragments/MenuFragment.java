@@ -23,7 +23,10 @@ import com.modify.jabber.MainActivity;
 import com.modify.jabber.R;
 import com.modify.jabber.SettingActivity;
 import com.modify.jabber.StartActivity;
+import com.modify.jabber.model.Chat;
 import com.modify.jabber.model.User;
+
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -32,6 +35,7 @@ public class MenuFragment extends Fragment {
     TextView username, logout;
     FirebaseUser firebaseUser;
     DatabaseReference reference;
+    TextView chatName;
     LinearLayout chat;
     LinearLayout profile;
     LinearLayout users;
@@ -50,6 +54,7 @@ public class MenuFragment extends Fragment {
         thread = rootView.findViewById(R.id.TheardLayout);
         settings = rootView.findViewById(R.id.SettingsLayout);
         logout = rootView.findViewById(R.id.MenuLogout);
+        chatName = rootView.findViewById(R.id.ChatName);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
@@ -68,6 +73,28 @@ public class MenuFragment extends Fragment {
                             Glide.with(getActivity()).load(user.getImageURL()).centerCrop().into(profile_image);
                         }
                     }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int unread = 0;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if (chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsseen()) {
+                        unread++;
+                    }
+                }
+                if (unread == 0) {
+                    chatName.setText("Chats");
+                } else {
+                    chatName.setText("(" + unread + ") Chats");
                 }
             }
             @Override
@@ -117,6 +144,7 @@ public class MenuFragment extends Fragment {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                status("offline");
                 FirebaseAuth.getInstance().signOut();
                Intent start = new Intent(rootView.getContext(), StartActivity.class);
                start.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -124,5 +152,13 @@ public class MenuFragment extends Fragment {
             }
         });
         return rootView;
+    }
+    private void status(String status){
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+
+        reference.updateChildren(hashMap);
     }
 }
