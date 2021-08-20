@@ -92,7 +92,7 @@ public class CreatingThreadActivity extends MenuActivity {
         threadTitle = findViewById(R.id.thread_title);
         caption = findViewById(R.id.uploaded_thread_caption);
         create = findViewById(R.id.CreateThreadButton);
-        viewPager = findViewById(R.id.ViewThreadImages);
+        viewPager = findViewById(R.id.ThreadImages);
         backButton.setVisibility(View.VISIBLE);
         isMenuFragmentLoaded = false;
         fuser = FirebaseAuth.getInstance().getCurrentUser();

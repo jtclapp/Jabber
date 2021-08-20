@@ -35,6 +35,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jabber">
         <activity
+            android:name=".ViewSelectedThread"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".CreatingThreadActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />

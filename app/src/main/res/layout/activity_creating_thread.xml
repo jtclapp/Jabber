@@ -14,7 +14,7 @@
     </FrameLayout>
 
     <RelativeLayout
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#f8fbf8"
@@ -25,18 +25,18 @@
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/edit_text_boarder"
+            android:layout_marginBottom="5dp"
             android:gravity="start"
             android:hint=" Discussion Title"
             android:inputType="textShortMessage"
             android:textColor="@color/black"
             android:textColorHint="@color/gray" />
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/ViewThreadImages"
+        android:id="@+id/ThreadImages"
         android:layout_width="380dp"
         android:layout_height="250dp"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/ic_black_logo___no_background"
         android:layout_below="@+id/thread_title"/>
         <TextView
             android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
             android:textSize="12sp"
             android:layout_centerHorizontal="true"
             android:textColor="@color/gray"
-            android:layout_below="@+id/ViewThreadImages"/>
+            android:layout_below="@+id/ThreadImages"/>
 
         <ImageButton
             android:id="@+id/btn_get_thread_image"
@@ -59,7 +59,7 @@
         <EditText
             android:id="@+id/uploaded_thread_caption"
             android:layout_width="400dp"
-            android:layout_height="280dp"
+            android:layout_height="300dp"
             android:layout_below="@id/btn_get_thread_image"
             android:layout_marginTop="15dp"
             android:gravity="start"

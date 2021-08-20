@@ -7,19 +7,10 @@
     tools:context=".SigninActivity"
     android:background="#f8fbf8">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/SignInToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/black"
-        android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/MenuStyle"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_below="@+id/SignInToolbar"
         android:padding="16dp"
         android:layout_height="wrap_content">
 
@@ -34,13 +25,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/email"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="60dp"
             android:hint="Email"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/password"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:inputType="textPassword"
             android:hint="Password"/>
         <TextView
@@ -56,9 +47,13 @@
         <Button
             android:id="@+id/signInButton"
             android:text="Sign In"
-            android:textSize="18sp"
-            android:layout_width="115dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:layout_width="300dp"
             android:layout_height="45dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/buttonshape"/>
 
         <TextView

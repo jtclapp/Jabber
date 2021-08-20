@@ -25,7 +25,7 @@
                 android:id="@+id/AddPost"
                 android:src="@drawable/add_item_button"
                 app:fabSize="mini"
-                android:backgroundTint="#303841"
+                android:backgroundTint="#828282"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"

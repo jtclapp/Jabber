@@ -13,7 +13,8 @@ public class Thread implements Serializable
     private String image2;
     private String image3;
 
-    public Thread(String id, String title, String sender, String type, String caption, String date, String image1, String image2, String image3) {
+    public Thread(String id, String title, String sender, String type, String caption,
+                  String date, String image1, String image2, String image3) {
         this.id = id;
         this.title = title;
         this.sender = sender;
@@ -28,7 +29,6 @@ public class Thread implements Serializable
     {
 
     }
-
     public String getTitle() {
         return title;
     }

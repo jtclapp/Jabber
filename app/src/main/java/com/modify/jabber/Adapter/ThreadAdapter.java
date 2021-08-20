@@ -1,6 +1,7 @@
 package com.modify.jabber.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.modify.jabber.R;
+import com.modify.jabber.ViewSelectedThread;
 import com.modify.jabber.model.Thread;
 
 import java.util.List;
@@ -37,7 +39,9 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.ViewHolder
         holder.thread_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent start = new Intent(mContext, ViewSelectedThread.class);
+                start.putExtra("selectedThread",thread.getId());
+                mContext.startActivity(start);
             }
         });
     }
