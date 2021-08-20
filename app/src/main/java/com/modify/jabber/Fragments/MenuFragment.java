@@ -147,7 +147,6 @@ public class MenuFragment extends Fragment {
                 status("offline");
                 FirebaseAuth.getInstance().signOut();
                Intent start = new Intent(rootView.getContext(), StartActivity.class);
-               start.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                startActivity(start);
             }
         });

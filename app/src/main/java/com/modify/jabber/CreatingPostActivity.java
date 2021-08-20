@@ -366,12 +366,12 @@ public class CreatingPostActivity extends MenuActivity {
     }
     public void loadMenuFragment(){
         FragmentManager fm = getSupportFragmentManager();
-        menuFragment = fm.findFragmentById(R.id.container6);
+        menuFragment = fm.findFragmentById(R.id.container5);
         if(menuFragment == null){
             menuFragment = new MenuFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
-            fragmentTransaction.add(R.id.container6,menuFragment);
+            fragmentTransaction.add(R.id.container5,menuFragment);
             relativeLayout.setVisibility(View.GONE);
             fragmentTransaction.commit();
         }

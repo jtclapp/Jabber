@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
@@ -62,7 +64,7 @@ public class CreatingThreadActivity extends MenuActivity {
     HashMap<String, Object> hashMap;
     boolean isMenuFragmentLoaded;
     Fragment menuFragment;
-    TextView title,threadTitle,imageCount;
+    TextView title,threadTitle,imageCount,titleCount;
     EditText caption;
     ImageButton create;
     ImageView menuButton,backButton,photo;
@@ -86,6 +88,7 @@ public class CreatingThreadActivity extends MenuActivity {
         photo = findViewById(R.id.btn_get_thread_image);
         profile_image = findViewById(R.id.profile_image);
         imageCount = findViewById(R.id.photoCount);
+        titleCount = findViewById(R.id.titleCount);
         relativeLayout = findViewById(R.id.CreatingThreadActivityItems);
         menuButton = findViewById(R.id.menu_icon);
         backButton = findViewById(R.id.BackArrow);
@@ -163,6 +166,20 @@ public class CreatingThreadActivity extends MenuActivity {
                 }
             }
         });
+        final TextWatcher mTextEditorWatcher = new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //This sets a textview to the current length
+                titleCount.setText(String.valueOf(70 - s.length()) + " characters remaining");
+            }
+
+            public void afterTextChanged(Editable s) {
+            }
+        };
+        threadTitle.addTextChangedListener(mTextEditorWatcher);
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

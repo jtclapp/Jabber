@@ -17,7 +17,7 @@
         <item name="android:textColor">"#f8fbf8"</item>
     </style>
     <style name="PopupMenu" parent="ThemeOverlay.AppCompat.Dark">
-        <item name="android:popupBackground">#303841</item>
+        <item name="android:popupBackground">#828282</item>
         <item name="android:textColor">"#f8fbf8"</item>
     </style>
     <style name="itemTextStyle.AppTheme" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
