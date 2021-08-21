@@ -23,6 +23,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -40,15 +41,19 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.modify.jabber.Adapter.ImageAdapter;
 import com.modify.jabber.Fragments.MenuFragment;
 import com.modify.jabber.model.ProfileMedia;
+import com.modify.jabber.model.Thread;
 import com.modify.jabber.model.User;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -56,7 +61,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CreatingPostActivity extends MenuActivity {
     Button create;
     EditText typedCaption;
-    ImageView photo,uploadedPhoto;
+    ImageView photo;
+    ViewPager uploadedPhotos;
     private Uri imageUri;
     FirebaseUser fuser;
     StorageReference storageReference;
@@ -67,10 +73,12 @@ public class CreatingPostActivity extends MenuActivity {
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
     boolean isMenuFragmentLoaded;
     Fragment menuFragment;
-    TextView title;
+    TextView title,photoCount;
     ImageView menuButton,backButton;
     CircleImageView profile_image;
     RelativeLayout relativeLayout;
+    ImageAdapter imageAdapter;
+    List<String> imageIDs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,13 +88,16 @@ public class CreatingPostActivity extends MenuActivity {
         Intent intent = getIntent();
         editPost = (ProfileMedia) intent.getSerializableExtra("EditPost");
         hashMap = new HashMap<>();
+        imageIDs = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
         create = findViewById(R.id.CreatePostButton);
         photo = findViewById(R.id.btn_get_image);
-        uploadedPhoto = findViewById(R.id.PostedImage);
+        photoCount = findViewById(R.id.PostPhotoCount);
+        uploadedPhotos = findViewById(R.id.PostImages);
         typedCaption = findViewById(R.id.uploaded_caption);
         relativeLayout = findViewById(R.id.CreatingPostActivityItems);
         fuser = FirebaseAuth.getInstance().getCurrentUser();
+        imageAdapter = new ImageAdapter(this,imageIDs);
         storageReference = FirebaseStorage.getInstance().getReference("FeedImages");
         title = findViewById(R.id.title_top);
         profile_image = findViewById(R.id.profile_image);
@@ -96,6 +107,21 @@ public class CreatingPostActivity extends MenuActivity {
         isMenuFragmentLoaded = false;
         date = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
 
+        uploadedPhotos.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+            @Override
+            public void onPageSelected(int position) {
+                photoCount.setText(uploadedPhotos.getCurrentItem() + 1 + "/" + imageIDs.size() + "");
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,7 +175,7 @@ public class CreatingPostActivity extends MenuActivity {
                         hash.put("message", "" + mUri);
                         hash.put("type", "image");
                     }
-                    if (editPost.getMessage() == null && mUri == null) {
+                    if (editPost.getImage1() == null && mUri == null) {
                         hash.put("type", "text");
                     }
                     if (caption.equals("")) {
@@ -179,6 +205,7 @@ public class CreatingPostActivity extends MenuActivity {
                         Toast.makeText(CreatingPostActivity.this, "Please upload a picture or write what's on your mind.", Toast.LENGTH_SHORT).show();
                     } else {
                         hashMap.put("date", date);
+                        addImagesToHashmap();
                         databaseReference.child(postid).setValue(hashMap);
                         Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
                         start.putExtra("viewProfile",3);
@@ -211,8 +238,39 @@ public class CreatingPostActivity extends MenuActivity {
         // this will run if updating a already posted post.
         if(editPost != null)
         {
-            if(editPost.getMessage() != null) {
-                Glide.with(getApplicationContext()).load(editPost.getMessage()).centerCrop().into(uploadedPhoto);
+            if(editPost.getImage1() != null) {
+                databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            ProfileMedia profileMedia = dataSnapshot.getValue(ProfileMedia.class);
+                            if(profileMedia.getId().equals(editPost.getId()))
+                            {
+                                typedCaption.setText(profileMedia.getCaption());
+                                if(profileMedia.getImage1() != null) {
+                                    imageIDs.add(profileMedia.getImage1());
+                                }
+                                if(profileMedia.getImage2() != null) {
+                                    imageIDs.add(profileMedia.getImage2());
+                                }
+                                if(profileMedia.getImage3() != null) {
+                                    imageIDs.add(profileMedia.getImage3());
+                                }
+                                imageAdapter = new ImageAdapter(getApplicationContext(),imageIDs);
+                                uploadedPhotos.setAdapter(imageAdapter);
+                                if(imageIDs.size() > 0)
+                                {
+                                    photoCount.setText(uploadedPhotos.getCurrentItem() + 1 + "/" + imageIDs.size() + "");
+                                }
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
             create.setText("Update");
             typedCaption.setText(editPost.getCaption());
@@ -262,8 +320,11 @@ public class CreatingPostActivity extends MenuActivity {
                         hashMap.put("message","" + mUri);
                         hashMap.put("type", "image");
 
-                        Glide.with(getApplicationContext()).load(imageUri).centerCrop().into(uploadedPhoto);
-                        uploadedPhoto.setVisibility(View.VISIBLE);
+                        imageIDs.add(mUri);
+                        imageAdapter = new ImageAdapter(getApplicationContext(),imageIDs);
+                        uploadedPhotos.setAdapter(imageAdapter);
+                        photoCount.setText(uploadedPhotos.getCurrentItem() + 1 + "/" + imageIDs.size() + "");
+
                         pd.dismiss();
                         Toast.makeText(CreatingPostActivity.this,"Image uploaded Successfully!",Toast.LENGTH_SHORT).show();
                         if(mCurrentPhotoPath != null) {
@@ -376,6 +437,25 @@ public class CreatingPostActivity extends MenuActivity {
             fragmentTransaction.commit();
         }
         isMenuFragmentLoaded = true;
+    }
+    // Adds the URI of each uploaded image to the hashmap
+    private void addImagesToHashmap()
+    {
+        for(int i = 0; i < imageIDs.size(); i++)
+        {
+            if(i == 0)
+            {
+                hashMap.put("image1",imageIDs.get(0));
+            }
+            if(i == 1)
+            {
+                hashMap.put("image2",imageIDs.get(1));
+            }
+            if(i == 2)
+            {
+                hashMap.put("image3",imageIDs.get(2));
+            }
+        }
     }
     private void status(String status){
 

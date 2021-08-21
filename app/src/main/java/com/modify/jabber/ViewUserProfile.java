@@ -159,7 +159,7 @@ public class ViewUserProfile extends MenuActivity {
     }
     private ProfileMedia createStandIn()
     {
-        return new ProfileMedia("",userid,"","","","");
+        return new ProfileMedia("",fuser.getUid(),"","","","","","");
     }
     private void status(String status){
         toolbar_reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());

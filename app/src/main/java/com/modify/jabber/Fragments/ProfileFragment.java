@@ -97,6 +97,6 @@ public class ProfileFragment extends Fragment {
     }
     private ProfileMedia createStandIn()
     {
-        return new ProfileMedia("",fuser.getUid(),"","","","");
+        return new ProfileMedia("",fuser.getUid(),"","","","","","");
     }
 }

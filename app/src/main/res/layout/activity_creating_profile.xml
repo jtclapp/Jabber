@@ -42,11 +42,22 @@
         android:layout_marginTop="29dp"
         android:textSize="16sp"
         android:gravity="start"
+        android:padding="2dp"
         android:hint=" Tell People About Yourself "
         android:inputType="textMultiLine"
         android:textColor="@color/black"
         android:background="@drawable/edit_text_boarder"
-        android:textColorHint="@color/gray" />
+        android:textColorHint="@color/gray"
+        android:maxLength="150"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:id="@+id/bioCount"
+        android:textSize="12sp"
+        android:layout_alignStart="@+id/Bio"
+        android:textColor="@color/gray"
+        android:layout_below="@+id/Bio"/>
 
     <Button
         android:id="@+id/FinishSignUp"
@@ -56,9 +67,9 @@
         android:textStyle="bold"
         android:layout_width="250dp"
         android:layout_height="40dp"
-        android:layout_below="@+id/Bio"
+        android:layout_below="@+id/bioCount"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="60dp"
         android:background="@drawable/buttonshape"
         android:text="Finish" />
 </RelativeLayout>

@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -60,7 +62,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
     User userDelete;
     StorageReference storageReference;
     String mUri,mCurrentPhotoPath;
-    TextView title;
+    TextView title,bioCount;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +71,27 @@ public class CreatingProfileActivity extends AppCompatActivity {
         photo = findViewById(R.id.InsertProfileButton);
         finish = findViewById(R.id.FinishSignUp);
         bio = findViewById(R.id.Bio);
+        bioCount = findViewById(R.id.bioCount);
         title = findViewById(R.id.creatingSpacing);
         circleImageView = findViewById(R.id.CreateProfileImage);
         hashMap = new HashMap<>();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+
+        final TextWatcher mTextEditorWatcher = new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //This sets a textview to the current length
+                bioCount.setText(String.valueOf(150 - s.length()) + " characters remaining");
+            }
+
+            public void afterTextChanged(Editable s) {
+            }
+        };
+        bio.addTextChangedListener(mTextEditorWatcher);
 
         photo.setOnClickListener(new View.OnClickListener() {
             @Override

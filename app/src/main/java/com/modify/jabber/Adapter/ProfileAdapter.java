@@ -145,7 +145,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                                                         // Delete the post from Realtime database and Firebase storage
                                                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
                                                         if (type.equals("image")) {
-                                                            storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getMessage());
+//                                                            storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getMessage());
                                                             storageReference.delete();
                                                         }
                                                         ref.child(profileMedia.getId()).removeValue();
@@ -205,7 +205,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             }
             holder.image_text.setVisibility(View.VISIBLE);
             holder.spacing.setVisibility(View.GONE);
-            Glide.with(mContext).load(profileMedia.getMessage()).centerCrop().into(holder.image_text);
+//            Glide.with(mContext).load(profileMedia.getMessage()).centerCrop().into(holder.image_text);
             holder.show_message.setText(profileMedia.getCaption());
         }
         holder.show_date.setText(profileMedia.getDate());
