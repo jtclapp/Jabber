@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,7 @@ import com.modify.jabber.R;
 import com.modify.jabber.model.ProfileMedia;
 import com.modify.jabber.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -113,10 +115,9 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                 }
             });
         }
+        // Add all the posts that the users posted
         if(!profileMedia.getId().equals("")) {
-            holder.show_message.setVisibility(View.VISIBLE);
             holder.show_date.setVisibility(View.VISIBLE);
-            holder.image_text.setVisibility(View.VISIBLE);
             holder.username_image.setVisibility(View.VISIBLE);
             holder.username.setVisibility(View.VISIBLE);
 
@@ -145,8 +146,18 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                                                         // Delete the post from Realtime database and Firebase storage
                                                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
                                                         if (type.equals("image")) {
-//                                                            storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getMessage());
-                                                            storageReference.delete();
+                                                            if(profileMedia.getImage1() != null) {
+                                                                storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getImage1());
+                                                                storageReference.delete();
+                                                            }
+                                                            if(profileMedia.getImage2() != null) {
+                                                                storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getImage2());
+                                                                storageReference.delete();
+                                                            }
+                                                            if(profileMedia.getImage3() != null) {
+                                                                storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getImage3());
+                                                                storageReference.delete();
+                                                            }
                                                         }
                                                         ref.child(profileMedia.getId()).removeValue();
                                                     }
@@ -193,25 +204,38 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         if (type.equals("text")) {
             holder.spacing.setVisibility(View.VISIBLE);
             holder.show_message.setVisibility(View.VISIBLE);
-            holder.image_text.setVisibility(View.GONE);
+            holder.viewPager.setVisibility(View.GONE);
+            holder.photoCount.setVisibility(View.GONE);
             holder.show_message.setText(profileMedia.getCaption());
         }
-
         if (type.equals("image")) {
             if (profileMedia.getCaption().equals("")) {
                 holder.show_message.setVisibility(View.GONE);
             } else {
                 holder.show_message.setVisibility(View.VISIBLE);
             }
-            holder.image_text.setVisibility(View.VISIBLE);
+            holder.viewPager.setVisibility(View.VISIBLE);
+            holder.photoCount.setVisibility(View.VISIBLE);
             holder.spacing.setVisibility(View.GONE);
-//            Glide.with(mContext).load(profileMedia.getMessage()).centerCrop().into(holder.image_text);
             holder.show_message.setText(profileMedia.getCaption());
+
+            if(profileMedia.getImage1() != null) {
+                holder.imageIDs.add(profileMedia.getImage1());
+            }
+            if(profileMedia.getImage2() != null) {
+                holder.imageIDs.add(profileMedia.getImage2());
+            }
+            if(profileMedia.getImage3() != null) {
+                holder.imageIDs.add(profileMedia.getImage3());
+            }
+            holder.imageAdapter = new ImageAdapter(mContext,holder.imageIDs);
+            holder.viewPager.setAdapter(holder.imageAdapter);
+            if(holder.imageIDs.size() > 0)
+            {
+                holder.photoCount.setText(holder.viewPager.getCurrentItem() + 1 + "/" + holder.imageIDs.size() + "");
+            }
         }
         holder.show_date.setText(profileMedia.getDate());
-        } else {
-            holder.image_text.setVisibility(View.VISIBLE);
-            holder.image_text.setImageResource(R.drawable.ic_black_logo___no_background);
         }
     }
     @Override
@@ -219,17 +243,23 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         return profileMediaList.size();
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView show_message, show_date, spacing, editProfile;
-        public ImageView image_text, menu;
+        public TextView show_message, show_date, spacing, editProfile, photoCount;
+        public ImageView menu;
         public CircleImageView username_image, image_profile;
         public TextView username, bold_username, bio;
         ImageButton message;
+        ViewPager viewPager;
+        ImageAdapter imageAdapter;
+        List<String> imageIDs;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            imageIDs = new ArrayList<>();
+            viewPager = itemView.findViewById(R.id.ViewPostImages);
+            imageAdapter = new ImageAdapter(mContext,imageIDs);
+            photoCount = itemView.findViewById(R.id.ViewPostPhotoCount);
             spacing = itemView.findViewById(R.id.spacing2);
             show_message = itemView.findViewById(R.id.typed_post);
-            image_text = itemView.findViewById(R.id.postImage);
             show_date = itemView.findViewById(R.id.post_date);
             username = itemView.findViewById(R.id.YourUsername);
             username_image = itemView.findViewById(R.id.Your_profile_image);
@@ -244,6 +274,21 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     mContext.startActivity(new Intent(mContext.getApplicationContext(), CreatingProfileActivity.class));
+                }
+            });
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+                @Override
+                public void onPageSelected(int position) {
+                    photoCount.setText(viewPager.getCurrentItem() + 1 + "/" + imageIDs.size() + "");
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
                 }
             });
         }

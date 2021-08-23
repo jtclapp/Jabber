@@ -172,7 +172,6 @@ public class CreatingPostActivity extends MenuActivity {
                 if (editPost != null) {
                     HashMap<String, Object> hash = new HashMap<>();
                     if (mUri != null) {
-                        hash.put("message", "" + mUri);
                         hash.put("type", "image");
                     }
                     if (editPost.getImage1() == null && mUri == null) {
@@ -183,6 +182,7 @@ public class CreatingPostActivity extends MenuActivity {
                     } else {
                         hash.put("caption", caption);
                     }
+                    addImagesToHashmap();
                     databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
                     databaseReference.child(editPost.getId()).updateChildren(hash);
                     Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
@@ -193,7 +193,6 @@ public class CreatingPostActivity extends MenuActivity {
                         postid = databaseReference.push().getKey();
                         hashMap.put("id", postid);
                         hashMap.put("sender", fuser.getUid());
-                        hashMap.put("message", "");
                         hashMap.put("type", "text");
                     }
                     if (caption.equals("")) {
