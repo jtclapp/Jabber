@@ -34,8 +34,12 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ThreadAdapter.ViewHolder holder, int position) {
         Thread thread = threadList.get(position);
-        String title = thread.getTitle();
-        holder.thread_title.setText(title);
+        if(!thread.getId().equals("")) {
+            String title = thread.getTitle();
+            holder.thread_title.setText(title);
+        } else {
+            holder.thread_title.setVisibility(View.GONE);
+        }
         holder.thread_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,7 +53,6 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.ViewHolder
     public int getItemCount() {
         return threadList.size();
     }
-
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         TextView thread_title;

@@ -80,28 +80,28 @@ public class MenuFragment extends Fragment {
 
             }
         });
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int unread = 0;
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Chat chat = snapshot.getValue(Chat.class);
-                    if (chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsseen()) {
-                        unread++;
-                    }
-                }
-                if (unread == 0) {
-                    chatName.setText("Chats");
-                } else {
-                    chatName.setText("(" + unread + ") Chats");
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        reference = FirebaseDatabase.getInstance().getReference("Chats").child("Chats:" + myid + ":" + userid);
+//        reference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                int unread = 0;
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    Chat chat = snapshot.getValue(Chat.class);
+//                    if (chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsseen()) {
+//                        unread++;
+//                    }
+//                }
+//                if (unread == 0) {
+//                    chatName.setText("Chats");
+//                } else {
+//                    chatName.setText("(" + unread + ") Chats");
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -102,7 +102,7 @@ public class SignupActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful())
                             {
-                                databaseReference = FirebaseDatabase.getInstance().getReference("Settings").child("Settings-" + userid);
+                                databaseReference = FirebaseDatabase.getInstance().getReference("Settings").child("Settings:" + userid);
                                 HashMap<String,String> hash = new HashMap<>();
                                 hash.put("id",userid);
                                 hash.put("sentColor","#FFA500");

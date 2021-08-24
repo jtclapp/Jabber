@@ -89,16 +89,16 @@ public class CreatingPostActivity extends MenuActivity {
         editPost = (ProfileMedia) intent.getSerializableExtra("EditPost");
         hashMap = new HashMap<>();
         imageIDs = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Posts").child("Posts:" + fuser.getUid());
         create = findViewById(R.id.CreatePostButton);
         photo = findViewById(R.id.btn_get_image);
         photoCount = findViewById(R.id.PostPhotoCount);
         uploadedPhotos = findViewById(R.id.PostImages);
         typedCaption = findViewById(R.id.uploaded_caption);
         relativeLayout = findViewById(R.id.CreatingPostActivityItems);
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
         imageAdapter = new ImageAdapter(this,imageIDs);
-        storageReference = FirebaseStorage.getInstance().getReference("FeedImages");
+        storageReference = FirebaseStorage.getInstance().getReference("FeedImages").child("FeedImages:" + fuser.getUid());
         title = findViewById(R.id.title_top);
         profile_image = findViewById(R.id.profile_image);
         menuButton = findViewById(R.id.menu_icon);
@@ -183,7 +183,7 @@ public class CreatingPostActivity extends MenuActivity {
                         hash.put("caption", caption);
                     }
                     addImagesToHashmap();
-                    databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
+                    databaseReference = FirebaseDatabase.getInstance().getReference("Posts").child("Posts:" + fuser.getUid());
                     databaseReference.child(editPost.getId()).updateChildren(hash);
                     Intent start = new Intent(CreatingPostActivity.this, MainActivity.class);
                     start.putExtra("viewFragment",3);
@@ -216,29 +216,33 @@ public class CreatingPostActivity extends MenuActivity {
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(CreatingPostActivity.this);
-                builder.setTitle("Select An Image");
-                builder.setIcon(R.mipmap.ic_launcher_symbol);
-                builder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dispatchTakePictureIntent();
-                    }
-                });
-                builder.setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        openImage();
-                    }
-                });
-                builder.show();
+                if (imageIDs.size() < 3) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(CreatingPostActivity.this);
+                    builder.setTitle("Select An Image");
+                    builder.setIcon(R.mipmap.ic_launcher_symbol);
+                    builder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dispatchTakePictureIntent();
+                        }
+                    });
+                    builder.setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            openImage();
+                        }
+                    });
+                    builder.show();
+                } else {
+                    Toast.makeText(CreatingPostActivity.this, "You can only upload 3 Photos.",Toast.LENGTH_SHORT).show();
+                }
             }
         });
-        // this will run if updating a already posted post.
+        // this will run if updating a post.
         if(editPost != null)
         {
             if(editPost.getImage1() != null) {
-                databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
+                databaseReference = FirebaseDatabase.getInstance().getReference("Posts").child("Posts:" + fuser.getUid());
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -457,10 +461,8 @@ public class CreatingPostActivity extends MenuActivity {
         }
     }
     private void status(String status){
-
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("status", status);
-
         toolbar_reference.updateChildren(hashMap);
     }
     @Override
@@ -468,7 +470,6 @@ public class CreatingPostActivity extends MenuActivity {
         super.onResume();
         status("online");
     }
-
     @Override
     protected void onPause() {
         super.onPause();

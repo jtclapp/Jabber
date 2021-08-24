@@ -79,7 +79,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                 holder.editProfile.setVisibility(View.VISIBLE);
                 holder.message.setVisibility(View.GONE);
             }
-            storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
+            storageReference = FirebaseStorage.getInstance().getReference("ProfileImages").child("ProfileImages:" + profileMedia.getSender());
             reference = FirebaseDatabase.getInstance().getReference("Users").child(profileMedia.getSender());
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -144,7 +144,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                                                     @Override
                                                     public void onClick(DialogInterface dialogInterface, int i) {
                                                         // Delete the post from Realtime database and Firebase storage
-                                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+                                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts").child("Posts:" + fuser.getUid());
                                                         if (type.equals("image")) {
                                                             if(profileMedia.getImage1() != null) {
                                                                 storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(profileMedia.getImage1());

@@ -34,12 +34,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
             android:id="@+id/titleCount"
             android:textSize="12sp"
             android:layout_alignStart="@+id/thread_title"
             android:textColor="@color/gray"
-            android:layout_below="@+id/thread_title"/>
+            android:layout_below="@+id/thread_title"
+            android:layout_marginBottom="5dp"/>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/ThreadImages"
         android:layout_width="380dp"

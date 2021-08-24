@@ -46,7 +46,7 @@ public class SettingActivity extends MenuActivity {
         initAddlayout(R.layout.activity_setting);
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Settings").child("Settings-" + fuser.getUid());
+        databaseReference = FirebaseDatabase.getInstance().getReference("Settings").child("Settings:" + fuser.getUid());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

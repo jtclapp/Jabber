@@ -126,7 +126,7 @@ public class ViewUserProfile extends MenuActivity {
     private void readPosts()
     {
         mprofile = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance().getReference("Posts");
+        reference = FirebaseDatabase.getInstance().getReference("Posts").child("Posts:" + userid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

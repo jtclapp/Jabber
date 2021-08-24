@@ -108,6 +108,7 @@ public class MessageActivity extends MenuActivity {
     ImageView menuButton, search, backButton;
     CircleImageView profile_image;
     RelativeLayout relativeLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -298,12 +299,12 @@ public class MessageActivity extends MenuActivity {
                 Toast.makeText(MessageActivity.this,"Failed",Toast.LENGTH_SHORT).show();
             }
         });
-        storageReference = FirebaseStorage.getInstance().getReference("ChatImages");
+        storageReference = FirebaseStorage.getInstance().getReference("ChatImages").child("ChatImages:" + fuser.getUid());
         seenMessage(userid);
         setColorOfButtons();
     }
     private void seenMessage(final String userid){
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference = FirebaseDatabase.getInstance().getReference("Chats").child("Chats:" + fuser.getUid() + ":" + userid);
         seenListener = reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -334,7 +335,7 @@ public class MessageActivity extends MenuActivity {
         hashMap.put("type","text");
         hashMap.put("isseen", false);
         hashMap.put("date",currentDate());
-        reference.child("Chats").push().setValue(hashMap);
+        reference.child("Chats").child("Chats:" + fuser.getUid() + ":" + userid).push().setValue(hashMap);
 
         addUserToChatFragment();
         final String msg = message;
@@ -396,7 +397,7 @@ public class MessageActivity extends MenuActivity {
     private void readMessages(final String myid, final String userid, final String imageurl){
         mchat = new ArrayList<>();
         conversation = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference = FirebaseDatabase.getInstance().getReference("Chats").child("Chats:" + myid + ":" + userid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -508,7 +509,7 @@ public class MessageActivity extends MenuActivity {
                         hashMap.put("type", "image");
                         hashMap.put("isseen", false);
                         hashMap.put("date",currentDate());
-                        databaseReference.child("Chats").push().setValue(hashMap);
+                        databaseReference.child("Chats").child("Chats:" + fuser.getUid() + ":" + userid).push().setValue(hashMap);
                         addUserToChatFragment();
                         pd.dismiss();
                         final String msg = "Sent a photo...";

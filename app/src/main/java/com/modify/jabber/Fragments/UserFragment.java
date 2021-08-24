@@ -31,12 +31,9 @@ import java.util.List;
 public class UserFragment extends Fragment {
 
     private RecyclerView recyclerView;
-
     private UserAdapter userAdapter;
     private List<User> mUsers;
-
     EditText search_users;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,7 +69,6 @@ public class UserFragment extends Fragment {
 
         return view;
     }
-
     private void searchUsers(String s) {
         ArrayList<User> filteredList = new ArrayList<>();
         for(User user : mUsers)

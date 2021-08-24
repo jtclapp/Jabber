@@ -101,7 +101,7 @@ public class CreatingThreadActivity extends MenuActivity {
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         imageAdapter = new ImageAdapter(this,imageIDs);
         databaseReference = FirebaseDatabase.getInstance().getReference("Threads");
-        storageReference = FirebaseStorage.getInstance().getReference("ThreadImages");
+        storageReference = FirebaseStorage.getInstance().getReference("ThreadImages").child("ThreadImages" + fuser.getUid());
         date = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
 
         // Adds the content to Firebase
@@ -200,7 +200,7 @@ public class CreatingThreadActivity extends MenuActivity {
             @Override
             public void onClick(View view) {
                 // User can only upload a total of three images
-                if (imageIDs.size() <= 2) {
+                if (imageIDs.size() < 3) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(CreatingThreadActivity.this);
                     builder.setTitle("Select An Image");
                     builder.setIcon(R.mipmap.ic_launcher_symbol);
@@ -218,7 +218,7 @@ public class CreatingThreadActivity extends MenuActivity {
                     });
                     builder.show();
                 } else {
-                    Toast.makeText(CreatingThreadActivity.this, "You've already uploaded 3 photos.'",Toast.LENGTH_LONG).show();
+                    Toast.makeText(CreatingThreadActivity.this, "You can only upload 3 Photos.",Toast.LENGTH_SHORT).show();
                 }
             }
         });

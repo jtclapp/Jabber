@@ -76,7 +76,7 @@ public class CreatingProfileActivity extends AppCompatActivity {
         circleImageView = findViewById(R.id.CreateProfileImage);
         hashMap = new HashMap<>();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
-        storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
+        storageReference = FirebaseStorage.getInstance().getReference("ProfileImages").child("ProfileImages" + fuser.getUid());
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
 
         final TextWatcher mTextEditorWatcher = new TextWatcher() {

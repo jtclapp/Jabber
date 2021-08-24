@@ -71,7 +71,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             String type = chat.getType();
 
             fuser = FirebaseAuth.getInstance().getCurrentUser();
-            databaseReference = FirebaseDatabase.getInstance().getReference("Settings").child("Settings-" + fuser.getUid());
+            databaseReference = FirebaseDatabase.getInstance().getReference("Settings").child("Settings:" + fuser.getUid());
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -105,7 +105,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
                 }
             });
-
             if(position >= 1)
             {
                 Chat chat1 = mChat.get(position - 1);
@@ -122,7 +121,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 holder.txt_date.setVisibility(View.VISIBLE);
                 holder.txt_date.setText(chat.getDate());
             }
-
             reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -158,7 +156,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 params.addRule(RelativeLayout.ALIGN_END,R.id.messageImage );
                 holder.txt_seen.setLayoutParams(params);
             }
-
             if (imageurl.equals("default")){
                 holder.profile_image.setImageResource(R.mipmap.ic_launcher);
             }
@@ -166,7 +163,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             {
                 Glide.with(mContext).load(imageurl).centerCrop().into(holder.profile_image);
             }
-
             if (position == mChat.size()-1){
                 if (mChat.get(position).isIsseen()){
                     holder.txt_seen.setText("Seen");
@@ -177,7 +173,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 holder.txt_seen.setVisibility(View.GONE);
             }
         }
-
         @Override
         public int getItemCount() {
             return mChat.size();
@@ -200,7 +195,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 txt_date = itemView.findViewById(R.id.message_date);
             }
         }
-
         @Override
         public int getItemViewType(int position) {
             fuser = FirebaseAuth.getInstance().getCurrentUser();

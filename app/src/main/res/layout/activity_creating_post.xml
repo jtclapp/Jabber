@@ -29,9 +29,9 @@
             android:id="@+id/PostImages"
             android:layout_width="400dp"
             android:layout_height="250dp"
+            android:layout_below="@+id/postSpacing"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/ic_black_logo___no_background"
-            android:layout_below="@+id/postSpacing"/>
+            android:background="@drawable/ic_black_logo___no_background" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
